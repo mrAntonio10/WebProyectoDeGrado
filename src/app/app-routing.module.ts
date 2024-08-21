@@ -35,7 +35,7 @@ import {BlocksComponent} from './blocks/blocks/blocks.component';
     imports: [
         RouterModule.forRoot([
             {
-                path: 'childrens',
+                path: 'childrens', component: AppMainComponent,
                 children: [
                     {path: '', component: DashboardComponent},
                     {path: 'uikit/formlayout', component: FormLayoutDemoComponent},
