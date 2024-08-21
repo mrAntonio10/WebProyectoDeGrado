@@ -32,7 +32,7 @@ export class AuthInterceptorService implements HttpInterceptor {
 
         if (err.status === 401) {
           this.router.navigateByUrl('/home');
-          console.log("Login error");
+          console.log("Login error: " + err.error.data.response);
         }
       
         return throwError( err );

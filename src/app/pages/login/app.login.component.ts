@@ -3,6 +3,7 @@ import { OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login/home.service';
+import {Message, MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +12,8 @@ import { LoginService } from 'src/app/services/login/home.service';
 export class AppLoginComponent implements OnInit {
   // @ts-ignore
   form: FormGroup;
+  msgs: Message[] = [];
+
 
   constructor(private router: Router,
               private loginService: LoginService,
@@ -37,9 +40,9 @@ export class AppLoginComponent implements OnInit {
         },
       error: err => {
           console.log(err);
-          alert("Credenciales no válidas.");
+          this.msgs = [];
+          this.msgs.push({ severity: 'error', summary: 'Error', detail: err.error.data.response });
         }
     })
   }
-
 }
