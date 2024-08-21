@@ -27,7 +27,7 @@ export class AppLoginComponent implements OnInit {
 
   submitForm(){
     console.log(this.form.value)
-    this.loginService.logInUsuario(this.form.value).subscribe({
+    this.loginService.logInUser(this.form.value).subscribe({
       next:
         resp => {
           if (resp) {

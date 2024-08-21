@@ -15,8 +15,12 @@ export class LoginService {
   constructor(private httpClient: HttpClient) {
   }
 
-  logInUsuario (usuario: UsuarioLoginI): Observable<any> {
+  logInUser (usuario: UsuarioLoginI): Observable<any> {
     return this.httpClient.post(`${this.apiUrl}/api/v1/auth/authenticate`, usuario);
+  }
+
+  logOutUser(): Observable<any> {
+    return this.httpClient.get(`${this.apiUrl}/api/v1/auth/logout`);
   }
 
 }
