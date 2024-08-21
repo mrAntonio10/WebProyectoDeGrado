@@ -1,0 +1,506 @@
+<div class="dashboard">
+    <div class="grid dashboard-grid">
+        <div class="col-12 sm:col-6 xl:col-4 overview-box monthly-sales">
+            <div class="card">
+                <div class="card-title">Monthly Sales</div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquam sed purus non porta. </p>
+                <img src="assets/layout/images/dashboard/asset-stats.svg" alt="sapphire">
+            </div>
+        </div>
+
+        <div class="col-12 sm:col-6 xl:col-4 overview-box total-views">
+            <div class="card">
+                <div class="card-title">Total Views</div>
+                <div class="overview-numbers">26520 / day</div>
+                <img src="assets/layout/images/dashboard/asset-graph.svg" alt="sapphire">
+            </div>
+        </div>
+
+        <div class="col-12 xl:col-4 overview-box connections">
+            <div class="card">
+                <div class="card-title">Connections</div>
+                <div class="overview-numbers">2,449,570</div>
+                <div class="grid">
+                    <div class="col-4 connection-chart">
+                        <img src="assets/layout/images/dashboard/asset-connectiongraph.svg" alt="sapphire">
+                    </div>
+                    <div class="col-8 connection-chart-legend">
+                        <div class="grid">
+                            <div class="col-6"><span class="dot dot-green"></span>Online</div>
+                            <div class="col-6"><span>644,421</span> <i class="legend-arrow pi pi-caret-up"></i></div>
+
+                            <div class="col-6"><span class="dot dot-red"></span>Offline</div>
+                            <div class="col-6">537,777 <i class="legend-arrow pi pi-caret-up"></i></div>
+
+                            <div class="col-6"><span class="dot dot-orange"></span>Pending</div>
+                            <div class="col-6">570,099 <i class="legend-arrow pi pi-caret-up"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 md:col-3 summary-box summary-box-messages">
+            <div class="card">
+                <div class="summary-box-title">Messages</div>
+                <p>152</p>
+                <img src="assets/layout/images/dashboard/icon-messages.svg" alt="sapphire" class="summary-box-icon">
+                <img src="assets/layout/images/dashboard/graph-messages.svg" alt="sapphire" class="summary-box-graph">
+            </div>
+        </div>
+
+        <div class="col-12 md:col-3 summary-box summary-box-checkins">
+            <div class="card">
+                <div class="summary-box-title">Checkins</div>
+                <p>532</p>
+                <img src="assets/layout/images/dashboard/icon-checkins.svg" alt="sapphire" class="summary-box-icon">
+                <img src="assets/layout/images/dashboard/graph-checkins.svg" alt="sapphire" class="summary-box-graph">
+            </div>
+        </div>
+
+        <div class="col-12 md:col-3 summary-box summary-box-filessynced">
+            <div class="card">
+                <div class="summary-box-title">Files Synced</div>
+                <p>28</p>
+                <img src="assets/layout/images/dashboard/icon-filessynced.svg" alt="sapphire" class="summary-box-icon">
+                <img src="assets/layout/images/dashboard/graph-filessynced.svg" alt="sapphire" class="summary-box-graph">
+            </div>
+        </div>
+
+        <div class="col-12 md:col-3 summary-box summary-box-usersonline">
+            <div class="card">
+                <div class="summary-box-title">Users Online</div>
+                <p>256</p>
+                <img src="assets/layout/images/dashboard/icon-usersonline.svg" alt="sapphire" class="summary-box-icon">
+                <img src="assets/layout/images/dashboard/graph-usersonline.svg" alt="sapphire" class="summary-box-graph">
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-6">
+            <div class="tasks card">
+                <div class="tasks-progress">
+                    <div class="tasks-progress-value"></div>
+                </div>
+                <div class="tasks-header">
+                    You have <span class="task-number">4</span> Pending Tasks.
+                </div>
+                <ul>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div clasS="col-fixed align-self-center">
+                                <p-checkbox name="group1" value="sales" [(ngModel)]="selectedTask"></p-checkbox>
+                            </div>
+                            <div class="col">
+                                <div class="task-content">
+                                    <div class="task-name">Sales Report</div>
+                                    <div class="tasks-detail">Assigned by James Harrison</div>
+
+                                </div>
+                            </div>
+                            <div class="col-fixed align-self-center">
+                                <i class="pi pi-heart"></i>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div clasS="col-fixed align-self-center">
+                                <p-checkbox name="group1" value="pay" [(ngModel)]="selectedTask"></p-checkbox>
+                            </div>
+                            <div class="col">
+                                <div class="task-content">
+                                    <div class="task-name">Pay Invoices</div>
+                                    <div class="tasks-detail">Assigned by Jane Davidson</div>
+                                </div>
+                            </div>
+                            <div class="col-fixed align-self-center">
+                                <i class="pi pi-heart"></i>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-center">
+                                <p-checkbox name="group1" value="meeting" [(ngModel)]="selectedTask"></p-checkbox>
+                            </div>
+                            <div class="col">
+                                <div class="task-content">
+                                    <div class="task-name">Customer Meeting</div>
+                                    <div class="tasks-detail">Assigned by Sarah Williams</div>
+                                </div>
+                            </div>
+                            <div class="col-fixed align-self-center">
+                                <i class="pi pi-heart"></i>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-center">
+                                <p-checkbox name="group1" value="expense" [(ngModel)]="selectedTask"></p-checkbox>
+                            </div>
+                            <div class="col">
+                                <div class="task-content">
+                                    <div class="task-name">Expense Reports</div>
+                                    <div class="tasks-detail">Assigned by James Harrison</div>
+                                </div>
+                            </div>
+                            <div class="col-fixed align-self-center">
+                                <i class="pi pi-heart"></i>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-6">
+            <div class="team card">
+                <div class="card-title">Team Members</div>
+                <ul>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-center">
+                                <img src="assets/layout/images/dashboard/avatar-1.jpg" alt="sapphire">
+                            </div>
+                            <div class="col">
+                                <div class="member-content">
+                                    <div class="member-name">Anne-Marije Marking</div>
+                                    <div clasS="member-status">
+                                        <div class="dot dot-red"></div>
+                                        <span>In a meeting</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-fixed align-self-center">
+                                <button pButton pRipple type="button" icon="pi pi-check" class="p-button-primary"></button>
+                                <button pButton pRipple type="button" icon="pi pi-refresh" class="p-button-warning"></button>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-center">
+                                <img src="assets/layout/images/dashboard/avatar-2.jpg" alt="sapphire">
+                            </div>
+                            <div class="col">
+                                <div class="member-content">
+                                    <div class="member-name">Gabriel Soares</div>
+                                    <div clasS="member-status">
+                                        <div class="dot dot-green"></div>
+                                        <span>Online</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-fixed align-self-center">
+                                <button pButton pRipple type="button" icon="pi pi-check" class="p-button-primary"></button>
+                                <button pButton pRipple type="button" icon="pi pi-refresh" class="p-button-warning"></button>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-center">
+                                <img src="assets/layout/images/dashboard/avatar-3.jpg" alt="sapphire">
+                            </div>
+                            <div class="col">
+                                <div class="member-content">
+                                    <div class="member-name">Hector Mariano</div>
+                                    <div clasS="member-status">
+                                        <div class="dot dot-green"></div>
+                                        <span>Online</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-fixed align-self-center">
+                                <button pButton pRipple type="button" icon="pi pi-check" class="p-button-primary"></button>
+                                <button pButton pRipple type="button" icon="pi pi-refresh" class="p-button-warning"></button>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-center">
+                                <img src="assets/layout/images/dashboard/avatar-4.jpg" alt="sapphire">
+                            </div>
+                            <div class="col">
+                                <div class="member-content">
+                                    <div class="member-name">Paulina Gayoso</div>
+                                    <div clasS="member-status">
+                                        <div class="dot dot-orange"></div>
+                                        <span>Commuting</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-fixed align-self-center">
+                                <button pButton pRipple type="button" icon="pi pi-check" class="p-button-primary"></button>
+                                <button pButton pRipple type="button" icon="pi pi-refresh" class="p-button-warning"></button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-4">
+            <div class="userprofile card">
+                <img src="assets/layout/images/dashboard/asset-profile.jpg" alt="sapphire" class="userprofile-bg">
+                <img src="assets/layout/images/avatar.png" alt="sapphire" class="userprofile-avatar">
+                <div class="userprofile-name">Helena Brauer</div>
+                <div class="userprofile-role">Business Management</div>
+
+                <div class="grid grid-nogutter userprofile-legend">
+                    <div class="col-12 lg:col-4 userprofile-completed">
+                        <div class="userprofile-circle"></div>
+                        <div class="userprofile-status">COMPLETED</div>
+                        <div class="userprofile-value">190</div>
+                    </div>
+                    <div class="col-12 lg:col-4 userprofile-snoozed">
+                        <div class="userprofile-circle"></div>
+                        <div class="userprofile-status">SNOOZED</div>
+                        <div class="userprofile-value">64</div>
+                    </div>
+                    <div class="col-12 lg:col-4 userprofile-overdue">
+                        <div class="userprofile-circle"></div>
+                        <div class="userprofile-status">OVERDUE</div>
+                        <div class="userprofile-value">28</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-8">
+            <div class="quarterreport card">
+                <div class="card-title">Quarter Report</div>
+                <div class="dashboard-chart-container">
+                    <p-chart type="line" [data]="chartData" [options]="chartOptions" [responsive]="true"></p-chart>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-6">
+            <div class="grid controlpanel">
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card">
+                        <div class="switch-name">Wireless Status</div>
+                        <span class="switch-status">Stable</span>
+                        <p-inputSwitch [ngModel]="true"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card">
+                        <div class="switch-name">Cooling Systems</div>
+                        <span class="switch-status">Stable</span>
+                        <p-inputSwitch [ngModel]="true"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card">
+                        <div class="switch-name">HQ Security</div>
+                        <span class="switch-status">Offline</span>
+                        <p-inputSwitch [ngModel]="true"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card">
+                        <div class="switch-name">Help Desk Load</div>
+                        <span class="switch-status">Stable</span>
+                        <p-inputSwitch [ngModel]="true"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card switchpanel-off">
+                        <div class="switch-name">Meeting Intensity</div>
+                        <span class="switch-status">Critical</span>
+                        <p-inputSwitch [ngModel]="true" [disabled]="true"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card">
+                        <div class="switch-name">Energy Backup</div>
+                        <span class="switch-status">Stable</span>
+                        <p-inputSwitch [ngModel]="true"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card switchpanel-off">
+                        <div class="switch-name">Coffee Machine</div>
+                        <span class="switch-status">Offline</span>
+                        <p-inputSwitch></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card">
+                        <div class="switch-name">Game Console</div>
+                        <span class="switch-status">Stable</span>
+                        <p-inputSwitch></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-6 lg:col-4">
+                    <div class="switchpanel card">
+                        <div class="switch-name">Network</div>
+                        <span class="switch-status">Stable</span>
+                        <p-inputSwitch></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="location card">
+                        <img src="assets/layout/images/dashboard/puebla.jpg" alt="sapphire">
+                        <div class="location-content">
+                            <div class="grid">
+                                <div class="col-fixed align-self-top">
+                                    <div class="icon-container">
+                                        <i class="pi pi-map-marker"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="location-name">Puebla</div>
+                                    <div class="location-subtitle">Where the magic happens</div>
+                                </div>
+                            </div>
+
+                            <p>Earum porro tenetur consequuntur veritatis eos vel natus quisquam.</p>
+                            <a href="#">READ MORE</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-6">
+            <div class="timeline card">
+                <div class="card-title">Recent Activities</div>
+                <ul>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-top">
+                                <div class="icon-container">
+                                    <i class="pi pi-map-marker"></i>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="event-owner">Katherine May</div>
+                                <div class="event-detail">Lorem ipsun dolor amet</div>
+                                <div class="grid grid-nogutter">
+                                    <div class="col-4">
+                                        <img src="assets/layout/images/dashboard/timeline-1.jpg" alt="sapphire">
+                                    </div>
+                                    <div class="col-4">
+                                        <img src="assets/layout/images/dashboard/timeline-2.jpg" alt="sapphire">
+                                    </div>
+                                    <div class="col-4">
+                                        <img src="assets/layout/images/dashboard/timeline-3.jpg" alt="sapphire">
+                                    </div>
+                                </div>
+                                <span class="timeline-clock"><i class="pi pi-clock"></i><span>12:30</span></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-top">
+                                <div class="icon-container">
+                                    <i class="pi pi-ticket"></i>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="event-owner">Brandon Williams</div>
+                                <div class="event-detail">Ab nobis, magnam sunt eum. Laudantium, repudiandae, similique!.</div>
+                                <span class="timeline-clock"><i class="pi pi-clock"></i><span>14:39</span></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter">
+                            <div class="col-fixed align-self-top">
+                                <div class="icon-container">
+                                    <i class="pi pi-lock"></i>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="event-owner">Stephan Ward</div>
+                                <div class="event-detail">Omnis veniam quibusdam ratione est repellat qui nam quisquam ab mollitia dolores ullam voluptates, similique, dignissimos.</div>
+                                <img src="assets/layout/images/dashboard/timeline-4.jpg" alt="sapphire">
+                                <span class="timeline-clock"><i class="pi pi-clock"></i><span>14:52</span></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="grid grid-nogutter location">
+                            <div class="col-fixed align-self-top">
+                                <div class="icon-container">
+                                    <i class="pi pi-image"></i>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="event-owner">Lara Cohen</div>
+                                <div class="event-detail">Quibusdam ratione est repellat qui nam quisquam veniam quibusdam ratione..</div>
+                                <span class="timeline-clock"><i class="pi pi-clock"></i><span>16:24</span></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-4">
+            <div class="weather card">
+                <div class="weather-image">
+                    <div class="city-name">Prime City</div>
+                    <div class="weather-today">Snow</div>
+                    <div class="weather-degree">11 <span>&#8451;</span></div>
+                </div>
+                <div class="grid weekdays">
+                    <div class="col-6">Monday</div>
+                    <div class="col-6 weather-degree-col">-2 <span>&#8451;</span><img src="assets/layout/images/dashboard/asset-weathericon-2.svg" alt="sapphire"></div>
+                    <div class="col-6">Tuesday</div>
+                    <div class="col-6 weather-degree-col">--7 <span>&#8451;</span><img src="assets/layout/images/dashboard/asset-weathericon-3.svg" alt="sapphire"></div>
+                    <div class="col-6">Wednesday</div>
+                    <div class="col-6 weather-degree-col">2 <span>&#8451;</span><img src="assets/layout/images/dashboard/asset-weathericon-4.svg" alt="sapphire"></div>
+                    <div class="col-6">Thursday</div>
+                    <div class="col-6 weather-degree-col">4 <span>&#8451;</span><img src="assets/layout/images/dashboard/asset-weathericon-2.svg" alt="sapphire"></div>
+                    <div class="col-6">Friday</div>
+                    <div class="col-6 weather-degree-col">0 <span>&#8451;</span><img src="assets/layout/images/dashboard/asset-weathericon-3.svg" alt="sapphire"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-8">
+            <div class="inventory card">
+                <p-table [value]="products" [paginator]="true" [rows]="5">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Logo</th>
+                            <th pSortableColumn="name">Name
+                                <p-sortIcon field="name"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="category">Category
+                                <p-sortIcon field="category"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="price">Price
+                                <p-sortIcon field="price"></p-sortIcon>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product>
+                        <tr>
+                            <td>
+                                <img [src]="'assets/demo/images/product/' + product.image" [alt]="product.image" width="50px" />
+                            </td>
+                            <td>{{product.name}}</td>
+                            <td>{{product.category}}</td>
+                            <td>{{product.price | currency:'USD'}}</td>
+                            <td style="text-align: center">
+                                <button pButton pRipple type="button" icon="pi pi-search" class="p-button-success mr-2 mb-1"></button>
+                                <button pButton pRipple type="button" icon="pi pi-times" class="p-button-danger mb-1"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+
+    </div>
+</div>
