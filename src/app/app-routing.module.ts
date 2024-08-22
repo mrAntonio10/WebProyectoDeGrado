@@ -73,7 +73,8 @@ import {BlocksComponent} from './blocks/blocks/blocks.component';
                 // loadChildren: () => import('../app/pages/login/app.login.module').then(m => m.LoginModule)
             },
             {path: '**', redirectTo: '/notfound'},
-        ], {scrollPositionRestoration: 'enabled'})
+        ], {scrollPositionRestoration: 'enabled', useHash: false},
+    )
     ],
     exports: [RouterModule]
 })
