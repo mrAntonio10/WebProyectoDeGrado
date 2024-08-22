@@ -20,7 +20,7 @@ export class LoginService {
   }
 
   logOutUser(): Observable<any> {
-    return this.httpClient.get(`${this.apiUrl}/api/v1/auth/logout`);
+    return this.httpClient.get(`${this.apiUrl}/api/v1/users/logout`);
   }
 
 }

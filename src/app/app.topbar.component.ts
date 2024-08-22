@@ -15,7 +15,7 @@ export class AppTopBarComponent implements OnDestroy{
     ) {}
 
     logOut() {
-        let resourceUrl: String;
+        let resourceUrl: String = "&nbp";
         this.userService.logOutUser().subscribe({
             next: resp => {
               if (resp) {
@@ -23,9 +23,7 @@ export class AppTopBarComponent implements OnDestroy{
               }
             },
             complete:() => {
-                if(resourceUrl){
                     this.router.navigate([resourceUrl]);
-                }
             },
         }
         );
