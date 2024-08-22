@@ -53,7 +53,6 @@ export class AppMenuComponent implements OnInit {
                         label: child.resourceName, 
                         icon: child.icon, 
                         routerLink: child.url, 
-                        items: [] 
                     });
                 });
             }
