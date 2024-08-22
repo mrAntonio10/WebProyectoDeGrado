@@ -34,7 +34,7 @@ export class AppLoginComponent implements OnInit {
       next:
         resp => {
           if (resp) {
-            sessionStorage.setItem('token', resp.data.token);
+            localStorage.setItem('token', resp.data.token);
             this.router.navigate(['/childrens']);
           }
         },
