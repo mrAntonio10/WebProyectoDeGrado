@@ -31,8 +31,10 @@ import {AppInvoiceComponent} from './pages/app.invoice.component';
 import {AppHelpComponent} from './pages/app.help.component';
 import {BlocksComponent} from './blocks/blocks/blocks.component';
 import { PagingFilterComponent } from './pages/utils/paging-filter/paging-filter';
-import { EnterpriseComponent } from './pages/management/branchOffice/branch-office/enterprise.component';
+import { EnterpriseComponent } from './pages/management/enterprise/enterprise/enterprise.component';
 import { AdvancedFormComponent } from './pages/utils/advanced-form/advanced-form.component';
+import { BranchOfficeComponent } from './pages/management/branchOffice/branch-office/branch-office.component';
+import { CreateBranchOfficeComponent } from './pages/management/branchOffice/create-branch-office/create-branch-office.component';
 
 @NgModule({
     imports: [
@@ -45,14 +47,14 @@ import { AdvancedFormComponent } from './pages/utils/advanced-form/advanced-form
                     {path: 'management/enterprise', component: EnterpriseComponent},
                     {path: 'management/enterprise/create', component: AdvancedFormComponent},
 
-
+                    {path: 'management/branchOffice', component: BranchOfficeComponent},
+                    {path: 'management/branchOffice/create', component: CreateBranchOfficeComponent},
 
                     {path: 'uikit/formlayout', component: FormLayoutDemoComponent},
                     {path: 'uikit/floatlabel', component: FloatLabelDemoComponent},
                     {path: 'uikit/invalidstate', component: InvalidStateDemoComponent},
                     {path: 'uikit/input', component: InputDemoComponent},
                     {path: 'uikit/button', component: ButtonDemoComponent},
-                    // {path: 'uikit/table', component: PagingFilterComponent},
                     {path: 'uikit/table', component: TableDemoComponent},
                     {path: 'uikit/list', component: ListDemoComponent},
                     {path: 'uikit/tree', component: TreeDemoComponent},

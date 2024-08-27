@@ -9,7 +9,10 @@
 				<label [for]="field.formName">{{ field.label }}</label>
 				<input *ngIf="field.type === 'text'" pInputText [formControlName]="field.formName" [id]="field.formName"/>
 				<input *ngIf="field.type === 'number'" pInputText [formControlName]="field.formName" [id]="field.formName" type="number"/>
-			  </div>
+				<div *ngIf="field.type === 'boolean'">
+					<p-toggleButton [formControlName]="field.formName" [id]="field.formName" [(ngModel)]="valToggle" onLabel="Yes" offLabel="No" [style]="{'width': '34em'}"></p-toggleButton>
+				</div>
+			</div>
 			</div>
 		  </div>
 		  <button pButton type="submit" label="Crear" [disabled]="!formGroup.valid"></button>

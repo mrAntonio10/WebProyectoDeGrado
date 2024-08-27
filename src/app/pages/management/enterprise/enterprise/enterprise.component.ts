@@ -56,11 +56,19 @@ export class EnterpriseComponent implements OnInit {
   }
 
   handleActionTriggered(event: { action: string, data: IEnterprisePage }) {
-    if (event.action === 'block') {
-      this.blockEnterprise(event.data);
-    } else if (event.action === 'edit') {
-      this.editEnterprise(event.data.id);
-    }
+    switch(event.action) {
+      case 'block':
+        this.blockEnterprise(event.data);
+        break;
+
+      case 'edit':
+        this.editEnterprise(event.data.id);
+        break;
+
+      case 'branchOffice':
+        this.branchOfficesViewByIdEnterprise(event.data.id);
+        break;
+      }
   }
 
   blockEnterprise(data: IEnterprisePage) {
@@ -82,6 +90,12 @@ export class EnterpriseComponent implements OnInit {
         console.log('Acción de bloqueo cancelada');
       }
     });
+  }
+
+  branchOfficesViewByIdEnterprise(id: string) {
+    sessionStorage.setItem('idEnterprise', id);
+
+    this.router.navigate(['dashboard/management/branchOffice']);
   }
 
   editEnterprise(id: string) {
@@ -123,8 +137,8 @@ export class EnterpriseComponent implements OnInit {
       {thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false},
       {thead: 'Id', value: 'id',ttype: 'number', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
       {thead: 'Nombre', value: 'name',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre'},
-      {thead: 'Email', value: 'email', ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por email'},
-      {thead: 'Celular', value: 'phoneNumber', ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre'}
+      {thead: 'Email', value: 'email', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por email'},
+      {thead: 'Celular', value: 'phoneNumber', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'}
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);

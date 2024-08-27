@@ -1,0 +1,45 @@
+<div class="grid">
+	<div class="col-12">
+	  <div class="card">
+		<h5> Crear empresa </h5>
+		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+		  <div class="p-fluid p-formgrid grid">
+			<div class="field col-12 md:col-4">
+				<label> Nombre </label>
+				<input pInputText [formControlName]="'name'" [id]="'name'"/>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <label> Ubicación </label>
+				<input pInputText [formControlName]="'location'" [id]="'location'"/>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <label> Número telefónico </label>
+				<input pInputText [formControlName]="'phoneNumber'" [id]="'phoneNumber'"/>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <label> Id empresa </label>
+				<input pInputText [formControlName]="'idEnterprise'" [id]="'idEnterprise'" readonly/>
+			</div>
+
+            <div class="field col-12 md:col-4">	
+                <label> Facturan </label>
+                <div>
+					<p-toggleButton [formControlName]="'invoice'" [id]="'invoice'" [(ngModel)]="valToggle" onLabel="Yes" offLabel="No" ></p-toggleButton>
+				</div>
+            </div>
+
+            <div class="field col-12 md:col-4" *ngIf="valToggle">
+                <label> Código impuestos nacionales </label>
+				<input pInputText [formControlName]="'inCode'" [id]="'inCode'"/>
+            </div>
+            
+		  </div>
+		  <button pButton type="submit" label="Crear" [disabled]="!formGroup.valid"></button>
+		</form>
+	  </div>
+	</div>
+  </div>
+  

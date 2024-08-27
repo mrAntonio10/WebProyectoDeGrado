@@ -151,7 +151,9 @@ import {PhotoService} from './demo/service/photoservice';
 import {ProductService} from './demo/service/productservice';
 import {BreadcrumbService} from './app.breadcrumb.service';
 import {MenuService} from './app.menu.service';
-import { EnterpriseComponent } from './pages/management/branchOffice/branch-office/enterprise.component';
+import { EnterpriseComponent } from './pages/management/enterprise/enterprise/enterprise.component';
+import { BranchOfficeComponent } from './pages/management/branchOffice/branch-office/branch-office.component';
+import { CreateBranchOfficeComponent } from './pages/management/branchOffice/create-branch-office/create-branch-office.component';
 
 @NgModule({
     imports: [
@@ -287,7 +289,9 @@ import { EnterpriseComponent } from './pages/management/branchOffice/branch-offi
         //ADDED
         PagingFilterComponent,
         AdvancedFormComponent,
-        EnterpriseComponent
+        EnterpriseComponent,
+        BranchOfficeComponent,
+        CreateBranchOfficeComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

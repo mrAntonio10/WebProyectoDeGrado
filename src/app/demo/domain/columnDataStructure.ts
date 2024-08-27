@@ -1,6 +1,6 @@
 export interface ColumnStructure {
   thead: string;
-  ttype: 'text' | 'number' | 'date' | 'boolean' | 'actions';
+  ttype: 'text' | 'number' | 'date' | 'boolean' | 'actions' | 'verified';
   value: string;
   filterplaceholder?: string;
   hasFilter: boolean;

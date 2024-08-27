@@ -42,13 +42,23 @@
 					<ng-template pTemplate="body" let-data>
 						<tr>
 							<td *ngFor="let dt of visibleColumns" style="min-width: 12rem;">
-								<span *ngIf="dt.value === 'actions'">
-									<button pButton icon="pi pi-lock" class="p-button-danger" (click)="handleAction('block', data)"></button>
-									<button pButton icon="pi pi-pencil" class="p-button-warning" (click)="handleAction('edit', data)"></button>
-								</span>
-								<span *ngIf="dt.value !== 'actions'">
-									{{ data[dt.value] }}
-								</span>
+								<ng-container [ngSwitch]="dt.ttype">
+									<ng-container *ngSwitchCase="'actions'">
+										<button pButton icon="pi pi-lock" class="p-button-danger" (click)="handleAction('block', data)"></button>
+										<button pButton icon="pi pi-pencil" class="p-button-warning" (click)="handleAction('edit', data)"></button>
+										<button pButton icon="pi pi-building" class="p-button-success" (click)="handleAction('branchOffice', data)"></button>
+									</ng-container>
+									<ng-container *ngSwitchCase="'verified'">
+										<td class="text-center" style="min-width: 8rem;">
+											<i class="pi" [ngClass]="{'true-icon pi-check-circle text-green-500': data[dt.value], 'false-icon pi-times-circle text-pink-500 ': !data[dt.value]}"></i>
+										</td>
+									</ng-container>
+									<ng-container *ngSwitchDefault>
+										<span>
+											{{ data[dt.value] }}
+										</span>
+									</ng-container>
+								</ng-container>
 							</td>
 						</tr>
 					</ng-template>
