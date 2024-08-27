@@ -1,0 +1,72 @@
+<div>
+	<div class="grid">
+		<div class="col-12">
+			<div class="card">
+				<h5> {{title}} </h5>
+				<button pButton type="button" label="Crear" icon="pi pi-plus" class="p-button-success" (click)="navigateToCreate()"></button>
+				<hr>
+				<p-table 
+					[value]="this.value" 
+					dataKey="id"  [rows]="this.rows" 
+					[lazy]="true"
+					[totalRecords]="this.totalRecords"
+					[alwaysShowPaginator]="true"
+					(onPage)="loadData($event)" 
+					[rowsPerPageOptions]="[5, 10, 20, 50]"
+					[loading]="loading" 
+					showLoader="true"
+					[rowHover]="true" 
+					styleClass="p-datatable-gridlines" [paginator]="true" 
+					[globalFilterFields]="globalFilters" 
+					responsiveLayout="scroll"
+				>
+					<ng-template pTemplate="caption">
+						<div class="flex justify-content-between flex-column sm:flex-row">
+							<button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+							<span class="p-input-icon-left mb-2">
+								<i class="pi pi-search"></i>
+								<input pInputText type="text" #filter (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search Keyword" class="w-full"/>
+							</span>
+						</div>
+					</ng-template>
+							<ng-template pTemplate="header">
+							<tr>
+								<th *ngFor="let dt of visibleColumns">
+									<div *ngIf="dt.visible"class="flex justify-content-between align-items-center">
+										{{ dt.thead }}
+										<p-columnFilter  *ngIf="dt.hasFilter" [type]="dt.ttype" [field]="dt.value" display="menu" [placeholder]="dt.filterplaceholder"></p-columnFilter>
+									</div>
+								</th>
+							</tr>
+						</ng-template>
+					<ng-template pTemplate="body" let-data>
+						<tr>
+							<td *ngFor="let dt of visibleColumns" style="min-width: 12rem;">
+								<span *ngIf="dt.value === 'actions'">
+									<button pButton icon="pi pi-lock" class="p-button-danger" (click)="handleAction('block', data)"></button>
+									<button pButton icon="pi pi-pencil" class="p-button-warning" (click)="handleAction('edit', data)"></button>
+								</span>
+								<span *ngIf="dt.value !== 'actions'">
+									{{ data[dt.value] }}
+								</span>
+							</td>
+						</tr>
+					</ng-template>
+					
+					<ng-template pTemplate="emptymessage">
+						<tr>
+							<td colspan="7">No customers found.</td>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="loadingbody">
+						<tr>
+							<td colspan="7">Loading customers data. Please wait.</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+
+		</div>
+
+	</div>
+</div>

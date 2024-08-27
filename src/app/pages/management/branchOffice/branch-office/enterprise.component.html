@@ -1,0 +1,16 @@
+<paging-filter
+    (formSubmit)="onFormSubmit($event)"
+    (pageChange)="onPageChange($event)"
+    *ngIf="this.tableStructure && this.pageableData && this.createFormStructure" 
+    [title]="'Empresas'"
+    [principalLabel]="'Gestión'"
+    [sucessorLabel]="'Empresa'"
+    [data]="this.pageableData"
+    [globalFilters]="gobalFilters"
+    [buildCreateForm]="createFormStructure"
+    [dataStructure]="this.tableStructure"
+    (actionTriggered)="handleActionTriggered($event)"
+    > </paging-filter>
+
+    <p-confirmDialog></p-confirmDialog>
+

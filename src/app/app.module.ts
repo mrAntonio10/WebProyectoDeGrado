@@ -110,6 +110,12 @@ import {AppLoginComponent} from './pages/login/app.login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { PagingFilterComponent } from './pages/utils/paging-filter/paging-filter';
+import { AdvancedFormComponent } from './pages/utils/advanced-form/advanced-form.component';
+
+import { ConfirmationService } from 'primeng/api'; 
+
+
 
 // Demo pages
 import {DashboardComponent} from './demo/view/dashboard.component';
@@ -145,6 +151,7 @@ import {PhotoService} from './demo/service/photoservice';
 import {ProductService} from './demo/service/productservice';
 import {BreadcrumbService} from './app.breadcrumb.service';
 import {MenuService} from './app.menu.service';
+import { EnterpriseComponent } from './pages/management/branchOffice/branch-office/enterprise.component';
 
 @NgModule({
     imports: [
@@ -277,8 +284,12 @@ import {MenuService} from './app.menu.service';
         AppAccessdeniedComponent,
         BlocksComponent,
         BlockViewer,
+        //ADDED
+        PagingFilterComponent,
+        AdvancedFormComponent,
+        EnterpriseComponent
     ],
-    providers: [
+    providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, BreadcrumbService,

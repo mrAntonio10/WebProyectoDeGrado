@@ -1,0 +1,20 @@
+<div class="grid" *ngIf="formConfig">
+	<div class="col-12">
+	  <div class="card">
+		<h5>{{ formConfig.title }}</h5>
+		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+		  <div class="p-fluid p-formgrid grid">
+			<div *ngFor="let field of formConfig.data" [ngClass]="field.md_col">
+			  <div class="field">
+				<label [for]="field.formName">{{ field.label }}</label>
+				<input *ngIf="field.type === 'text'" pInputText [formControlName]="field.formName" [id]="field.formName"/>
+				<input *ngIf="field.type === 'number'" pInputText [formControlName]="field.formName" [id]="field.formName" type="number"/>
+			  </div>
+			</div>
+		  </div>
+		  <button pButton type="submit" label="Crear" [disabled]="!formGroup.valid"></button>
+		</form>
+	  </div>
+	</div>
+  </div>
+  

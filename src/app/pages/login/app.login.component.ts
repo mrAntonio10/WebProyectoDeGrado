@@ -35,7 +35,7 @@ export class AppLoginComponent implements OnInit {
         resp => {
           if (resp) {
             localStorage.setItem('token', resp.data.token);
-            this.router.navigate(['/childrens']);
+            this.router.navigate(['/dashboard']);
           }
         },
       error: err => {

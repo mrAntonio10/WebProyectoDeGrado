@@ -30,19 +30,29 @@ import {AppTimelineDemoComponent} from './pages/app.timelinedemo.component';
 import {AppInvoiceComponent} from './pages/app.invoice.component';
 import {AppHelpComponent} from './pages/app.help.component';
 import {BlocksComponent} from './blocks/blocks/blocks.component';
+import { PagingFilterComponent } from './pages/utils/paging-filter/paging-filter';
+import { EnterpriseComponent } from './pages/management/branchOffice/branch-office/enterprise.component';
+import { AdvancedFormComponent } from './pages/utils/advanced-form/advanced-form.component';
 
 @NgModule({
     imports: [
         RouterModule.forRoot([
             {
-                path: 'childrens', component: AppMainComponent,
+                path: 'dashboard', component: AppMainComponent,
                 children: [
                     {path: '', component: DashboardComponent},
+                     //Management
+                    {path: 'management/enterprise', component: EnterpriseComponent},
+                    {path: 'management/enterprise/create', component: AdvancedFormComponent},
+
+
+
                     {path: 'uikit/formlayout', component: FormLayoutDemoComponent},
                     {path: 'uikit/floatlabel', component: FloatLabelDemoComponent},
                     {path: 'uikit/invalidstate', component: InvalidStateDemoComponent},
                     {path: 'uikit/input', component: InputDemoComponent},
                     {path: 'uikit/button', component: ButtonDemoComponent},
+                    // {path: 'uikit/table', component: PagingFilterComponent},
                     {path: 'uikit/table', component: TableDemoComponent},
                     {path: 'uikit/list', component: ListDemoComponent},
                     {path: 'uikit/tree', component: TreeDemoComponent},
