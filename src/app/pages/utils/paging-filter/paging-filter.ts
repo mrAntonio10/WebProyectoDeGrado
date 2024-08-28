@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef, Input, Output, EventEmitter, SimpleChanges  } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef, Input, Output, EventEmitter, SimpleChanges, OnDestroy  } from '@angular/core';
 import { Customer, Representative } from 'src/app/demo/domain/customer';
 import { CustomerService } from 'src/app/demo/service/customerservice';
 import { ProductService } from 'src/app/demo/service/productservice';
@@ -62,7 +62,7 @@ export class PagingFilterComponent implements OnInit {
         private confirmService: ConfirmationService, 
         private cd: ChangeDetectorRef,
         private router: Router,
-        private activeRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute
         ) {
     }
 
@@ -112,14 +112,13 @@ export class PagingFilterComponent implements OnInit {
     }
 
     navigateToCreate() {
-        this.activeRoute.url.subscribe(urlSegments => {
+        this.activatedRoute.url.subscribe(urlSegments => {
             const fullPath = urlSegments.map(segment => segment.path).join('/');
-
             sessionStorage.setItem('fullPath', fullPath);
 
-            this.router.navigate([`/dashboard/${fullPath}/create`], { 
-                state: { formConfig: this.buildCreateForm } 
-            });
+            localStorage.setItem('dinamicFormConfig', JSON.stringify({...this.buildCreateForm, action: 'create'}));
+
+            this.router.navigate([`/dashboard/${fullPath}/create`]);
           });
     }
 

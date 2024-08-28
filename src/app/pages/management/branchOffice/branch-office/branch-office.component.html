@@ -1,13 +1,11 @@
 <paging-filter
-    (formSubmit)="onFormSubmit($event)"
     (pageChange)="onPageChange($event)"
-    *ngIf="this.tableStructure && this.pageableData && this.createFormStructure" 
+    *ngIf="this.tableStructure && this.pageableData" 
     [title]="'Sucursales'"
     [principalLabel]="'Gestión'"
     [sucessorLabel]="'Sucursales'"
     [data]="this.pageableData"
     [globalFilters]="gobalFilters"
-    [buildCreateForm]="createFormStructure"
     [dataStructure]="this.tableStructure"
     (actionTriggered)="handleActionTriggered($event)"
     > </paging-filter>

@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import {Observable} from "rxjs";
 
 import { environment } from 'src/environments/environment';
-import { ICreateBranchOffice } from 'src/app/model/branchOffice/branchOffice';
+import { ICreateBranchOffice, IUpdateBranchOffice } from 'src/app/model/branchOffice/branchOffice';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,10 @@ export class BranchOfficeService {
 
   createBranchOffice(branchOfficeObj: ICreateBranchOffice): Observable<any> {
     return this.httpClient.post(`${this.apiUrl}/api/v1/branch-offices`, branchOfficeObj);
+  }
+
+  updateBranchOffice(branchOfficeObj: IUpdateBranchOffice): Observable<any> {
+    return this.httpClient.put(`${this.apiUrl}/api/v1/branch-offices`, branchOfficeObj);
   }
 
   deleteBranchOffice(idBranchOffice: string): Observable<any> {

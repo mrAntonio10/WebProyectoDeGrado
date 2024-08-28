@@ -1,22 +1,22 @@
 <div class="grid">
 	<div class="col-12">
 	  <div class="card">
-		<h5> Crear empresa </h5>
+		<h5> {{ this.buttonValue }} empresa </h5>
 		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
 		  <div class="p-fluid p-formgrid grid">
 			<div class="field col-12 md:col-4">
 				<label> Nombre </label>
-				<input pInputText [formControlName]="'name'" [id]="'name'"/>
+				<input pInputText [formControlName]="'name'" [id]="'name'" maxlength="120"/>
             </div>
 
             <div class="field col-12 md:col-4">
                 <label> Ubicación </label>
-				<input pInputText [formControlName]="'location'" [id]="'location'"/>
+				<input pInputText [formControlName]="'location'" [id]="'location'" maxlength="255"/>
             </div>
 
             <div class="field col-12 md:col-4">
                 <label> Número telefónico </label>
-				<input pInputText [formControlName]="'phoneNumber'" [id]="'phoneNumber'"/>
+				<input pInputText [formControlName]="'phoneNumber'" [id]="'phoneNumber'" maxlength="20"/>
             </div>
 
             <div class="field col-12 md:col-4">
@@ -27,17 +27,22 @@
             <div class="field col-12 md:col-4">	
                 <label> Facturan </label>
                 <div>
-					<p-toggleButton [formControlName]="'invoice'" [id]="'invoice'" [(ngModel)]="valToggle" onLabel="Yes" offLabel="No" ></p-toggleButton>
+					<p-toggleButton [formControlName]="'invoice'" [id]="'invoice'" [(ngModel)]="valToggle" onLabel="Si" offLabel="No" ></p-toggleButton>
 				</div>
             </div>
 
             <div class="field col-12 md:col-4" *ngIf="valToggle">
                 <label> Código impuestos nacionales </label>
-				<input pInputText [formControlName]="'inCode'" [id]="'inCode'"/>
+				<input pInputText [formControlName]="'inCode'" [id]="'inCode'" maxlength="255"/>
+            </div>
+
+			<div class="field col-12 md:col-4" *ngIf="this.componentBehaviour === 'update'">	
+                <label> Estado </label>
+				<p-dropdown [formControlName]="'state'" [id]="'state'" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
             </div>
             
 		  </div>
-		  <button pButton type="submit" label="Crear" [disabled]="!formGroup.valid"></button>
+		  <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
 		</form>
 	  </div>
 	</div>

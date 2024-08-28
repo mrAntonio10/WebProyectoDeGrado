@@ -1,7 +1,6 @@
 <paging-filter
-    (formSubmit)="onFormSubmit($event)"
     (pageChange)="onPageChange($event)"
-    *ngIf="this.tableStructure && this.pageableData && this.createFormStructure" 
+    *ngIf="this.tableStructure && this.pageableData" 
     [title]="'Empresas'"
     [principalLabel]="'Gestión'"
     [sucessorLabel]="'Empresas'"

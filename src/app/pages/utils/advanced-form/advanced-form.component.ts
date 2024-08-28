@@ -7,8 +7,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 @Component({
     templateUrl: './advanced-form.component.html'
 })
-export class AdvancedFormComponent implements OnInit {
-    @Input() formConfig: FormConfig;
+export class AdvancedFormComponent implements OnInit, OnDestroy {
+    formConfig: FormConfig;
     @Output() formSubmit: EventEmitter<any> = new EventEmitter();
   
     formGroup: FormGroup;
@@ -25,12 +25,17 @@ export class AdvancedFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.formGroup = this.buildForm();
+        this.formGroup = this.buildDinamicForm();
     }
 
-    buildForm(): FormGroup {
+    ngOnDestroy(): void {
+            localStorage.removeItem('dinamicFormConfig');
+            sessionStorage.removeItem('fullPath');
+    }
+
+    buildDinamicForm(): FormGroup {
         const group = this.fb.group({});
-        this.formConfig = history.state.formConfig;
+        this.formConfig = JSON.parse(localStorage.getItem('dinamicFormConfig')); 
 
         this.formConfig.data.forEach(field => {
           group.addControl(
@@ -45,10 +50,7 @@ export class AdvancedFormComponent implements OnInit {
       submitForm() {
         if (this.formGroup.valid) {
             const fullPathData = sessionStorage.getItem('fullPath');
-            sessionStorage.removeItem('fullPath');
 
-                console.log("full path", fullPathData);
-    
                 sessionStorage.setItem('formData', JSON.stringify(this.formGroup.value));
                 this.router.navigate([`/dashboard/${fullPathData}`]);
                 

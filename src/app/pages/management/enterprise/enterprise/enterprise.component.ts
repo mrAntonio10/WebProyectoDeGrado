@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { ColumnStructure } from 'src/app/demo/domain/columnDataStructure';
 import { ICreateEnterprise, IEnterprise, IEnterprisePage } from 'src/app/model/enterprise/enterprise';
@@ -15,7 +15,7 @@ import { ConfirmationService } from 'primeng/api';
   templateUrl: './enterprise.component.html',
   styleUrls: ['./enterprise.component.scss']
 })
-export class EnterpriseComponent implements OnInit {
+export class EnterpriseComponent implements OnInit, OnDestroy {
 
   pageableData: IEnterprisePage;
   tableStructure: ColumnStructure[];
@@ -45,6 +45,10 @@ export class EnterpriseComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    sessionStorage.removeItem('formData');
+  }
+
   private getEnterprisesPageableData(params: any = { page: 0, size: 5 }) {
     let enterpriseObservable = this.enterpriseService.getEnterprisePageable(params);
 
@@ -62,7 +66,7 @@ export class EnterpriseComponent implements OnInit {
         break;
 
       case 'edit':
-        this.editEnterprise(event.data.id);
+        this.buildEditEnterprise(event.data.id);
         break;
 
       case 'branchOffice':
@@ -98,7 +102,7 @@ export class EnterpriseComponent implements OnInit {
     this.router.navigate(['dashboard/management/branchOffice']);
   }
 
-  editEnterprise(id: string) {
+  buildEditEnterprise(id: string) {
     let enterpriseObservable = this.enterpriseService.getEnterpriseById(id);
 
     let enterpriseData: IEnterprise;

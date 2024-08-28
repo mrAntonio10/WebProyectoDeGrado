@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ColumnStructure, FormConfig } from 'src/app/demo/domain/columnDataStructure';
-import { IBranchOffice, IBranchOfficePage, ICreateBranchOffice,  } from 'src/app/model/branchOffice/branchOffice';
-import { Router } from '@angular/router';
+import { IBranchOffice, IBranchOfficePage, ICreateBranchOffice, IUpdateBranchOffice,  } from 'src/app/model/branchOffice/branchOffice';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { BranchOfficeService } from 'src/app/services/branchOffice/branchOffice.service';
 import { forkJoin } from 'rxjs';
@@ -10,20 +10,21 @@ import { forkJoin } from 'rxjs';
   templateUrl: './branch-office.component.html',
   styleUrls: ['./branch-office.component.scss']
 })
-export class BranchOfficeComponent implements OnInit {
+export class BranchOfficeComponent implements OnInit, OnDestroy {
   pageableData: IBranchOfficePage;
   tableStructure: ColumnStructure[];
   gobalFilters;
 
   createFormStructure: FormConfig;
   submittedData: any;
-  formData: ICreateBranchOffice;
+  formData: any;
 
   idEnterprise: string;
 
   constructor(private router: Router,
     private confirmationService: ConfirmationService,
-    private branchOfficeService: BranchOfficeService) {
+    private branchOfficeService: BranchOfficeService,
+    private activatedRoute: ActivatedRoute) {
 
   }
 
@@ -33,14 +34,18 @@ export class BranchOfficeComponent implements OnInit {
      //TODO get privileges...
      this.buildPageStructure();
      this.getBranchOfficePageableData(this.idEnterprise);
-     this.buildCreateForm();
  
      this.formData =  JSON.parse(sessionStorage.getItem('formData'));
  
-     if (!!this.formData) {
-         this.submitCreateBranchOffice(this.formData);
-     }
+     if (this?.formData?.action === 'create') this.submitCreateBranchOffice(this.formData);
+     if (this?.formData?.action === 'update') this.submitUpdateBranchOffice(this.formData);
+
   }
+
+  ngOnDestroy(): void {
+    sessionStorage.removeItem('formData');
+  }
+
 
   private getBranchOfficePageableData(idEnterprise: String, params: any = { page: 0, size: 5, idEnterprise: idEnterprise}) {
     let branchOfficeObservable = this.branchOfficeService.getBranchOfficePageable(params);
@@ -59,7 +64,7 @@ export class BranchOfficeComponent implements OnInit {
         break;
 
       case 'edit':
-        this.editBranchOffice(event.data.id);
+        this.buildEditBranchOffice(event.data.id);
         break;
 
       }
@@ -86,40 +91,24 @@ export class BranchOfficeComponent implements OnInit {
     });
   }
 
-  editBranchOffice(id: string) {
-    let branchOfficeObservable = this.branchOfficeService.getBranchOfficeseById(id);
+  buildEditBranchOffice(id: string) {
 
-    let branchOfficeData: IBranchOffice;
-    forkJoin([branchOfficeObservable]).subscribe(
-        ([branchOffice]) => {
-            branchOfficeData = branchOffice.data;
-        }
-    );
+    this.activatedRoute.url.subscribe(urlSegments => {
+      const fullPath = urlSegments.map(segment => segment.path).join('/');
+      sessionStorage.setItem('fullPath', fullPath);
 
-    // this.createFormStructure = {
-    //   title: 'Crear empresa',  data: [
-    //     { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', formValue: branchOfficeData.name },
-    //     { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', formValue: branchOfficeData.email },
-    //     { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', formValue: branchOfficeData.description },
-    //     { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', formValue: branchOfficeData.phoneNumber},
-    //   ]
-    // };
+      let branchOfficeObservable = this.branchOfficeService.getBranchOfficeseById(id);
+
+      let branchOfficeData: IBranchOffice;
+      forkJoin([branchOfficeObservable]).subscribe(
+          ([branchOffice]) => {
+              branchOfficeData = { ...branchOffice.data, action : 'update' };
+              localStorage.setItem('dinamicFormConfig', JSON.stringify(branchOfficeData));
+              this.router.navigate(['/dashboard/management/branchOffice/create']);
+          }
+      );
+    });
   }
-
-  buildCreateForm() {
-    // Estructura del formulario de creación
-    this.createFormStructure = {
-      title: 'Crear sucursal',  data: [
-        { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name' },
-        { md_col: 'md:col-4', label: 'Ubicación', type: 'text', formName: 'location' },
-        { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber'},
-        { md_col: 'md:col-4', label: 'Id empresa', type: 'text', formName: 'idEnterprise' },
-        { md_col: 'md:col-4', label: 'Facturan', type: 'boolean', formName: 'invoice' },
-        { md_col: 'md:col-4', label: 'Código impuestos nacionales', type: 'text', formName: 'inCode' },
-      ]
-    };
-  }
-
 
   private buildPageStructure() {
     this.tableStructure = [
@@ -143,6 +132,17 @@ export class BranchOfficeComponent implements OnInit {
 
   submitCreateBranchOffice(submittedData: ICreateBranchOffice) {
     let createObservable = this.branchOfficeService.createBranchOffice(submittedData);
+
+    forkJoin([createObservable]).subscribe(
+      ([created]) => {
+        sessionStorage.removeItem('formData');
+        this.ngOnInit(); 
+      }
+    )
+  }
+
+  submitUpdateBranchOffice(submittedData: IUpdateBranchOffice) {
+    let createObservable = this.branchOfficeService.updateBranchOffice(submittedData);
 
     forkJoin([createObservable]).subscribe(
       ([created]) => {

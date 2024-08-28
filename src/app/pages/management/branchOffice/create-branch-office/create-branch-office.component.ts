@@ -1,17 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { BreadcrumbService } from 'src/app/app.breadcrumb.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { IBranchOffice } from 'src/app/model/branchOffice/branchOffice';
 
 @Component({
   selector: 'app-create-branch-office',
   templateUrl: './create-branch-office.component.html',
 })
-export class CreateBranchOfficeComponent implements OnInit {
+export class CreateBranchOfficeComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup;
+  formValue: IBranchOffice;
+
   valToggle = false;
+
+  buttonValue: string;
+  componentBehaviour: string;
+
+  selectedState = null;
+  states = [
+    {name: 'Activa', code: 'ACTIVE'},
+    {name: 'Bloqueada', code: 'BLOCKED'},
+    {name: 'Eliminada', code: 'DELETED'},
+  ];
   
     constructor(private breadcrumbService: BreadcrumbService,
         private fb: FormBuilder, 
@@ -25,18 +38,31 @@ export class CreateBranchOfficeComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.formValue = JSON.parse(localStorage.getItem('dinamicFormConfig'));
+        this.componentBehaviour = JSON.parse(localStorage.getItem('dinamicFormConfig')).action;
+
+        (this.componentBehaviour === 'update' ? this.buttonValue = 'Actualizar' : this.buttonValue = 'Crear');
+
         this.formGroup = this.buildForm();
     }
 
+    ngOnDestroy(): void {
+      localStorage.removeItem('dinamicFormConfig');
+    }
+
     buildForm(): FormGroup {
+        this.selectedState = this.formValue?.state;
+
         const group = this.fb.group({});
 
-          group.addControl('name', this.fb.control('', Validators.required));
-          group.addControl('location', this.fb.control('', Validators.required));
-          group.addControl('phoneNumber', this.fb.control('', Validators.required));
+          group.addControl('id', this.fb.control((!!this.formValue?.id ? this.formValue?.id : '')));
+          group.addControl('name', this.fb.control((!!this.formValue?.name ? this.formValue?.name : ''), Validators.required));
+          group.addControl('location', this.fb.control((!!this.formValue?.location ? this.formValue?.location : ''), Validators.required));
+          group.addControl('phoneNumber', this.fb.control((!!this.formValue?.phoneNumber ? this.formValue?.phoneNumber : ''), Validators.required));
           group.addControl('idEnterprise', this.fb.control( sessionStorage.getItem('idEnterprise'), Validators.required));
-          group.addControl('invoice', this.fb.control('', Validators.required));
-          group.addControl('inCode', this.fb.control(''));
+          group.addControl('invoice', this.fb.control((!!this.formValue?.invoice ? this.valToggle = this.formValue?.invoice : ''), Validators.required));
+          group.addControl('inCode', this.fb.control((!!this.formValue?.inCode ? this.formValue?.inCode : '')));
+          group.addControl('state', this.fb.control((!!this.formValue?.state ? this.selectedState : '')));
 
         return group;
       }
@@ -48,7 +74,7 @@ export class CreateBranchOfficeComponent implements OnInit {
 
                 console.log("full path", fullPathData);
     
-                sessionStorage.setItem('formData', JSON.stringify(this.formGroup.value));
+                sessionStorage.setItem('formData', JSON.stringify({...this.formGroup.value, action: this.componentBehaviour}));
                 this.router.navigate([`/dashboard/${fullPathData}`]);
                 
         }
