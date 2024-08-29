@@ -10,11 +10,12 @@ export interface ColumnStructure {
 export interface FieldConfig {
   md_col: string;
   label: string;
-  type: 'text' | 'number' | 'date' | 'boolean';
+  type: 'text' | 'number' | 'date' | 'boolean' | 'select';
   formName: string;
   validator?: string;
   message?: string;
   formValue?: any;
+  visible?: boolean;
 }
 
 export interface FormConfig {

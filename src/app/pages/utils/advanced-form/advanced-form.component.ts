@@ -12,6 +12,18 @@ export class AdvancedFormComponent implements OnInit, OnDestroy {
     @Output() formSubmit: EventEmitter<any> = new EventEmitter();
   
     formGroup: FormGroup;
+
+    formValue;
+
+    buttonValue: string;
+    componentBehaviour: string;
+
+    selectedState = null;
+    states = [
+        {name: 'Activa', code: 'ACTIVE'},
+        {name: 'Bloqueada', code: 'BLOCKED'},
+        {name: 'Eliminada', code: 'DELETED'},
+    ];
   
     constructor(private breadcrumbService: BreadcrumbService,
         private fb: FormBuilder, 
@@ -34,6 +46,9 @@ export class AdvancedFormComponent implements OnInit, OnDestroy {
     }
 
     buildDinamicForm(): FormGroup {
+        this.componentBehaviour = JSON.parse(localStorage.getItem('dinamicFormConfig')).action;
+        (this.componentBehaviour === 'update' ? this.buttonValue = 'Actualizar' : this.buttonValue = 'Crear');
+
         const group = this.fb.group({});
         this.formConfig = JSON.parse(localStorage.getItem('dinamicFormConfig')); 
 
@@ -44,6 +59,7 @@ export class AdvancedFormComponent implements OnInit, OnDestroy {
                 Validators.required)
           );
         });
+
         return group;
       }
     
@@ -51,7 +67,7 @@ export class AdvancedFormComponent implements OnInit, OnDestroy {
         if (this.formGroup.valid) {
             const fullPathData = sessionStorage.getItem('fullPath');
 
-                sessionStorage.setItem('formData', JSON.stringify(this.formGroup.value));
+                sessionStorage.setItem('formData', JSON.stringify({...this.formGroup.value, action: this.componentBehaviour}));
                 this.router.navigate([`/dashboard/${fullPathData}`]);
                 
         }

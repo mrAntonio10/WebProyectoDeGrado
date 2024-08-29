@@ -6,12 +6,21 @@ export interface IEnterprisePage {
 }
 
 export interface ICreateEnterprise {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    description: string;
+    logo: string;
+}
+
+export interface IUpdateEnterprise {
     id: string;
     name: string;
     email: string;
     phoneNumber: string;
     description: string;
     logo: string;
+    state: string;
 }
 
 export interface IEnterprise {

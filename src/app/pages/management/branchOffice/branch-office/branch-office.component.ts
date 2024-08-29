@@ -92,7 +92,6 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
   }
 
   buildEditBranchOffice(id: string) {
-
     this.activatedRoute.url.subscribe(urlSegments => {
       const fullPath = urlSegments.map(segment => segment.path).join('/');
       sessionStorage.setItem('fullPath', fullPath);

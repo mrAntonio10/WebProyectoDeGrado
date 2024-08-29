@@ -4,9 +4,10 @@ import { ColumnStructure } from 'src/app/demo/domain/columnDataStructure';
 import { ICreateEnterprise, IEnterprise, IEnterprisePage } from 'src/app/model/enterprise/enterprise';
 import { EnterpriseService } from 'src/app/services/enterprise/enterprise.service';
 import { FormConfig } from 'src/app/demo/domain/columnDataStructure';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ConfirmationService } from 'primeng/api'; 
+import { IUpdateEnterprise } from 'src/app/model/enterprise/enterprise';
 
 
 
@@ -23,11 +24,12 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
 
   createFormStructure: FormConfig;
   submittedData: any;
-  formData: ICreateEnterprise;
+  formData;
 
   constructor(private enterpriseService: EnterpriseService,
     private router: Router,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private activatedRoute: ActivatedRoute
   ) {
 
   }
@@ -40,9 +42,9 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
 
     this.formData =  JSON.parse(sessionStorage.getItem('formData'));
 
-    if (!!this.formData) {
-        this.submitCreateEnterprise(this.formData);
-    }
+    if (this?.formData?.action === 'create') this.submitCreateEnterprise(this.formData);
+     if (this?.formData?.action === 'update') this.submitUpdateEnterprise(this.formData);
+
   }
 
   ngOnDestroy(): void {
@@ -103,33 +105,40 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
   }
 
   buildEditEnterprise(id: string) {
-    let enterpriseObservable = this.enterpriseService.getEnterpriseById(id);
+    this.activatedRoute.url.subscribe(urlSegments => {
+      const fullPath = urlSegments.map(segment => segment.path).join('/');
+      sessionStorage.setItem('fullPath', fullPath);
 
-    let enterpriseData: IEnterprise;
-    forkJoin([enterpriseObservable]).subscribe(
-        ([enterprise]) => {
-            enterpriseData = enterprise.data;
-        }
-    );
+      let enterpriseObservable = this.enterpriseService.getEnterpriseById(id);
 
-    this.createFormStructure = {
-      title: 'Crear empresa',  data: [
-        { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', formValue: enterpriseData.name },
-        { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', formValue: enterpriseData.email },
-        { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', formValue: enterpriseData.description },
-        { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', formValue: enterpriseData.phoneNumber},
-      ]
-    };
+      forkJoin([enterpriseObservable]).subscribe(
+          ([enterprise]) => {
+
+            this.createFormStructure = {
+              title: 'Actualizar empresa',  data: [
+                { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', formValue: enterprise.data.name, visible: true },
+                { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', formValue: enterprise.data.email, visible: true },
+                { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', formValue: enterprise.data.description, visible: true },
+                { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', formValue: enterprise.data.phoneNumber, visible: true },
+                { md_col: 'md:col-4', label: 'Estado', type: 'select', formName: 'state', formValue: enterprise.data.state, visible: true },
+                { md_col: 'md:col-4', label: 'Id', type: 'text', formName: 'id', formValue: enterprise.data.id, visible: false },
+               ]
+            };
+              localStorage.setItem('dinamicFormConfig', JSON.stringify({...this.createFormStructure, action: 'update'}));
+              this.router.navigate(['/dashboard/management/enterprise/create']);
+          }
+      );
+    });
   }
 
   buildCreateForm() {
     // Estructura del formulario de creación
     this.createFormStructure = {
       title: 'Crear empresa',  data: [
-        { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name' },
-        { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email' },
-        { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description' },
-        { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber'},
+        { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', visible: true },
+        { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', visible: true },
+        { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', visible: true },
+        { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', visible: true},
       ]
     };
   }
@@ -159,6 +168,17 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
 
     forkJoin([createObservable]).subscribe(
       ([created]) => {
+        sessionStorage.removeItem('formData');
+        this.ngOnInit(); 
+      }
+    )
+  }
+
+  submitUpdateEnterprise(submittedData: IUpdateEnterprise) {
+    let createObservable = this.enterpriseService.updateEnterprise(submittedData);
+
+    forkJoin([createObservable]).subscribe(
+      ([updated]) => {
         sessionStorage.removeItem('formData');
         this.ngOnInit(); 
       }

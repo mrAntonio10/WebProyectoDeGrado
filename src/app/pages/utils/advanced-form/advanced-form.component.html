@@ -4,18 +4,21 @@
 		<h5>{{ formConfig.title }}</h5>
 		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
 		  <div class="p-fluid p-formgrid grid">
-			<div *ngFor="let field of formConfig.data" [ngClass]="field.md_col">
-			  <div class="field">
+			<div *ngFor="let field of formConfig.data" [ngClass]="field.md_col" >
+			  <div class="field" *ngIf="field.visible" >
 				<label [for]="field.formName">{{ field.label }}</label>
 				<input *ngIf="field.type === 'text'" pInputText [formControlName]="field.formName" [id]="field.formName"/>
 				<input *ngIf="field.type === 'number'" pInputText [formControlName]="field.formName" [id]="field.formName" type="number"/>
 				<div *ngIf="field.type === 'boolean'">
 					<p-toggleButton [formControlName]="field.formName" [id]="field.formName" [(ngModel)]="valToggle" onLabel="Yes" offLabel="No" [style]="{'width': '34em'}"></p-toggleButton>
 				</div>
+				<div *ngIf="field.type === 'select'">
+					<p-dropdown [formControlName]="field.formName" [id]="field.formName" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="field.formValue"></p-dropdown>
+				</div>
 			</div>
 			</div>
 		  </div>
-		  <button pButton type="submit" label="Crear" [disabled]="!formGroup.valid"></button>
+		  <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
 		</form>
 	  </div>
 	</div>
