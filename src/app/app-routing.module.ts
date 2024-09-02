@@ -35,6 +35,7 @@ import { EnterpriseComponent } from './pages/management/enterprise/enterprise/en
 import { AdvancedFormComponent } from './pages/utils/advanced-form/advanced-form.component';
 import { BranchOfficeComponent } from './pages/management/branchOffice/branch-office/branch-office.component';
 import { CreateBranchOfficeComponent } from './pages/management/branchOffice/create-branch-office/create-branch-office.component';
+import { PermissionsComponent } from './pages/settings/permissions/permissions.component';
 
 @NgModule({
     imports: [
@@ -49,6 +50,10 @@ import { CreateBranchOfficeComponent } from './pages/management/branchOffice/cre
 
                     {path: 'management/branchOffice', component: BranchOfficeComponent},
                     {path: 'management/branchOffice/create', component: CreateBranchOfficeComponent},
+
+
+                    //configuration settings
+                    {path: 'configuration/permission', component: PermissionsComponent},
 
                     {path: 'uikit/formlayout', component: FormLayoutDemoComponent},
                     {path: 'uikit/floatlabel', component: FloatLabelDemoComponent},

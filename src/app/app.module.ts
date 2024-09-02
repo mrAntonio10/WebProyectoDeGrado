@@ -154,6 +154,7 @@ import {MenuService} from './app.menu.service';
 import { EnterpriseComponent } from './pages/management/enterprise/enterprise/enterprise.component';
 import { BranchOfficeComponent } from './pages/management/branchOffice/branch-office/branch-office.component';
 import { CreateBranchOfficeComponent } from './pages/management/branchOffice/create-branch-office/create-branch-office.component';
+import { PermissionsComponent } from './pages/settings/permissions/permissions.component';
 
 @NgModule({
     imports: [
@@ -291,7 +292,8 @@ import { CreateBranchOfficeComponent } from './pages/management/branchOffice/cre
         AdvancedFormComponent,
         EnterpriseComponent,
         BranchOfficeComponent,
-        CreateBranchOfficeComponent
+        CreateBranchOfficeComponent,
+        PermissionsComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

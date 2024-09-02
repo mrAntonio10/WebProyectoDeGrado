@@ -1,0 +1,25 @@
+<div class="grid">
+	<div class="col-12">
+		<div class="card" *ngIf="this.permissions">
+			<h5>Advanced</h5>
+            <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+            <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-4">	
+                        <label> Rol </label>
+                        <p-dropdown [formControlName]="'idRol'" [id]="'idRol'" [options]="permissions" optionLabel="name" optionValue="code" [(ngModel)]="selectedRole"></p-dropdown>
+                </div>
+            </div>
+            <button pButton type="submit" label="Buscar" style="width: 75px;"></button>
+            </form>
+            <hr>
+            <div *ngIf="permissionList && permissionList.length > 0">
+                <div *ngFor="let value of permissionList">
+                    <h5>{{ value.resourceName }}</h5>
+                    <div *ngFor="let operation of value.operationDtoList">
+                        <h6 style="padding: 10px;"> {{ operation.name }} </h6>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
