@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ConfirmationService } from 'primeng/api'; 
 import { IUpdateEnterprise } from 'src/app/model/enterprise/enterprise';
+import { PermissionService } from 'src/app/services/permission/permission.service';
 
 
 
@@ -23,22 +24,22 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
   gobalFilters;
 
   createFormStructure: FormConfig;
+  isVisibleCreate = false;
   submittedData: any;
   formData;
 
   constructor(private enterpriseService: EnterpriseService,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private permissionService: PermissionService
   ) {
 
   }
 
   ngOnInit(): void {
-    //TODO get privileges...
     this.buildPageStructure();
-    this.getEnterprisesPageableData();
-    this.buildCreateForm();
+    this.getEnterprisePermissions();
 
     this.formData =  JSON.parse(sessionStorage.getItem('formData'));
 
@@ -71,10 +72,32 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
         this.buildEditEnterprise(event.data.id);
         break;
 
-      case 'branchOffice':
+      case 'viewMore':
         this.branchOfficesViewByIdEnterprise(event.data.id);
         break;
       }
+  }
+
+  getEnterprisePermissions() {
+    let permissionsObservable = this.permissionService.getPermissionsByResourceUrl("/enterprise");
+
+    forkJoin([permissionsObservable]).subscribe(
+      ([permission]) => {
+        console.log("PERMISOS ", permission.data);
+
+        permission.data.forEach(permission => {
+          switch (permission.permissionName) {
+            case 'VIEW':
+              this.getEnterprisesPageableData();
+              break;
+            case 'CREATE':
+              this.buildCreateForm();
+              this.isVisibleCreate = true;
+              break;
+          }
+        });
+      }
+    )
   }
 
   blockEnterprise(data: IEnterprisePage) {

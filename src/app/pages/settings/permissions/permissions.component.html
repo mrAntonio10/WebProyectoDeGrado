@@ -1,7 +1,7 @@
 <div class="grid">
 	<div class="col-12">
 		<div class="card" *ngIf="this.permissions">
-			<h5>Advanced</h5>
+			<h5>Permisos</h5>
             <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12 md:col-4">	
@@ -15,11 +15,20 @@
             <div *ngIf="permissionList && permissionList.length > 0">
                 <div *ngFor="let value of permissionList">
                     <h5>{{ value.resourceName }}</h5>
+                    <hr>
                     <div *ngFor="let operation of value.operationDtoList">
-                        <h6 style="padding: 10px;"> {{ operation.name }} </h6>
+                        <span style="display: flex; justify-content: space-between; align-items: center;"> 
+                            {{ operation.name }}       
+                            <button pButton type="button" (click)="getPermissionById(operation.id)" icon="pi pi-arrow-left" class="p-button-warning mr-2"></button>
+                        </span>
+                        <hr>
                     </div>
                 </div>
             </div>
+
+            <p-sidebar [(visible)]="isVisibleSideBar" position="right"  [style]="{width:'35em'}" [baseZIndex]="10000">
+                <h3 style="font-weight:normal">Permiso </h3>
+            </p-sidebar>
 		</div>
 	</div>
 </div>

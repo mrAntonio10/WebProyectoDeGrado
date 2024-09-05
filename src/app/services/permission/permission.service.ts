@@ -18,4 +18,8 @@ export class PermissionService {
     return this.httpClient.post<any>(`${this.apiUrl}/api/v1/permissions`, idRol);
   }
 
+  getPermissionsByResourceUrl(url: string): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/permissions${url}`);
+  }
+
 }

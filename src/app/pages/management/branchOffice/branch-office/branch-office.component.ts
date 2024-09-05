@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { BranchOfficeService } from 'src/app/services/branchOffice/branchOffice.service';
 import { forkJoin } from 'rxjs';
+import { PermissionService } from 'src/app/services/permission/permission.service';
 @Component({
   selector: 'app-branch-office',
   templateUrl: './branch-office.component.html',
@@ -16,6 +17,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
   gobalFilters;
 
   createFormStructure: FormConfig;
+  isVisibleCreate = false;
   submittedData: any;
   formData: any;
 
@@ -24,7 +26,8 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
     private confirmationService: ConfirmationService,
     private branchOfficeService: BranchOfficeService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private permissionService: PermissionService) {
 
   }
 
@@ -33,7 +36,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
 
      //TODO get privileges...
      this.buildPageStructure();
-     this.getBranchOfficePageableData(this.idEnterprise);
+     this.getBranchOfficePermissions();
  
      this.formData =  JSON.parse(sessionStorage.getItem('formData'));
  
@@ -67,7 +70,32 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
         this.buildEditBranchOffice(event.data.id);
         break;
 
+      case 'viewMore':
+        this.usersViewByIdBranchOffice(event.data.id);
+        break;
+        
       }
+  }
+
+  getBranchOfficePermissions() {
+    let permissionsObservable = this.permissionService.getPermissionsByResourceUrl("/enterprise");
+
+    forkJoin([permissionsObservable]).subscribe(
+      ([permission]) => {
+        console.log("PERMISOS ", permission.data);
+
+        permission.data.forEach(permission => {
+          switch (permission.permissionName) {
+            case 'VIEW':
+              this.getBranchOfficePageableData(this.idEnterprise);
+              break;
+            case 'CREATE':
+              this.isVisibleCreate = true;
+              break;
+          }
+        });
+      }
+    )
   }
 
   blockBranchOffice(data: IBranchOfficePage) {
@@ -107,6 +135,12 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
           }
       );
     });
+  }
+
+  usersViewByIdBranchOffice(id: string) {
+    sessionStorage.setItem('idBranchOffice', id);
+
+    this.router.navigate(['dashboard/management/user']);
   }
 
   private buildPageStructure() {

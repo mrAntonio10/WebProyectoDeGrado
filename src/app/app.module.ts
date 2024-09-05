@@ -155,6 +155,8 @@ import { EnterpriseComponent } from './pages/management/enterprise/enterprise/en
 import { BranchOfficeComponent } from './pages/management/branchOffice/branch-office/branch-office.component';
 import { CreateBranchOfficeComponent } from './pages/management/branchOffice/create-branch-office/create-branch-office.component';
 import { PermissionsComponent } from './pages/settings/permissions/permissions.component';
+import { UserComponent } from './pages/management/user/user.component';
+import { CreateUserComponent } from './pages/management/user/create-user/create-user.component';
 
 @NgModule({
     imports: [
@@ -245,7 +247,7 @@ import { PermissionsComponent } from './pages/settings/permissions/permissions.c
         //Added
         ReactiveFormsModule,
         CommonModule,
-        RouterModule
+        RouterModule,
     ],
     declarations: [
         AppComponent,
@@ -293,7 +295,9 @@ import { PermissionsComponent } from './pages/settings/permissions/permissions.c
         EnterpriseComponent,
         BranchOfficeComponent,
         CreateBranchOfficeComponent,
-        PermissionsComponent
+        PermissionsComponent,
+        UserComponent,
+        CreateUserComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

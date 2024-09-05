@@ -1,13 +1,12 @@
 <paging-filter
     (pageChange)="onPageChange($event)"
     *ngIf="this.tableStructure && this.pageableData" 
-    [title]="'Sucursales'"
+    [title]="'Usuarios'"
     [principalLabel]="'Gestión'"
-    [sucessorLabel]="'Sucursales'"
+    [sucessorLabel]="'Usuarios'"
     [data]="this.pageableData"
     [globalFilters]="gobalFilters"
     [dataStructure]="this.tableStructure"
-    [isVisibleCreate] = "this.isVisibleCreate"
     (actionTriggered)="handleActionTriggered($event)"
     > </paging-filter>
 

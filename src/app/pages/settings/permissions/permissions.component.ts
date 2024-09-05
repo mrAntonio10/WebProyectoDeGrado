@@ -27,14 +27,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   permissionList;
   selectedRole: String;
 
+  isVisibleSideBar = false;
+
   constructor(private fb: FormBuilder,
     private permissionService: PermissionService,
     private rolService: RolService,
     
     private enterpriseService: EnterpriseService,
-    private router: Router,
-    private confirmationService: ConfirmationService,
-    private activatedRoute: ActivatedRoute
   ) {
 
   }
@@ -81,54 +80,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 }
 
-  //REVISAR
-
-  // private getEnterprisesPageableData(params: any = { page: 0, size: 5 }) {
-  //   let enterpriseObservable = this.enterpriseService.getEnterprisePageable(params);
-
-  //   forkJoin([enterpriseObservable]).subscribe(
-  //       ([enterprises]) => {
-  //           this.pageableData = enterprises.data;
-  //       }
-  //   );
-  // }
-
-  // handleActionTriggered(event: { action: string, data: IEnterprisePage }) {
-  //   switch(event.action) {
-  //     case 'block':
-  //       this.blockEnterprise(event.data);
-  //       break;
-
-  //     case 'edit':
-  //       this.buildEditEnterprise(event.data.id);
-  //       break;
-
-  //     case 'branchOffice':
-  //       this.branchOfficesViewByIdEnterprise(event.data.id);
-  //       break;
-  //     }
-  // }
-
-  // blockEnterprise(data: IEnterprisePage) {
-  //   this.confirmationService.confirm({
-  //     message: `¿Estás seguro de bloquear la empresa ${data.name}?`,
-  //     header: 'Eliminar empresa',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       console.log(`Empresa con ID ${data.id} eliminada`);
-  //       let deleteObservable = this.enterpriseService.deleteEnterprise(data.id);
-
-  //       forkJoin([deleteObservable]).subscribe(
-  //         ([deleted]) => {
-  //             this.ngOnInit();
-  //         }
-  //     );
-  //     },
-  //     reject: () => {
-  //       console.log('Acción de bloqueo cancelada');
-  //     }
-  //   });
-  // }
+  getPermissionById(id: string) {
+    this.isVisibleSideBar = true;
+    console.log("id xdd", id);
+  }
 
   submitUpdatePermission(submittedData: IUpdateEnterprise) {
     let createObservable = this.enterpriseService.updateEnterprise(submittedData);

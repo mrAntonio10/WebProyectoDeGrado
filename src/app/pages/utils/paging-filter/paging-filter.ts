@@ -41,6 +41,7 @@ export class PagingFilterComponent implements OnInit {
     @Output() pageChange = new EventEmitter<any>();
 
     @Input() buildCreateForm: any;
+    @Input() isVisibleCreate: boolean;
 
     @Output() actionTriggered = new EventEmitter<{ action: string, data: any }>();
 
