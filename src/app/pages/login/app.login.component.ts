@@ -3,27 +3,28 @@ import { OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login/home.service';
-import {Message, MessageService} from 'primeng/api';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
   templateUrl: './app.login.component.html',
+  providers: [MessageService]
 })
 export class AppLoginComponent implements OnInit {
   // @ts-ignore
   form: FormGroup;
-  msgs: Message[] = [];
 
 
   constructor(private router: Router,
               private loginService: LoginService,
+              private service: MessageService,
              ) {
   }
   ngOnInit() {
 
     // @ts-ignore
     this.form = new FormGroup({
-      email:new FormControl('', [Validators.required]),
+      email:new FormControl('', [Validators.required, Validators.email]),
       password:new FormControl('', [Validators.required]),
     });
   }
@@ -35,13 +36,13 @@ export class AppLoginComponent implements OnInit {
         resp => {
           if (resp) {
             localStorage.setItem('token', resp.data.token);
+            localStorage.setItem('email', resp.data.user);
             this.router.navigate(['/dashboard']);
           }
         },
       error: err => {
           console.log(err);
-          this.msgs = [];
-          this.msgs.push({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+           this.service.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
         }
     })
   }

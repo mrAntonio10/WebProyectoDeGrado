@@ -53,10 +53,33 @@ export class AdvancedFormComponent implements OnInit, OnDestroy {
         this.formConfig = JSON.parse(localStorage.getItem('dinamicFormConfig')); 
 
         this.formConfig.data.forEach(field => {
+            const fieldValidators = (field.validators || []).map(val => {
+                switch (val.name) {
+                  case 'required':
+                    return Validators.required;
+                    break;
+                  case 'maxLength':
+                    return Validators.maxLength(val.args);
+                    break;
+                  case 'email':
+                    return Validators.email;
+                    break;
+                  case 'pattern':
+                    return Validators.pattern(val.args);
+                    break;
+                    case 'max':
+                    return Validators.max(val.args);
+                  default:
+                    return null;
+                }
+              }).filter(v => v !== null);
+            
           group.addControl(
             field.formName,
-            this.fb.control( (field.formValue ? field.formValue : ''), 
-                Validators.required)
+            this.fb.control(
+                (field.formValue ? field.formValue : ''),
+                fieldValidators
+            )
           );
         });
 

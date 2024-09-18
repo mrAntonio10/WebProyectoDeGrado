@@ -26,7 +26,8 @@
 
         <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed">
             <a href="#" class="profile-menu-button" (click)="app.onTopbarUserMenuButtonClick($event)">
-                <img src="assets/layout/images/avatar.png" alt="sapphire-layout" />
+                <!-- <img src="assets/layout/images/avatar.png" alt="sapphire-layout" /> -->
+                <i class="pi pi-user" style="font-size: 2.5rem; color: black;"></i>
             </a>
             <ul class="layout-profile-menu fadeInDown" [ngClass]="{'layout-profile-menu-active': app.topbarUserMenuActive}" (click)="app.onTopbarUserMenuClick($event)">
                 <li class="layout-profile-menu-search">

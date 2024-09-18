@@ -6,9 +6,15 @@ import { ConfirmationService } from 'primeng/api';
 import { BranchOfficeService } from 'src/app/services/branchOffice/branchOffice.service';
 import { forkJoin } from 'rxjs';
 import { PermissionService } from 'src/app/services/permission/permission.service';
+import { MessageService } from 'primeng/api';
+import { IEnterpriseState } from 'src/app/model/enterprise/enterprise';
+import { EnterpriseService } from 'src/app/services/enterprise/enterprise.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
 @Component({
   selector: 'app-branch-office',
   templateUrl: './branch-office.component.html',
+  providers: [MessageService],
   styleUrls: ['./branch-office.component.scss']
 })
 export class BranchOfficeComponent implements OnInit, OnDestroy {
@@ -18,25 +24,34 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
 
   createFormStructure: FormConfig;
   isVisibleCreate = false;
+  actions: any = [];
   submittedData: any;
+
+  formGroup: FormGroup;
   formData: any;
 
-  idEnterprise: string;
+  selectedState = null;
+  enterpriseList : IEnterpriseState[];
+
+  idEnterpriseFilter: string;
 
   constructor(private router: Router,
     private confirmationService: ConfirmationService,
     private branchOfficeService: BranchOfficeService,
     private activatedRoute: ActivatedRoute,
-    private permissionService: PermissionService) {
+    private permissionService: PermissionService,
+    private messageService: MessageService,
+    private enterpriseService: EnterpriseService,
+    private fb: FormBuilder) {
 
   }
 
   ngOnInit(): void {
-    this.idEnterprise = sessionStorage.getItem('idEnterprise');
-
-     //TODO get privileges...
-     this.buildPageStructure();
      this.getBranchOfficePermissions();
+     this.getEnterpriseCombo();
+     this.formGroup = this.buildForm();
+
+     this.buildPageStructure();
  
      this.formData =  JSON.parse(sessionStorage.getItem('formData'));
  
@@ -50,7 +65,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
   }
 
 
-  private getBranchOfficePageableData(idEnterprise: String, params: any = { page: 0, size: 5, idEnterprise: idEnterprise}) {
+  private getBranchOfficePageableData(params: any = { page: 0, size: 5}) {
     let branchOfficeObservable = this.branchOfficeService.getBranchOfficePageable(params);
 
     forkJoin([branchOfficeObservable]).subscribe(
@@ -78,24 +93,44 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
   }
 
   getBranchOfficePermissions() {
-    let permissionsObservable = this.permissionService.getPermissionsByResourceUrl("/enterprise");
+    let permissionsObservable = this.permissionService.getPermissionsByResourceUrl("/branchOffice");
 
     forkJoin([permissionsObservable]).subscribe(
       ([permission]) => {
+        this.actions = [];
+
         console.log("PERMISOS ", permission.data);
 
         permission.data.forEach(permission => {
           switch (permission.permissionName) {
             case 'VIEW':
-              this.getBranchOfficePageableData(this.idEnterprise);
+              this.getBranchOfficePageableData();
               break;
             case 'CREATE':
               this.isVisibleCreate = true;
+              break;
+            case 'DELETE':
+              this.actions.unshift({icon: 'pi pi-lock', class: 'p-button-danger', actionName: 'block'})
+              break;
+            case 'UPDATE':
+              this.actions.unshift({icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit'})
+              this.actions.unshift({icon: 'pi pi-user', class: 'p-button-warning', actionName: 'branchOffice'})
               break;
           }
         });
       }
     )
+  }
+
+  private getEnterpriseCombo() {
+    let observableEnterpriseList= this.enterpriseService.getEnterpriseListCombo();
+
+    forkJoin([observableEnterpriseList]).subscribe(
+      ([enterprises]) => {
+        this.enterpriseList = enterprises.data;
+        this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''})
+      }
+    );
   }
 
   blockBranchOffice(data: IBranchOfficePage) {
@@ -104,14 +139,17 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       header: 'Eliminar sucursal',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        console.log(`Sucursal con ID ${data.id} eliminada`);
         let deleteObservable = this.branchOfficeService.deleteBranchOffice(data.id);
 
-        forkJoin([deleteObservable]).subscribe(
-          ([deleted]) => {
+        forkJoin([deleteObservable]).subscribe({
+          next: ([deleted]) => {
+            this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Sucursal eliminada exitosamente.' });
               this.ngOnInit();
+          },
+          error: (err) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
           }
-      );
+        });
       },
       reject: () => {
         console.log('Acción de bloqueo cancelada');
@@ -124,7 +162,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       const fullPath = urlSegments.map(segment => segment.path).join('/');
       sessionStorage.setItem('fullPath', fullPath);
 
-      let branchOfficeObservable = this.branchOfficeService.getBranchOfficeseById(id);
+      let branchOfficeObservable = this.branchOfficeService.getBranchOfficesById(id);
 
       let branchOfficeData: IBranchOffice;
       forkJoin([branchOfficeObservable]).subscribe(
@@ -136,6 +174,24 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       );
     });
   }
+
+  buildForm(): FormGroup {
+    const group = this.fb.group({});
+
+      group.addControl('idEnterprise', this.fb.control(''));
+
+      return group;
+  }
+
+  submitForm() {
+    if (this.formGroup.valid) {
+        this.idEnterpriseFilter = this.formGroup.value.idEnterprise;
+
+        let params = { idEnterprise: this.idEnterpriseFilter };
+
+        this.getBranchOfficePageableData(params);
+    }
+  }  
 
   usersViewByIdBranchOffice(id: string) {
     sessionStorage.setItem('idBranchOffice', id);
@@ -151,6 +207,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       {thead: 'Nombre', value: 'name',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre'},
       {thead: 'Ubicación', value: 'location', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por ubucación'},
       {thead: 'Celular', value: 'phoneNumber', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'},
+      {thead: 'Empresa', value: 'enterpriseName', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por empresa'},
       {thead: 'Factura', value: 'invoice', ttype: 'verified', visible: true, hasFilter: false, filterplaceholder: 'Buscar por facturación'}
     ]
 
@@ -158,31 +215,53 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: any) {
-    let params = { page: event.page, size: event.rows };
+    var getFilter = '';
+    var enterpriseFilter = '';
 
-    this.getBranchOfficePageableData(this.idEnterprise, params);
-  }
+    if (event.filters && event.filters.name) {
+        if (!!event.filters.name[0].value) {
+            getFilter = event.filters.name[0].value;
+        }
+    }
+
+    if(!!this.idEnterpriseFilter) {
+      enterpriseFilter = this.idEnterpriseFilter;
+    }
+
+    let params = { page: event.page, size: event.rows, filter: getFilter, idEnterprise: enterpriseFilter };
+
+    this.getBranchOfficePageableData(params);
+}
+
 
   submitCreateBranchOffice(submittedData: ICreateBranchOffice) {
     let createObservable = this.branchOfficeService.createBranchOffice(submittedData);
 
-    forkJoin([createObservable]).subscribe(
-      ([created]) => {
+    forkJoin([createObservable]).subscribe({
+      next: ([created]) => {
         sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Sucursal creada exitosamente.' });
         this.ngOnInit(); 
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
       }
-    )
+    })
   }
 
   submitUpdateBranchOffice(submittedData: IUpdateBranchOffice) {
     let createObservable = this.branchOfficeService.updateBranchOffice(submittedData);
 
-    forkJoin([createObservable]).subscribe(
-      ([created]) => {
+    forkJoin([createObservable]).subscribe({
+      next: ([created]) => {
         sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Sucursal Actualizada exitosamente.' });
         this.ngOnInit(); 
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
       }
-    )
+    })
   }
 
 }

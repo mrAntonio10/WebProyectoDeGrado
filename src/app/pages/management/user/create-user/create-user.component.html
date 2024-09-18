@@ -6,38 +6,83 @@
 		  <div class="p-fluid p-formgrid grid">
 			<div class="field col-12 md:col-4">
 				<label> Nombre </label>
-				<input pInputText [formControlName]="'name'" [id]="'name'" maxlength="120"/>
+				<input pInputText [formControlName]="'name'" [id]="'name'"/>
+
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('name').invalid && formGroup.get('name').touched">
+					Requerido. Máximo 60 caracteres.
+				</small>
             </div>
 
             <div class="field col-12 md:col-4">
                 <label> Apellido </label>
-				<input pInputText [formControlName]="'lastname'" [id]="'lastname'" maxlength="255"/>
+				<input pInputText [formControlName]="'lastname'" [id]="'lastname'"/>
+
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('lastname').invalid && formGroup.get('lastname').touched">
+					Requerido. Máximo 60 caracteres.
+				</small>
+            </div>
+
+			<div class="field col-12 md:col-4">
+				<label for="password">Password</label>
+				<input id="password" type="password" pInputText formControlName="password">
+
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('password').invalid && formGroup.get('password').touched">
+					Requerido. Máximo 60 caracteres.
+				</small>
+			</div>
+
+			<div class="field col-12 md:col-4">
+                <label> Email </label>
+				<input pInputText [formControlName]="'email'" [id]="'email'" maxlength="255"/>
+
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('email').invalid && formGroup.get('email').touched">
+					Requerido. Ingrese un correo electrónico válido.
+				</small>
             </div>
 
             <div class="field col-12 md:col-4">
                 <label> Número telefónico </label>
-				<input pInputText [formControlName]="'phoneNumber'" [id]="'phoneNumber'" class="ng-invalid" maxlength="20"/>
-            </div>
-			
+				<input pInputText [formControlName]="'phoneNumber'" [id]="'phoneNumber'"/>
 
-            <div class="field col-12 md:col-4">
-                <label> Email </label>
-				<input pInputText [formControlName]="'email'" [id]="'email'" class="ng-invalid" maxlength="255"/>
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('phoneNumber').invalid && formGroup.get('phoneNumber').touched">
+					Numérico 20 caracteres.
+				</small>
             </div>
-
-			<div class="field col-12 md:col-4">
-					<label for="password"> Contraseña </label>
-					<input id="password" type="password" pInputText formControlName="password">
-			</div>
 
 			<div class="field col-12 md:col-4" *ngIf="this.componentBehaviour === 'update'">	
                 <label> Estado </label>
 				<p-dropdown [formControlName]="'state'" [id]="'state'" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
-            </div>
+           
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('state').invalid && formGroup.get('state').touched">
+					Requerido.
+				</small>
+			</div>
 
 			<div class="field col-12 md:col-4">	
 				<label> Rol </label>
 				<p-dropdown [formControlName]="'idRol'" [id]="'idRol'" [options]="permissions" optionLabel="name" optionValue="code" [(ngModel)]="selectedRole"></p-dropdown>
+			
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('idRol').invalid && formGroup.get('idRol').touched">
+					Requerido.
+				</small>
+			</div>
+
+			<div class="field col-12 md:col-4">
+				<label> Empresa </label>
+				<p-dropdown [formControlName]="'idEnterprise'" [id]="'state'" [options]="enterpriseList" optionLabel="name" optionValue="id" (onChange)="this.getBranchOfficeByIdEnterprise($event)" emptyMessage="No se encontraron resultados."></p-dropdown>
+			
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('idEnterprise').invalid && formGroup.get('idEnterprise').touched">
+					Requerido.
+				</small>
+			</div>
+
+			<div class="field col-12 md:col-4">
+				<label> Sucursal </label>
+				<p-dropdown [formControlName]="'idBranchOffice'" [id]="'state'" [options]="branchOfficeList" optionLabel="name" optionValue="id" emptyMessage="No se encontraron resultados."></p-dropdown>
+			
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('idBranchOffice').invalid && formGroup.get('idBranchOffice').touched">
+					Requerido
+				</small>
 			</div>
             
 		  </div>

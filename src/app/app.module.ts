@@ -153,10 +153,12 @@ import {BreadcrumbService} from './app.breadcrumb.service';
 import {MenuService} from './app.menu.service';
 import { EnterpriseComponent } from './pages/management/enterprise/enterprise/enterprise.component';
 import { BranchOfficeComponent } from './pages/management/branchOffice/branch-office/branch-office.component';
-import { CreateBranchOfficeComponent } from './pages/management/branchOffice/create-branch-office/create-branch-office.component';
+import { CreateBranchOfficeComponent } from './pages/management/branchOffice/branch-office/create-branch-office/create-branch-office.component';
 import { PermissionsComponent } from './pages/settings/permissions/permissions.component';
 import { UserComponent } from './pages/management/user/user.component';
 import { CreateUserComponent } from './pages/management/user/create-user/create-user.component';
+import { LoginAgainComponent } from './pages/login/login-again/login-again.component';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @NgModule({
     imports: [
@@ -297,12 +299,13 @@ import { CreateUserComponent } from './pages/management/user/create-user/create-
         CreateBranchOfficeComponent,
         PermissionsComponent,
         UserComponent,
-        CreateUserComponent
+        CreateUserComponent,
+        LoginAgainComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, MenuService, BreadcrumbService,
+        PhotoService, ProductService, MenuService, BreadcrumbService, DialogService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptorService,

@@ -29,6 +29,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   isVisibleSideBar = false;
 
+  valToggle = false;
+
+  permissionFormGroup: FormGroup;
+
   constructor(private fb: FormBuilder,
     private permissionService: PermissionService,
     private rolService: RolService,
@@ -41,6 +45,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getRolList();
     this.formGroup = this.buildForm();
+    this.permissionFormGroup = this.buildPermissionForm();
     //TODO get privileges...
   }
 
@@ -63,6 +68,14 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     const group = this.fb.group({});
 
       group.addControl('idRol', this.fb.control(''));
+
+    return group;
+  }
+
+  buildPermissionForm(): FormGroup {
+    const group = this.fb.group({});
+
+      group.addControl('state', this.fb.control(''));
 
     return group;
   }

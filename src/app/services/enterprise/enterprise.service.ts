@@ -42,4 +42,8 @@ export class EnterpriseService {
   getEnterpriseById(idEnterprise: string): Observable<any> {
     return this.httpClient.get<any>(`${this.apiUrl}/api/v1/enterprises/${idEnterprise}`);
   }
+
+  getEnterpriseListCombo(): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/enterprises/list`);
+  }
 }

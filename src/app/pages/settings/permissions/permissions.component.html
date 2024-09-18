@@ -26,8 +26,19 @@
                 </div>
             </div>
 
-            <p-sidebar [(visible)]="isVisibleSideBar" position="right"  [style]="{width:'35em'}" [baseZIndex]="10000">
+            <p-sidebar [(visible)]="isVisibleSideBar" position="right"  [style]="{width:'30em'}" [baseZIndex]="10000">
                 <h3 style="font-weight:normal">Permiso </h3>
+                <hr>
+
+                <form [formGroup]="permissionFormGroup" (ngSubmit)="submitForm()">
+                    <div class="p-fluid p-formgrid grid">
+                        <div class="field">
+                            <label> Estado </label>
+                                <p-toggleButton [formControlName]="'state'" [id]="'state'" [(ngModel)]="valToggle" onLabel="Si" offLabel="No" ></p-toggleButton>
+                        </div>
+                    </div>
+                    <button pButton type="submit" label="Aceptar"></button>
+                </form>
             </p-sidebar>
 		</div>
 	</div>

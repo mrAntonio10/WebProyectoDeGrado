@@ -7,6 +7,7 @@
 			<div *ngFor="let field of formConfig.data" [ngClass]="field.md_col" >
 			  <div class="field" *ngIf="field.visible" >
 				<label [for]="field.formName">{{ field.label }}</label>
+
 				<input *ngIf="field.type === 'text'" pInputText [formControlName]="field.formName" [id]="field.formName"/>
 				<input *ngIf="field.type === 'number'" pInputText [formControlName]="field.formName" [id]="field.formName" type="number"/>
 				<div *ngIf="field.type === 'boolean'">
@@ -15,6 +16,10 @@
 				<div *ngIf="field.type === 'select'">
 					<p-dropdown [formControlName]="field.formName" [id]="field.formName" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="field.formValue"></p-dropdown>
 				</div>
+
+				<small id="username-help" class="p-error" *ngIf="formGroup.get(field.formName).invalid && formGroup.get(field.formName).touched">
+					{{ field.validatorMssg }}
+				</small>
 			</div>
 			</div>
 		  </div>

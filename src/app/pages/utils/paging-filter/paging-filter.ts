@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef, Input, Output, EventEmitter, SimpleChanges, OnDestroy  } from '@angular/core';
-import { Customer, Representative } from 'src/app/demo/domain/customer';
 import { CustomerService } from 'src/app/demo/service/customerservice';
 import { ProductService } from 'src/app/demo/service/productservice';
 import { Table } from 'primeng/table';
-import { MessageService, ConfirmationService } from 'primeng/api'
+import { MessageService, ConfirmationService, LazyLoadEvent } from 'primeng/api'
 import { BreadcrumbService } from 'src/app/app.breadcrumb.service';
 import { ColumnStructure } from 'src/app/demo/domain/columnDataStructure';
 import { Router } from '@angular/router';
@@ -38,10 +37,11 @@ export class PagingFilterComponent implements OnInit {
     @Input() data: any;
     @Input() dataStructure: ColumnStructure[];
 
-    @Output() pageChange = new EventEmitter<any>();
+    @Output() pageChangeTriggered = new EventEmitter<any>();
 
     @Input() buildCreateForm: any;
-    @Input() isVisibleCreate: boolean;
+    @Input() createVisible: boolean;
+    @Input() actions: any;
 
     @Output() actionTriggered = new EventEmitter<{ action: string, data: any }>();
 
@@ -49,7 +49,8 @@ export class PagingFilterComponent implements OnInit {
     totalRecords: number;
     rows: number;
 
-    loading:boolean = true;
+    loading:boolean = false;
+    isInitialLoad: boolean = true;
 
     @ViewChild('dt') table: Table;
 
@@ -69,7 +70,7 @@ export class PagingFilterComponent implements OnInit {
 
     ngOnInit() {
         this.buildData();
-
+        
         this.breadcrumbService.setItems([
             {label: this.principalLabel},  //Parent
             {label: this.sucessorLabel}    //Resource-CHILD
@@ -78,33 +79,40 @@ export class PagingFilterComponent implements OnInit {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.data && !changes.data.isFirstChange()) {
-            this.loading = true; 
+            this.loading = false; 
             this.buildData();  
         }
     }
 
-    clear(table: Table) {
-        table.clear();
-        this.filter.nativeElement.value = '';
+    clear() {
+        const lazyLoadEvent: LazyLoadEvent = {
+            first: 0,
+            rows: this.rows,
+            sortField: null,
+            sortOrder: null,
+            filters: {}
+        };
+        
+        this.loadData(lazyLoadEvent);
     }
 
     buildData() {
         this.value = this.data.content;
         this.totalRecords = this.data.page.totalElements;
         this.rows = this.data.page.size;
-
-        if(!!this.totalRecords) {
-            this.loading = false;
-        }
-
     }
 
     loadData(event: any) {
-        this.pageChange.emit({
-          first: event.first,
-          rows: event.rows,
-          page: event.first / event.rows
-        });
+        if(!!event && !this.isInitialLoad) {
+            this.pageChangeTriggered.emit({
+                first: event.first,
+                rows: event.rows,
+                page: event.first / event.rows,
+                filters: event.filters,
+              });
+        } else {
+            this.isInitialLoad = false;
+        }
       }
 
 

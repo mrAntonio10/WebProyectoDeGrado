@@ -47,5 +47,8 @@
     idRol: string;
     rol: String
     state: string;
+
+    idBranchOffice: string;
+    idEnterprise: string;
   }
 

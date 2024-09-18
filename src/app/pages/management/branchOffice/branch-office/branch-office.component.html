@@ -1,5 +1,26 @@
+<div>
+	<div class="grid">
+		<div class="col-12">
+			<div class="card">
+
+                <p-panel header="Opciones" [toggleable]="true" [collapsed]="true">
+                    <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="field col-12 md:col-4">
+                                <label> Empresa </label>
+                                <p-dropdown [formControlName]="'idEnterprise'" [id]="'state'" [options]="enterpriseList" optionLabel="name" optionValue="id"></p-dropdown>
+                            </div>
+                        </div>
+                        <button pButton type="submit" label="Buscar" [disabled]="!formGroup.valid"></button>
+                    </form>
+                </p-panel>
+            </div>
+        </div>
+    </div>
+</div>
+
 <paging-filter
-    (pageChange)="onPageChange($event)"
+    (pageChangeTriggered)="onPageChange($event)"
     *ngIf="this.tableStructure && this.pageableData" 
     [title]="'Sucursales'"
     [principalLabel]="'Gestión'"
@@ -7,9 +28,14 @@
     [data]="this.pageableData"
     [globalFilters]="gobalFilters"
     [dataStructure]="this.tableStructure"
-    [isVisibleCreate] = "this.isVisibleCreate"
+    [createVisible]="isVisibleCreate"
+    [actions]="actions"
     (actionTriggered)="handleActionTriggered($event)"
-    > </paging-filter>
+    > 
+</paging-filter>
 
+    <div class="col-6  flex justify-content-center">
+        <p-toast/>
+    </div>
     <p-confirmDialog></p-confirmDialog>
 

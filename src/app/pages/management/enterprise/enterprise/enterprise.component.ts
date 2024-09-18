@@ -9,12 +9,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api'; 
 import { IUpdateEnterprise } from 'src/app/model/enterprise/enterprise';
 import { PermissionService } from 'src/app/services/permission/permission.service';
-
+import { MessageService } from 'primeng/api';
 
 
 @Component({
   selector: 'app-enterprise',
   templateUrl: './enterprise.component.html',
+  providers: [MessageService],
   styleUrls: ['./enterprise.component.scss']
 })
 export class EnterpriseComponent implements OnInit, OnDestroy {
@@ -24,7 +25,8 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
   gobalFilters;
 
   createFormStructure: FormConfig;
-  isVisibleCreate = false;
+  isVisibleCreate: boolean = null;
+  actions: any = [];
   submittedData: any;
   formData;
 
@@ -32,14 +34,16 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
     private router: Router,
     private confirmationService: ConfirmationService,
     private activatedRoute: ActivatedRoute,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private messageService: MessageService,
   ) {
 
   }
 
   ngOnInit(): void {
-    this.buildPageStructure();
     this.getEnterprisePermissions();
+
+    this.buildPageStructure();
 
     this.formData =  JSON.parse(sessionStorage.getItem('formData'));
 
@@ -72,7 +76,7 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
         this.buildEditEnterprise(event.data.id);
         break;
 
-      case 'viewMore':
+      case 'branchOffice':
         this.branchOfficesViewByIdEnterprise(event.data.id);
         break;
       }
@@ -84,8 +88,9 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
     forkJoin([permissionsObservable]).subscribe(
       ([permission]) => {
         console.log("PERMISOS ", permission.data);
+        this.actions = [];
 
-        permission.data.forEach(permission => {
+        permission.data.forEach(permission => {          
           switch (permission.permissionName) {
             case 'VIEW':
               this.getEnterprisesPageableData();
@@ -93,6 +98,13 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
             case 'CREATE':
               this.buildCreateForm();
               this.isVisibleCreate = true;
+              break;
+            case 'DELETE':
+              this.actions.unshift({icon: 'pi pi-lock', class: 'p-button-danger', actionName: 'block'})
+              break;
+            case 'UPDATE':
+              this.actions.unshift({icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit'})
+              this.actions.unshift({icon: 'pi pi-building', class: 'p-button-warning', actionName: 'branchOffice'})
               break;
           }
         });
@@ -109,11 +121,15 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
         console.log(`Empresa con ID ${data.id} eliminada`);
         let deleteObservable = this.enterpriseService.deleteEnterprise(data.id);
 
-        forkJoin([deleteObservable]).subscribe(
-          ([deleted]) => {
-              this.ngOnInit();
+        forkJoin([deleteObservable]).subscribe({
+          next: ([deleted]) => {
+            this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Empresa eliminada exitosamente.' });
+            this.ngOnInit(); 
+          },
+          error: (err) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
           }
-      );
+        });
       },
       reject: () => {
         console.log('Acción de bloqueo cancelada');
@@ -139,12 +155,12 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
 
             this.createFormStructure = {
               title: 'Actualizar empresa',  data: [
-                { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', formValue: enterprise.data.name, visible: true },
-                { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', formValue: enterprise.data.email, visible: true },
-                { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', formValue: enterprise.data.description, visible: true },
-                { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', formValue: enterprise.data.phoneNumber, visible: true },
-                { md_col: 'md:col-4', label: 'Estado', type: 'select', formName: 'state', formValue: enterprise.data.state, visible: true },
-                { md_col: 'md:col-4', label: 'Id', type: 'text', formName: 'id', formValue: enterprise.data.id, visible: false },
+                { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', formValue: enterprise.data.name, visible: true,  validators: [ { name: 'required' }, { name: 'maxLength', args: 120 }], validatorMssg: 'Requerido. Máximo 120 caracteres.' },
+                { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', formValue: enterprise.data.email, visible: true, validators: [{ name: 'required' }, { name: 'email' }], validatorMssg: 'Requerido. Ingrese un correo electrónico válido.' },
+                { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', formValue: enterprise.data.description, visible: true, validators: [{ name: 'required' }],  validatorMssg: 'Requerido.' },
+                { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', formValue: enterprise.data.phoneNumber, visible: true, validators: [{ name: 'required' }, { name: 'pattern', args: '^[\\d]*$' }, { name: 'maxLength', args: 20 }],  validatorMssg: 'Requerido. Numérico.' },
+                { md_col: 'md:col-4', label: 'Estado', type: 'select', formName: 'state', formValue: enterprise.data.state, visible: true, validators: [{ name: 'required' }],  validatorMssg: 'Requerido' },
+                { md_col: 'md:col-4', label: 'Id', type: 'text', formName: 'id', formValue: enterprise.data.id, visible: false, validators: [{ name: 'required' }],  validatorMssg: 'Requerido' },
                ]
             };
               localStorage.setItem('dinamicFormConfig', JSON.stringify({...this.createFormStructure, action: 'update'}));
@@ -157,11 +173,12 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
   buildCreateForm() {
     // Estructura del formulario de creación
     this.createFormStructure = {
-      title: 'Crear empresa',  data: [
-        { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', visible: true },
-        { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', visible: true },
-        { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', visible: true },
-        { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', visible: true},
+      title: 'Crear empresa', 
+      data: [
+        { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', visible: true, validators: [ { name: 'required' }, { name: 'maxLength', args: 120 }], validatorMssg: 'Requerido. Máximo 120 caracteres.' },
+        { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', visible: true, validators: [{ name: 'required' }, { name: 'email' }], validatorMssg: 'Requerido. Ingrese un correo electrónico válido.' },
+        { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', visible: true, validators: [{ name: 'required' }],  validatorMssg: 'Requerido.' },
+        { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', visible: true, validators: [{ name: 'required' }, { name: 'pattern', args: '^[\\d]*$' }, { name: 'maxLength', args: 20 }],  validatorMssg: 'Requerido. Numérico 20 caracteres.'}
       ]
     };
   }
@@ -181,30 +198,48 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: any) {
-    let params = { page: event.page, size: event.rows };
+        var getFilter = '';
 
-    this.getEnterprisesPageableData(params);
+        if (event.filters && event.filters.name) {
+            if (!!event.filters.name[0].value) {
+                getFilter = event.filters.name[0].value;
+            }
+        }
+        console.log("se ejecuta el onpagechange");
+        let params = { page: event.page, size: event.rows, filter: getFilter };
+
+        this.getEnterprisesPageableData(params);
   }
+
 
   submitCreateEnterprise(submittedData: ICreateEnterprise) {
     let createObservable = this.enterpriseService.createEnterprise(submittedData);
 
-    forkJoin([createObservable]).subscribe(
-      ([created]) => {
+    forkJoin([createObservable]).subscribe({
+      next: ([created]) => {
         sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Empresa creada exitosamente.' });
         this.ngOnInit(); 
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
       }
-    )
+    })      
+
   }
 
   submitUpdateEnterprise(submittedData: IUpdateEnterprise) {
     let createObservable = this.enterpriseService.updateEnterprise(submittedData);
 
-    forkJoin([createObservable]).subscribe(
-      ([updated]) => {
+    forkJoin([createObservable]).subscribe({
+      next: ([updated]) => {
         sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Empresa actualizada exitosamente.' });
         this.ngOnInit(); 
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
       }
-    )
+    })
   }
 }

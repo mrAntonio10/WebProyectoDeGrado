@@ -6,9 +6,16 @@ import { ConfirmationService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
 import { UserService } from 'src/app/services/user/user.service';
 import { ICreateUser, IUpdateUser, IUser, IUserDto } from 'src/app/model/user/usuario';
+import { PermissionService } from 'src/app/services/permission/permission.service';
+import { MessageService } from 'primeng/api';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { EnterpriseService } from 'src/app/services/enterprise/enterprise.service';
+import { BranchOfficeService } from 'src/app/services/branchOffice/branchOffice.service';
+
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
+  providers: [MessageService],
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit, OnDestroy {
@@ -16,25 +23,41 @@ export class UserComponent implements OnInit, OnDestroy {
   tableStructure: ColumnStructure[];
   gobalFilters;
 
+  actions: any = [];
+
   createFormStructure: FormConfig;
+  isVisibleCreate: boolean;
   submittedData: any;
   formData: any;
 
-  idBranchOffice: string;
+  enterpriseList: any = [];
+  branchOfficeList: any = [];
+
+  formGroup: FormGroup;
+  idBranchOfficeFilter : string;
+
 
   constructor(private router: Router,
     private confirmationService: ConfirmationService,
     private userService: UserService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private permissionService: PermissionService,
+    private messageService: MessageService,
+    private fb: FormBuilder,
+    private enterpriseService: EnterpriseService,
+    private branchOfficeService: BranchOfficeService
+  ) {
 
   }
 
   ngOnInit(): void {
-    this.idBranchOffice = sessionStorage.getItem('idBranchOffice');
 
-     //TODO get privileges...
-     this.buildPageStructure();
-     this.getUserPageableData(this.idBranchOffice);
+     this.getUserPermissions();
+     this.getUserPageableData();
+
+     this.formGroup = this.buildForm();
+
+     this.getEnterpriseCombo();
  
      this.formData =  JSON.parse(sessionStorage.getItem('formData'));
  
@@ -47,8 +70,38 @@ export class UserComponent implements OnInit, OnDestroy {
     sessionStorage.removeItem('formData');
   }
 
+  getUserPermissions() {
+    let permissionsObservable = this.permissionService.getPermissionsByResourceUrl("/user");
 
-  private getUserPageableData(idEnterprise: String, params: any = { page: 0, size: 5, idBranchOffice: this.idBranchOffice}) {
+    forkJoin([permissionsObservable]).subscribe(
+      ([permission]) => {
+        this.actions = [];
+
+        console.log("PERMISOS ", permission.data);
+
+        permission.data.forEach(permission => {
+          switch (permission.permissionName) {
+            case 'VIEW':
+              this.buildPageStructure();
+              break;
+            case 'CREATE':
+              this.isVisibleCreate = true;
+              break;
+            case 'DELETE':
+              this.actions.unshift({icon: 'pi pi-lock', class: 'p-button-danger', actionName: 'block'})
+              break;
+            case 'UPDATE':
+              this.actions.unshift({icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit'})
+              this.actions.unshift({icon: 'pi pi-user', class: 'p-button-warning', actionName: 'branchOffice'})
+              break;
+          }
+        });
+      }
+    )
+  }
+
+
+  private getUserPageableData(params: any = { page: 0, size: 5 }) {
     let userObservable = this.userService.getUserPageable(params);
 
     forkJoin([userObservable]).subscribe(
@@ -80,10 +133,15 @@ export class UserComponent implements OnInit, OnDestroy {
         console.log(`Usuario con ID ${data.id} eliminado`);
         let deleteObservable = this.userService.deleteUser(data.id);
 
-        forkJoin([deleteObservable]).subscribe(
-          ([deleted]) => {
-              this.ngOnInit();
+        forkJoin([deleteObservable]).subscribe({
+          next:  ([deleted]) => {
+            this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Usuario eliminado exitosamente.' });
+            this.ngOnInit();
+        }, 
+        error: (err) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
           }
+        }
       );
       },
       reject: () => {
@@ -119,37 +177,105 @@ export class UserComponent implements OnInit, OnDestroy {
       {thead: 'Email', value: 'email', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por email'},
       {thead: 'Celular', value: 'phoneNumber', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'},
       {thead: 'Rol', value: 'rol', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por rol'},
+      {thead: 'Sucursal', value: 'branchOfficeName', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por empresa'},
       {thead: 'Estado', value: 'state', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por estado'}
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);
   }
 
-  onPageChange(event: any) {
-    let params = { page: event.page, size: event.rows };
+  private getEnterpriseCombo() {
+    let observableEnterpriseList= this.enterpriseService.getEnterpriseListCombo();
 
-    this.getUserPageableData(this.idBranchOffice, params);
+    forkJoin([observableEnterpriseList]).subscribe(
+      ([enterprises]) => {
+        this.enterpriseList = enterprises.data;
+        this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''})
+      }
+    );
+  }
+
+  getBranchOfficeCombo(event) {
+    console.log("EVENT ", event.value);
+
+    let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(event.value);
+
+    forkJoin([observableBranchOfficeList]).subscribe(
+      ([branchOffices]) => {
+        this.branchOfficeList = branchOffices.data;
+        this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''})
+      }
+    );
+  }
+
+  buildForm(): FormGroup {
+    const group = this.fb.group({});
+
+      group.addControl('idEnterprise', this.fb.control(''));
+      group.addControl('idBranchOffice', this.fb.control(''));
+
+      return group;
+  }
+
+  submitForm() {
+    if (this.formGroup.valid) {
+        console.log("aaaa", this.formGroup.value.idBranchOffice);
+
+        this.idBranchOfficeFilter = this.formGroup.value.idBranchOffice;
+
+        let params = { idBranchOffice: this.idBranchOfficeFilter };
+
+        this.getUserPageableData(params);
+    }
+  }  
+
+  onPageChange(event: any) {
+    var getFilter = '';
+    var branchOfficeFilter = '';
+
+    if (event.filters && event.filters.fullname) {
+        if (!!event.filters.fullname[0].value) {
+            getFilter = event.filters.fullname[0].value;
+        }
+    }
+    if(!!this.idBranchOfficeFilter) {
+      branchOfficeFilter = this.idBranchOfficeFilter;
+    }
+
+    let params = { page: event.page, size: event.rows , filter: getFilter, branchOffice: branchOfficeFilter};
+
+    this.getUserPageableData(params);
   }
 
   submitCreateUser(submittedData: ICreateUser) {
     let createObservable = this.userService.createUser(submittedData);
 
-    forkJoin([createObservable]).subscribe(
-      ([created]) => {
+    forkJoin([createObservable]).subscribe({
+      next:  ([created]) => {
         sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Usuario creado exitosamente.' });
         this.ngOnInit(); 
+      }, 
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
       }
+    }
     )
   }
 
   submitUpdateUser(submittedData: IUpdateUser) {
     let updateObservable = this.userService.updateUser(submittedData);
 
-    forkJoin([updateObservable]).subscribe(
-      ([created]) => {
+    forkJoin([updateObservable]).subscribe({
+      next: ([created]) => {
         sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Usuario actualizado exitosamente.' });
         this.ngOnInit(); 
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
       }
+    }
     )
   }
 

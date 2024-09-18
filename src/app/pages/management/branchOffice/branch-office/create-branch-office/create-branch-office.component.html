@@ -4,9 +4,19 @@
 		<h5> {{ this.buttonValue }} sucursal </h5>
 		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
 		  <div class="p-fluid p-formgrid grid">
+
+				<div class="field col-12 md:col-4">
+					<label> Empresa </label>
+					<p-dropdown [formControlName]="'idEnterprise'" [id]="'state'" [options]="enterpriseList" optionLabel="name" optionValue="id"></p-dropdown>
+				</div>
+
 			<div class="field col-12 md:col-4">
 				<label> Nombre </label>
-				<input pInputText [formControlName]="'name'" [id]="'name'" maxlength="120"/>
+				<input pInputText [formControlName]="'name'" [id]="'name'"/>
+
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('name').invalid && formGroup.get('name').touched">
+					Requerido. Máximo 120 caracteres.
+				</small>
             </div>
 
             <div class="field col-12 md:col-4">
@@ -16,7 +26,11 @@
 
             <div class="field col-12 md:col-4">
                 <label> Número telefónico </label>
-				<input pInputText [formControlName]="'phoneNumber'" [id]="'phoneNumber'" maxlength="20"/>
+				<input pInputText [formControlName]="'phoneNumber'" [id]="'phoneNumber'"/>
+
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('phoneNumber').invalid && formGroup.get('phoneNumber').touched">
+					Requerido. Numérico 20 caracteres.
+				</small>
             </div>
 
             <div class="field col-12 md:col-4">	

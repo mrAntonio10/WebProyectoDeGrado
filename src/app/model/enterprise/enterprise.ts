@@ -32,3 +32,9 @@ export interface IEnterprise {
     logo: string;
     state: string;
 }
+
+export interface IEnterpriseState {
+    id: string;
+    name: string;
+    state: string;
+}

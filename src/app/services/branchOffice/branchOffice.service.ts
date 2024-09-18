@@ -39,7 +39,11 @@ export class BranchOfficeService {
     return this.httpClient.delete(`${this.apiUrl}/api/v1/branch-offices/${idBranchOffice}`);
   }
 
-  getBranchOfficeseById(idBranchOffice: string): Observable<any> {
+  getBranchOfficesById(idBranchOffice: string): Observable<any> {
     return this.httpClient.get<any>(`${this.apiUrl}/api/v1/branch-offices/${idBranchOffice}`);
+  }
+
+  getBranchOfficesListByIdEnterprise(idEnterprise: string): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/branch-offices/list/${idEnterprise}`);
   }
 }

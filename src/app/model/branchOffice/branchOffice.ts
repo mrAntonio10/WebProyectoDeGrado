@@ -1,3 +1,5 @@
+import { IEnterpriseState } from "../enterprise/enterprise";
+
 export interface IBranchOfficePage {
     id: string;
     name: string;
@@ -33,4 +35,5 @@ export interface IBranchOffice {
     state: string;
     invoice: boolean;
     inCode: string;
+    enterprise: IEnterpriseState;
 }

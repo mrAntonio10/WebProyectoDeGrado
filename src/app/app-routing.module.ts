@@ -34,10 +34,11 @@ import { PagingFilterComponent } from './pages/utils/paging-filter/paging-filter
 import { EnterpriseComponent } from './pages/management/enterprise/enterprise/enterprise.component';
 import { AdvancedFormComponent } from './pages/utils/advanced-form/advanced-form.component';
 import { BranchOfficeComponent } from './pages/management/branchOffice/branch-office/branch-office.component';
-import { CreateBranchOfficeComponent } from './pages/management/branchOffice/create-branch-office/create-branch-office.component';
+import { CreateBranchOfficeComponent } from './pages/management/branchOffice/branch-office/create-branch-office/create-branch-office.component';
 import { PermissionsComponent } from './pages/settings/permissions/permissions.component';
 import { UserComponent } from './pages/management/user/user.component';
 import { CreateUserComponent } from './pages/management/user/create-user/create-user.component';
+import { AuthClassGuard } from './auth--class.guard';
 
 @NgModule({
     imports: [
@@ -45,20 +46,22 @@ import { CreateUserComponent } from './pages/management/user/create-user/create-
             {
                 path: 'dashboard', component: AppMainComponent,
                 children: [
-                    {path: '', component: DashboardComponent},
+                    {path: '', component: DashboardComponent, canActivate: [AuthClassGuard],},
                      //Management
-                    {path: 'management/enterprise', component: EnterpriseComponent},
-                    {path: 'management/enterprise/create', component: AdvancedFormComponent},
+                    {path: 'management/enterprise', component: EnterpriseComponent, canActivate: [AuthClassGuard],},
+                    {path: 'management/enterprise/create', component: AdvancedFormComponent, canActivate: [AuthClassGuard],},
 
-                    {path: 'management/branchOffice', component: BranchOfficeComponent},
-                    {path: 'management/branchOffice/create', component: CreateBranchOfficeComponent},
+                    {path: 'management/branchOffice', component: BranchOfficeComponent, canActivate: [AuthClassGuard],},
+                    {path: 'management/branchOffice/create', component: CreateBranchOfficeComponent, canActivate: [AuthClassGuard],},
 
-                    {path: 'management/user', component: UserComponent},
-                    {path: 'management/user/create', component: CreateUserComponent},
+                    {path: 'management/user', component: UserComponent, canActivate: [AuthClassGuard],},
+                    {path: 'management/user/create', component: CreateUserComponent, canActivate: [AuthClassGuard],},
 
 
                     //configuration settings
-                    {path: 'configuration/permission', component: PermissionsComponent},
+                    {path: 'configuration/permission', component: PermissionsComponent, canActivate: [AuthClassGuard],},
+
+                    //OTHERS
 
                     {path: 'uikit/formlayout', component: FormLayoutDemoComponent},
                     {path: 'uikit/floatlabel', component: FloatLabelDemoComponent},
