@@ -159,6 +159,7 @@ import { UserComponent } from './pages/management/user/user.component';
 import { CreateUserComponent } from './pages/management/user/create-user/create-user.component';
 import { LoginAgainComponent } from './pages/login/login-again/login-again.component';
 import { DialogService } from 'primeng/dynamicdialog';
+import { WarehouseComponent } from './pages/management/warehouse/warehouse.component';
 
 @NgModule({
     imports: [
@@ -300,7 +301,8 @@ import { DialogService } from 'primeng/dynamicdialog';
         PermissionsComponent,
         UserComponent,
         CreateUserComponent,
-        LoginAgainComponent
+        LoginAgainComponent,
+        WarehouseComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

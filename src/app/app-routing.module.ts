@@ -39,6 +39,7 @@ import { PermissionsComponent } from './pages/settings/permissions/permissions.c
 import { UserComponent } from './pages/management/user/user.component';
 import { CreateUserComponent } from './pages/management/user/create-user/create-user.component';
 import { AuthClassGuard } from './auth--class.guard';
+import { WarehouseComponent } from './pages/management/warehouse/warehouse.component';
 
 @NgModule({
     imports: [
@@ -56,6 +57,8 @@ import { AuthClassGuard } from './auth--class.guard';
 
                     {path: 'management/user', component: UserComponent, canActivate: [AuthClassGuard],},
                     {path: 'management/user/create', component: CreateUserComponent, canActivate: [AuthClassGuard],},
+
+                    {path: 'management/warehouse', component: WarehouseComponent, canActivate: [AuthClassGuard],},
 
 
                     //configuration settings
