@@ -1,4 +1,47 @@
+<div>
+	<div class="grid">
+		<div class="col-12">
+			<div class="card">
+                <p-panel header="Opciones" [toggleable]="true" [collapsed]="true">
+                    <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="field col-12 md:col-4">
+                                <label> Empresa </label>
+                                <p-dropdown [formControlName]="'idEnterprise'" [id]="'state'" [options]="enterpriseList" optionLabel="name" optionValue="id" (onChange)="getBranchOfficeCombo($event)" emptyMessage="No se encontraron empresas."></p-dropdown>
+                            </div>
 
+                            <div class="field col-12 md:col-4">
+                                <label> Sucursal </label>
+                                <p-dropdown [formControlName]="'idBranchOffice'" [id]="'state'" [options]="branchOfficeList" optionLabel="name" optionValue="id"></p-dropdown>
+                            </div>
+
+                            <div class="field col-12 md:col-4">
+                                <label> Categoría </label>
+                                <p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList" optionLabel="name" optionValue="id"></p-dropdown>
+                            </div>
+
+                            <div class="field col-12 md:col-4">
+                                <label> Niveles </label>
+                                <p-dropdown [formControlName]="'limit'" [id]="'state'" [options]="limitList" optionLabel="name" optionValue="id"></p-dropdown>
+                            </div>
+                        </div>
+                        <button pButton type="submit" label="Buscar" [disabled]="!formGroup.valid"></button>
+                    </form>
+                    <hr>
+                    <div class="p-fluid p-formgrid grid">
+                        <div class="field col-12 md:col-4">
+                            <button pButton type="button" label="Crear producto" icon="pi pi-plus" class="p-button-success" (click)="buildCreateProduct()"></button>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                         <button pButton type="button" label="Reporte de quiebre" icon="pi pi-file-pdf" class="p-button-help" (click)="generateOutStocksPDFReport()" [disabled]="formGroup.value.idBranchOffice === ''"
+                         ></button>
+                        </div>
+                    </div>
+                </p-panel>
+            </div>
+        </div>
+    </div>
+</div>
 
 <paging-filter
     (pageChangeTriggered)="onPageChange($event)"
@@ -6,6 +49,7 @@
     [title]="'Almacén'"
     [principalLabel]="'Gestión'"
     [sucessorLabel]="'Almacén'"
+    [buttonLabelMessage] = "'Agregar producto'"
     [data]="this.pageableData"
     [globalFilters]="gobalFilters"
     [dataStructure]="this.tableStructure"

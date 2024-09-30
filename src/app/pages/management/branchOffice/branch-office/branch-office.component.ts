@@ -85,7 +85,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
         this.buildEditBranchOffice(event.data.id);
         break;
 
-      case 'viewMore':
+      case 'branchOffice':
         this.usersViewByIdBranchOffice(event.data.id);
         break;
         

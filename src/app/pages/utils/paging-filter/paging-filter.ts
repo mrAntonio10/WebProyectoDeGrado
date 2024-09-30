@@ -36,6 +36,7 @@ export class PagingFilterComponent implements OnInit {
     @Input() sucessorLabel: string;
     @Input() data: any;
     @Input() dataStructure: ColumnStructure[];
+    @Input() buttonLabelMessage: string = 'Crear';
 
     @Output() pageChangeTriggered = new EventEmitter<any>();
 

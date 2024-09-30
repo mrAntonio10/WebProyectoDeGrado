@@ -37,3 +37,10 @@ export interface IBranchOffice {
     inCode: string;
     enterprise: IEnterpriseState;
 }
+
+
+export interface IBranchOfficeState {
+    id: string;
+    name: string;
+    state: string;
+}

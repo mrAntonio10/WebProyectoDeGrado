@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 
 import { environment } from 'src/environments/environment';
 import { ICreateEnterprise, IUpdateEnterprise } from 'src/app/model/enterprise/enterprise';
+import { ICreateWarehouse, IUpdateWarehouse, IWarehouse } from 'src/app/model/warehouse/warehouse';
 
 @Injectable({
   providedIn: 'root'
@@ -27,19 +28,19 @@ export class WarehouseService {
     return this.httpClient.get<any>(`${this.apiUrl}/api/v1/warehouses`,  { params });
   }
 
-  createWarehouse(enterpriseObj: ICreateEnterprise): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/api/v1/warehouses`, enterpriseObj);
+  createWarehouse(warehouseObj: ICreateWarehouse): Observable<any> {
+    return this.httpClient.post(`${this.apiUrl}/api/v1/warehouses`, warehouseObj);
   }
 
-  updateWarehouse(enterpriseObj: IUpdateEnterprise): Observable<any> {
-    return this.httpClient.put(`${this.apiUrl}/api/v1/warehouses`, enterpriseObj);
+  updateWarehouse(warehouseObj: IUpdateWarehouse): Observable<any> {
+    return this.httpClient.put(`${this.apiUrl}/api/v1/warehouses`, warehouseObj);
   }
 
-  deleteWarehouse(idEnterprise: string): Observable<any> {
-    return this.httpClient.delete(`${this.apiUrl}/api/v1/warehouses/${idEnterprise}`);
+  deleteWarehouse(idWarehouse: string): Observable<any> {
+    return this.httpClient.delete(`${this.apiUrl}/api/v1/warehouses/${idWarehouse}`);
   }
 
-  getWarehouseById(idEnterprise: string): Observable<any> {
-    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/warehouses/${idEnterprise}`);
+  getWarehouseById(idWarehouse: string): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/warehouses/${idWarehouse}`);
   }
 }

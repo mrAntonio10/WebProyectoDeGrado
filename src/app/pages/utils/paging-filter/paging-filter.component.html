@@ -3,7 +3,7 @@
 		<div class="col-12">
 			<div class="card">
 				<h5> {{title}} </h5>
-				<button pButton type="button" label="Crear" *ngIf="createVisible" icon="pi pi-plus" class="p-button-success" (click)="navigateToCreate()"></button>
+				<button pButton type="button" label="{{buttonLabelMessage}}" *ngIf="createVisible" icon="pi pi-plus" class="p-button-success" (click)="navigateToCreate()"></button>
 				<hr>
 				<p-table 
 					[value]="this.value" 

@@ -40,6 +40,8 @@ import { UserComponent } from './pages/management/user/user.component';
 import { CreateUserComponent } from './pages/management/user/create-user/create-user.component';
 import { AuthClassGuard } from './auth--class.guard';
 import { WarehouseComponent } from './pages/management/warehouse/warehouse.component';
+import { CreateProductComponent } from './pages/management/warehouse/create-product/create-product.component';
+import { CreateWarehouseComponent } from './pages/management/warehouse/create-warehouse/create-warehouse.component';
 
 @NgModule({
     imports: [
@@ -59,6 +61,8 @@ import { WarehouseComponent } from './pages/management/warehouse/warehouse.compo
                     {path: 'management/user/create', component: CreateUserComponent, canActivate: [AuthClassGuard],},
 
                     {path: 'management/warehouse', component: WarehouseComponent, canActivate: [AuthClassGuard],},
+                    {path: 'management/warehouse/create-product', component: CreateProductComponent, canActivate: [AuthClassGuard],},
+                    {path: 'management/warehouse/create', component: CreateWarehouseComponent, canActivate: [AuthClassGuard],},
 
 
                     //configuration settings

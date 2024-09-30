@@ -160,6 +160,9 @@ import { CreateUserComponent } from './pages/management/user/create-user/create-
 import { LoginAgainComponent } from './pages/login/login-again/login-again.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { WarehouseComponent } from './pages/management/warehouse/warehouse.component';
+import { CreateProductComponent } from './pages/management/warehouse/create-product/create-product.component';
+import { CreateWarehouseComponent } from './pages/management/warehouse/create-warehouse/create-warehouse.component';
+import { EditWarehouseComponent } from './pages/management/warehouse/edit-warehouse/edit-warehouse.component';
 
 @NgModule({
     imports: [
@@ -302,7 +305,10 @@ import { WarehouseComponent } from './pages/management/warehouse/warehouse.compo
         UserComponent,
         CreateUserComponent,
         LoginAgainComponent,
-        WarehouseComponent
+        WarehouseComponent,
+        CreateProductComponent,
+        CreateWarehouseComponent,
+        EditWarehouseComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

@@ -9,8 +9,16 @@ import { ConfirmationService } from 'primeng/api';
 import { PermissionService } from 'src/app/services/permission/permission.service';
 import { MessageService } from 'primeng/api';
 import { FormBuilder } from '@angular/forms';
-import { IWarehousePaged } from 'src/app/model/warehouse/warehouse';
+import { ICreateWarehouse, IUpdateWarehouse, IWarehousePaged } from 'src/app/model/warehouse/warehouse';
 import { WarehouseService } from 'src/app/services/warehouse/warehouse.service';
+import { EnterpriseService } from 'src/app/services/enterprise/enterprise.service';
+import { BranchOfficeService } from 'src/app/services/branchOffice/branchOffice.service';
+import { ICreateProduct } from 'src/app/model/product/product';
+import { ProductService } from 'src/app/services/product/product.service';
+import { EditWarehouseComponent } from './edit-warehouse/edit-warehouse.component';
+import { DialogService } from 'primeng/dynamicdialog';
+import { ReportService } from 'src/app/services/report/report.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-warehouse',
@@ -32,9 +40,13 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
   enterpriseList: any = [];
   branchOfficeList: any = [];
+  productCategoryList: any = [];
+  limitList: any = [];
 
   formGroup: FormGroup;
   idBranchOfficeFilter : string;
+  categoryFilter: string;
+  limitFilter: string;
 
 
   constructor(private router: Router,
@@ -44,8 +56,11 @@ export class WarehouseComponent implements OnInit, OnDestroy {
     private permissionService: PermissionService,
     private messageService: MessageService,
     private fb: FormBuilder,
-    // private enterpriseService: EnterpriseService,
-    // private branchOfficeService: BranchOfficeService
+    private enterpriseService: EnterpriseService,
+    private branchOfficeService: BranchOfficeService,
+    private productService: ProductService,
+    private dialogService: DialogService,
+    private reportService: ReportService,
   ) {
 
   }
@@ -57,12 +72,15 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
      this.formGroup = this.buildForm();
 
-    //  this.getEnterpriseCombo();
+     this.getEnterpriseCombo();
+     this.getProductCategoryCombo();
+     this.getLimitCombo();
  
      this.formData =  JSON.parse(sessionStorage.getItem('formData'));
  
-    //  if (this?.formData?.action === 'create') this.submitCreateUser(this.formData);
-    //  if (this?.formData?.action === 'update') this.submitUpdateUser(this.formData);
+     if (this?.formData?.action === 'create-product') this.submitCreateProduct(this.formData);
+     if (this?.formData?.action === 'create') this.submitCreateProductWarehouse(this.formData);
+     if (this?.formData?.action === 'update') this.submitUpdateProductWarehouse(this.formData);
 
   }
 
@@ -117,7 +135,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
         break;
 
       case 'edit':
-        // this.buildEditUser(event.data.id);
+        this.buildEditWarehouseProduct(event.data);
         break;
 
       }
@@ -149,23 +167,77 @@ export class WarehouseComponent implements OnInit, OnDestroy {
     });
   }
 
-  // buildEditUser(id: string) {
-  //   this.activatedRoute.url.subscribe(urlSegments => {
-  //     const fullPath = urlSegments.map(segment => segment.path).join('/');
-  //     sessionStorage.setItem('fullPath', fullPath);
+  buildCreateProduct() {
+    this.activatedRoute.url.subscribe(urlSegments => {
+      const fullPath = urlSegments.map(segment => segment.path).join('/');
+      sessionStorage.setItem('fullPath', fullPath);
 
-  //     let userObserable = this.warehouseService.getUserById(id);
+     this.router.navigate(['/dashboard/management/warehouse/create-product']);
+    });
+  }
 
-  //     let userData: IUser;
-  //     forkJoin([userObserable]).subscribe(
-  //         ([user]) => {
-  //             userData = { ...user.data, action : 'update' };
-  //             localStorage.setItem('dinamicFormConfig', JSON.stringify(userData));
-  //             this.router.navigate(['/dashboard/management/user/create']);
-  //         }
-  //     );
-  //   });
-  // }
+  generateOutStocksPDFReport() {
+    this.idBranchOfficeFilter = this.formGroup.value.idBranchOffice;
+    this.categoryFilter = this.formGroup.value.category;
+
+    let params = { page: 0, size: 1000, idBranchOffice: this.idBranchOfficeFilter, category: this.categoryFilter, limit: 'min' };
+
+    let observablePdfReport = this.reportService.getOutStocksPDFReport(params);
+    forkJoin([observablePdfReport]).subscribe({
+      next: ([response]) => {
+        var blob = this.b64toBlob(response.data.base64, "application/pdf");
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        var url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.target = "_blank";
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      }
+    })
+  }
+
+  public b64toBlob(b64Data, contentType) {
+    contentType = contentType || '';
+    let sliceSize = 512;
+  
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+  
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+  
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+  
+        var byteArray = new Uint8Array(byteNumbers);
+  
+        byteArrays.push(byteArray);
+    }
+  
+    var blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  }
+
+  buildEditWarehouseProduct(data: any) {
+    const ref = this.dialogService.open(EditWarehouseComponent, {
+      header: 'Actualizar registro - Sucursal: '+data.branchOfficeName,
+      width: '70%',
+      data: {idData: data.id}
+    });
+
+    ref.onClose.subscribe({
+      next: () => {
+        this.ngOnInit();
+      }
+    });
+  }
 
   private buildPageStructure() {
     this.tableStructure = [
@@ -174,44 +246,66 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       {thead: 'Id', value: 'id', ttype: 'text', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
       {thead: 'Producto', value: 'productName',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre producto'},
       {thead: 'Categoría', value: 'category', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por categoría'},
+      {thead: 'Costo unitario', value: 'unitaryCost', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por Costo'},
       {thead: 'Stock', value: 'stock', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por stock'},
-      {thead: 'Precio unitario', value: 'unitaryCost', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por precio'},
+      {thead: 'Nivel', value: 'stockState', ttype: 'verified', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nivel'},
       {thead: 'Min', value: 'min', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por límite mínimo'},
-      {thead: 'Max', value: 'max', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por límite máximo'}
+      {thead: 'Max', value: 'max', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por límite máximo'},
+      {thead: 'Sucursal', value: 'branchOfficeName', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por sucursal'}
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);
   }
 
-  // private getEnterpriseCombo() {
-  //   let observableEnterpriseList= this.enterpriseService.getEnterpriseListCombo();
+  private getEnterpriseCombo() {
+    this.enterpriseList = [];
+    let observableEnterpriseList= this.enterpriseService.getEnterpriseListCombo();
 
-  //   forkJoin([observableEnterpriseList]).subscribe(
-  //     ([enterprises]) => {
-  //       this.enterpriseList = enterprises.data;
-  //       this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''})
-  //     }
-  //   );
-  // }
+    forkJoin([observableEnterpriseList]).subscribe(
+      ([enterprises]) => {
+        this.enterpriseList = enterprises.data;
+        this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''})
+      }
+    );
+  }
 
-  // getBranchOfficeCombo(event) {
-  //   console.log("EVENT ", event.value);
+  getBranchOfficeCombo(event) {
+    this.branchOfficeList = [];
 
-  //   let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(event.value);
+    let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(event.value);
 
-  //   forkJoin([observableBranchOfficeList]).subscribe(
-  //     ([branchOffices]) => {
-  //       this.branchOfficeList = branchOffices.data;
-  //       this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''})
-  //     }
-  //   );
-  // }
+    forkJoin([observableBranchOfficeList]).subscribe(
+      ([branchOffices]) => {
+        this.branchOfficeList = branchOffices.data;
+        this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''})
+      }
+    );
+  }
+
+  private getProductCategoryCombo() {
+    this.productCategoryList = [];
+
+      this.productCategoryList.push({name: 'Todas las categorías', id: ''});
+      this.productCategoryList.push({name: 'Bebida', id: 'bebida'});
+      this.productCategoryList.push({name: 'Almuerzo', id: 'almuerzo'});
+      this.productCategoryList.push({name: 'Sándwich', id: 'sándwich'});
+      this.productCategoryList.push({name: 'Empanada', id: 'empanada'});
+  }
+
+  private getLimitCombo() {
+    this.limitList = [];
+
+    this.limitList.push({name: 'Todos', id: ''});
+    this.limitList.push({name: 'Reporte de quiebre', id: 'min'});
+}
 
   buildForm(): FormGroup {
     const group = this.fb.group({});
 
       group.addControl('idEnterprise', this.fb.control(''));
       group.addControl('idBranchOffice', this.fb.control(''));
+      group.addControl('category', this.fb.control(''));
+      group.addControl('limit', this.fb.control(''));
 
       return group;
   }
@@ -219,8 +313,10 @@ export class WarehouseComponent implements OnInit, OnDestroy {
   submitForm() {
     if (this.formGroup.valid) {
         this.idBranchOfficeFilter = this.formGroup.value.idBranchOffice;
+        this.categoryFilter = this.formGroup.value.category;
+        this.limitFilter = this.formGroup.value.limit;
 
-        let params = { idBranchOffice: this.idBranchOfficeFilter };
+        let params = { idBranchOffice: this.idBranchOfficeFilter, category: this.categoryFilter, limit: this.limitFilter };
 
         this.getWarehousePageableData(params);
     }
@@ -228,52 +324,76 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
   onPageChange(event: any) {
     var getFilter = '';
-    // var branchOfficeFilter = '';
+    var branchOfficeFilter = '';
+    var categoryFilter = '';
+    var limitFilter = '';
 
     if (event.filters && event.filters.productName) {
         if (!!event.filters.productName[0].value) {
             getFilter = event.filters.productName[0].value;
         }
     }
-    // if(!!this.idBranchOfficeFilter) {
-    //   branchOfficeFilter = this.idBranchOfficeFilter;
-    // }
+    if(!!this.idBranchOfficeFilter) {
+      branchOfficeFilter = this.idBranchOfficeFilter;
+    }
+    if(!!this.categoryFilter) {
+      categoryFilter = this.categoryFilter;
+    }
+    if(!!this.limitFilter) {
+      limitFilter = this.limitFilter;
+    }
 
-    let params = { page: event.page, size: event.rows , filter: getFilter};
+    let params = { page: event.page, size: event.rows , filter: getFilter, idBranchOffice: branchOfficeFilter, category: categoryFilter, limit: limitFilter};
 
     this.getWarehousePageableData(params);
   }
 
-  // submitCreateUser(submittedData: ICreateUser) {
-  //   let createObservable = this.warehouseService.createUser(submittedData);
+  submitCreateProduct(submittedData: ICreateProduct) {
+    let createObservable = this.productService.createProduct(submittedData);
 
-  //   forkJoin([createObservable]).subscribe({
-  //     next:  ([created]) => {
-  //       sessionStorage.removeItem('formData');
-  //       this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Usuario creado exitosamente.' });
-  //       this.ngOnInit(); 
-  //     }, 
-  //     error: (err) => {
-  //       this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
-  //     }
-  //   }
-  //   )
-  // }
+    forkJoin([createObservable]).subscribe({
+      next:  ([created]) => {
+        sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto creado exitosamente.' });
+        this.ngOnInit(); 
+      }, 
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      }
+    }
+    )
+  }
 
-  // submitUpdateUser(submittedData: IUpdateUser) {
-  //   let updateObservable = this.warehouseService.updateUser(submittedData);
+  submitCreateProductWarehouse(submittedData: ICreateWarehouse) {
+    let createObservable = this.warehouseService.createWarehouse(submittedData);
 
-  //   forkJoin([updateObservable]).subscribe({
-  //     next: ([created]) => {
-  //       sessionStorage.removeItem('formData');
-  //       this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Usuario actualizado exitosamente.' });
-  //       this.ngOnInit(); 
-  //     },
-  //     error: (err) => {
-  //       this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
-  //     }
-  //   }
-  //   )
-  // }
+    forkJoin([createObservable]).subscribe({
+      next:  ([created]) => {
+        sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto registrado exitosamente.' });
+        this.ngOnInit(); 
+      }, 
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      }
+    }
+    )
+  }
+
+  submitUpdateProductWarehouse(submittedData: IUpdateWarehouse) {
+    let updateObservable = this.warehouseService.updateWarehouse(submittedData);
+
+    forkJoin([updateObservable]).subscribe({
+      next: ([created]) => {
+        sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto almacén actualizado exitosamente.' });
+        this.ngOnInit(); 
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      }
+    }
+    )
+  }
 
 }
