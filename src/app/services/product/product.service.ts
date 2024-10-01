@@ -16,6 +16,19 @@ export class ProductService {
   constructor(private httpClient: HttpClient) {
   }
 
+  getProductPageable(paramsObj: any): Observable<any> {
+    let params = new HttpParams;
+
+    for (let key in paramsObj) {
+      if (paramsObj.hasOwnProperty(key)) {
+        params = params.set(key, paramsObj[key]);
+      }
+    }
+
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/products`,  { params });
+  }
+
+
   createProduct(productObj: ICreateProduct): Observable<any> {
     return this.httpClient.post(`${this.apiUrl}/api/v1/products`, productObj);
   }

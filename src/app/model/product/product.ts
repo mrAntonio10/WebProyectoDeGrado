@@ -17,3 +17,9 @@ export interface IProduct {
   beverageFormat: string;
   state: boolean;
 }
+
+export interface IProductPage {
+  id: string;
+  name: string;
+  category: string;
+}

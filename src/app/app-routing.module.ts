@@ -62,7 +62,7 @@ import { CreateWarehouseComponent } from './pages/management/warehouse/create-wa
 
                     {path: 'management/warehouse', component: WarehouseComponent, canActivate: [AuthClassGuard],},
                     {path: 'management/warehouse/create-product', component: CreateProductComponent, canActivate: [AuthClassGuard],},
-                    {path: 'management/warehouse/create', component: CreateWarehouseComponent, canActivate: [AuthClassGuard],},
+                    {path: 'management/warehouse/create', loadChildren: () => import('../app/pages/management/warehouse/create-warehouse/steps.module').then(m => m.StepsModule), canActivate: [AuthClassGuard],},
 
 
                     //configuration settings

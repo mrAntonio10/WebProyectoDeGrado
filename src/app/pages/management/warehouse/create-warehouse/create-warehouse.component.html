@@ -2,88 +2,14 @@
 	<div class="col-12">
 	  <div class="card">
 		<h5> {{ this.buttonValue }} producto al almacén </h5>
-<!-- 
+
         <div class="col-12 md:col-8 h-full">
-            <p-steps [model]="routeItems" styleClass="mt-5" [readonly]="false"></p-steps>
+            <p-steps [model]="routeItems" styleClass="mt-5" [readonly]="true"></p-steps>
         </div>
-        <div class="col-12 md:col-4 mt-5 md:mt-0">
+        <div class="col-12">
             <router-outlet></router-outlet>
-        </div> -->
+        </div>
 
-		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
-		  <div class="p-fluid p-formgrid grid">
-
-                <div class="field col-12 md:col-4">
-                    <label> Empresa </label>
-                    <p-dropdown [formControlName]="'idEnterprise'" [id]="'state'" [options]="enterpriseList" optionLabel="name" optionValue="id" (onChange)="getBranchOfficeCombo($event)" emptyMessage="No se encontraron empresas."></p-dropdown>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label> Sucursal </label>
-                    <p-dropdown [formControlName]="'idBranchOffice'" [id]="'state'" [options]="branchOfficeList" optionLabel="name" optionValue="id" emptyMessage="No existen resultados."></p-dropdown>
-                
-                    <small id="username-help" class="p-error" *ngIf="formGroup.get('idBranchOffice').invalid && formGroup.get('idBranchOffice').touched">
-                        Requerido.
-                    </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label> Categoría </label>
-                    <p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList" optionLabel="name" optionValue="id" emptyMessage="No existen resultados." (onChange)="getProductCombo($event)"></p-dropdown>
-                
-                    <small id="username-help" class="p-error" *ngIf="formGroup.get('category').invalid && formGroup.get('category').touched">
-                        Requerido.
-                    </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label> Producto </label>
-                    <p-dropdown [formControlName]="'idProduct'" [id]="'state'" [options]="productList" optionLabel="name" optionValue="id" emptyMessage="No existen resultados."></p-dropdown>
-               
-                    <small id="username-help" class="p-error" *ngIf="formGroup.get('idProduct').invalid && formGroup.get('idProduct').touched">
-                        Requerido.
-                    </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label> Cantidad mínima </label>
-                    <p-inputNumber  [formControlName]="'minProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
-
-                    <small id="username-help" class="p-error" *ngIf="formGroup.get('minProduct').invalid && formGroup.get('minProduct').touched">
-                        Requerido. Mayor a 0.
-                    </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label> Cantidad máxima </label>
-                    <p-inputNumber  [formControlName]="'maxProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
-
-                    <small id="username-help" class="p-error" *ngIf="formGroup.get('maxProduct').invalid && formGroup.get('maxProduct').touched">
-                        Requerido. Mayor a 0.
-                    </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label> Stock </label>
-                    <p-inputNumber  [formControlName]="'stock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
-
-                    <small id="username-help" class="p-error" *ngIf="formGroup.get('stock').invalid && formGroup.get('stock').touched">
-                        Requerido. Mayor a 0.
-                    </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label> Costo unitario </label>
-                    <p-inputNumber  [formControlName]="'unitaryCost'" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" max="999.99"/>
-
-                    <small id="username-help" class="p-error" *ngIf="formGroup.get('unitaryCost').invalid && formGroup.get('unitaryCost').touched">
-                        Requerido. Mayor a 0. Mínimo 2 decimales.
-                    </small>
-                </div>
-
-		  </div>
-		  <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
-		</form>
 	  </div>
 	</div>
   </div>

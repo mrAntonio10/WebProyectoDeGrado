@@ -163,6 +163,8 @@ import { WarehouseComponent } from './pages/management/warehouse/warehouse.compo
 import { CreateProductComponent } from './pages/management/warehouse/create-product/create-product.component';
 import { CreateWarehouseComponent } from './pages/management/warehouse/create-warehouse/create-warehouse.component';
 import { EditWarehouseComponent } from './pages/management/warehouse/edit-warehouse/edit-warehouse.component';
+import { SetProductValuesComponent } from './pages/management/warehouse/create-warehouse/set-product-values/set-product-values.component';
+import { SelectProductComponent } from './pages/management/warehouse/create-warehouse/select-product/select-product.component';
 
 @NgModule({
     imports: [
@@ -308,7 +310,9 @@ import { EditWarehouseComponent } from './pages/management/warehouse/edit-wareho
         WarehouseComponent,
         CreateProductComponent,
         CreateWarehouseComponent,
-        EditWarehouseComponent
+        EditWarehouseComponent,
+        SetProductValuesComponent,
+        SelectProductComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
