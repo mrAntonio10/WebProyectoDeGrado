@@ -2,7 +2,7 @@ import { ValidatorFn, Validators } from "@angular/forms";
 
 export interface ColumnStructure {
   thead: string;
-  ttype: 'text' | 'number' | 'date' | 'boolean' | 'actions' | 'verified';
+  ttype: 'text' | 'number' | 'decimal' | 'date' | 'boolean' | 'actions' | 'verified';
   value: string;
   filterplaceholder?: string;
   hasFilter: boolean;

@@ -14,7 +14,16 @@
                     </div>
 
                     <div class="field col-12 md:col-4">
-                        <label> Stock </label>
+                        <label> Stock actual </label>
+                        <p-inputNumber [formControlName]="'actualStock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false" [readonly]="true"/>
+            
+                        <small id="username-help" class="p-error" *ngIf="formGroup.get('actualStock').invalid && formGroup.get('actualStock').touched">
+                            Requerido. Mayor a 0.
+                        </small>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label> Actualizar stock </label>
                         <p-inputNumber  [formControlName]="'stock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
     
                         <small id="username-help" class="p-error" *ngIf="formGroup.get('stock').invalid && formGroup.get('stock').touched">
@@ -23,7 +32,7 @@
                     </div>
 
                     <div class="field col-12 md:col-4">
-                        <label> Cantidad mínima </label>
+                        <label> Mínimo </label>
                         <p-inputNumber  [formControlName]="'minProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
     
                         <small id="username-help" class="p-error" *ngIf="formGroup.get('minProduct').invalid && formGroup.get('minProduct').touched">
@@ -32,7 +41,7 @@
                     </div>
     
                     <div class="field col-12 md:col-4">
-                        <label> Cantidad máxima </label>
+                        <label> Máximo </label>
                         <p-inputNumber  [formControlName]="'maxProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
     
                         <small id="username-help" class="p-error" *ngIf="formGroup.get('maxProduct').invalid && formGroup.get('maxProduct').touched">
@@ -48,11 +57,10 @@
                             Requerido. Mayor a 0. Mínimo 2 decimales.
                         </small>
                     </div>
-                    
-                    <div class="col-6  flex justify-content-center">
-                        <p-toast/>
-                        <input pButton pRipple type="submit" class="submit" value="Actualizar" [disabled]="!formGroup.valid">
-                    </div>
+                </div>
+                <div>
+                    <p-toast/>
+                    <input pButton pRipple type="submit" class="submit" value="Actualizar" [disabled]="!formGroup.valid">
                 </div>
             </form>
         </div>

@@ -27,7 +27,7 @@
 				<input id="password" type="password" pInputText formControlName="password">
 
 				<small id="username-help" class="p-error" *ngIf="formGroup.get('password').invalid && formGroup.get('password').touched">
-					Requerido. Máximo 60 caracteres.
+					Requerido. Máximo 60, Mínimo 8 caracteres. Al menos 2 números y 1 [mayúscula, minúscula, caracter especial].
 				</small>
 			</div>
 

@@ -89,9 +89,13 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
       accept: () => {
         console.log(`Producto con ID ${data.id} agregado`);
         this.idProduct = data.id;
-        this.messageService.add({ severity: 'success', summary: 'Correcto', detail: `Producto ${data.name}, seleccionado.` });
         sessionStorage.setItem("idProduct", data.id);
         sessionStorage.setItem("productName", data.name);
+
+        sessionStorage.setItem("pName", data.productName);
+        sessionStorage.setItem("beverageFormat", data.beverageFormat);
+
+        this.router.navigate(['/dashboard/management/warehouse/create/value']);
       },
       reject: () => {
         console.log('Acción de bloqueo cancelada');
@@ -107,7 +111,7 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
         return;
 
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Seleccione un producto primero.' });
+      this.messageService.add({ severity: 'warn', summary: 'Información', detail: 'Primero seleccione un producto.' });
     }
 
 }

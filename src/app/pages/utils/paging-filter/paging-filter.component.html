@@ -57,6 +57,18 @@
 										</td>
 									</ng-container>
 
+									<ng-container *ngSwitchCase="'number'">
+										<span style="text-align: right; display: block;">
+											{{ data[dt.value] }}
+										</span>
+									</ng-container>
+
+									<ng-container *ngSwitchCase="'decimal'">
+										<span style="text-align: right; display: block;">
+											{{ data[dt.value]  | number:'1.2-2' }}
+										</span>
+									</ng-container>
+
 									<ng-container *ngSwitchDefault>
 										<span>
 											{{ data[dt.value] }}

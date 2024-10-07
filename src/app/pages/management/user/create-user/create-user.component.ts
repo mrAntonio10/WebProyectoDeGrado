@@ -104,9 +104,11 @@ export class CreateUserComponent implements OnInit, OnDestroy {
           group.addControl('phoneNumber', this.fb.control((!!this.formValue?.phoneNumber ? this.formValue?.phoneNumber : ''), [Validators.pattern('^[\\d]*$'), Validators.maxLength(20)]));
           group.addControl('email', this.fb.control( (!!this.formValue?.email ? this.formValue?.email : ''), [Validators.required, Validators.email]));
           group.addControl('state', this.fb.control((!!this.formValue?.state ? this.selectedState : '')));
-          group.addControl('password', this.fb.control('', [Validators.required, Validators.maxLength(60)]));
-
-
+          group.addControl('password', this.fb.control('', [
+            Validators.required, 
+            Validators.maxLength(60),
+            Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d{2})(?=.*[$@!%?&#.()\\-_])[A-Za-z\\d$@!%?&#.()\\-_]{8,60}$')
+          ]));
           group.addControl('idEnterprise', this.fb.control((!!this.formValue?.idEnterprise ? this.formValue?.idEnterprise : ''), [Validators.required]));
           group.addControl('idBranchOffice', this.fb.control((!!this.formValue?.idBranchOffice ? this.formValue?.idBranchOffice : ''), [Validators.required]));
           group.addControl('idRol', this.fb.control((!!this.formValue?.idRol ? this.selectedRole : ''), Validators.required));

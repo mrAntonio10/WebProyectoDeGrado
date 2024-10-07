@@ -59,13 +59,16 @@ export class EditWarehouseComponent implements OnInit{
       group.addControl('idProduct', this.fb.control((this.formValue.product.id), [Validators.required]));
       group.addControl('minProduct', this.fb.control((this.formValue.minProduct), [Validators.required, Validators.min(1)]));
       group.addControl('maxProduct', this.fb.control((this.formValue.maxProduct), [Validators.required, Validators.min(1)]));
-      group.addControl('stock', this.fb.control((this.formValue.stock), [Validators.required, Validators.min(1)]));
+      group.addControl('actualStock', this.fb.control((this.formValue.stock), [Validators.required, Validators.min(1)]));
+      group.addControl('stock', this.fb.control((0), [Validators.required, Validators.min(1)]));
       group.addControl('unitaryCost', this.fb.control((this.formValue.unitaryCost), [Validators.required, Validators.min(1)]));
 
     return group;
   }
 
   submitForm() {
+    this.formGroup.get('stock').setValue(this.formGroup.value.actualStock + this.formGroup.value.stock);
+
     sessionStorage.setItem('formData', JSON.stringify({...this.formGroup.value, action: 'update'}));
     this.ref.close();
   }

@@ -191,7 +191,7 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
       {thead: 'Id', value: 'id',ttype: 'number', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
       {thead: 'Nombre', value: 'name',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre'},
       {thead: 'Email', value: 'email', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por email'},
-      {thead: 'Celular', value: 'phoneNumber', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'}
+      {thead: 'Celular', value: 'phoneNumber', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'}
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);

@@ -190,7 +190,8 @@ export class WarehouseComponent implements OnInit, OnDestroy {
         document.body.appendChild(a);
         var url = window.URL.createObjectURL(blob);
         a.href = url;
-        a.target = "_blank";
+        // a.target = "_blank";
+        a.download = "reporte.pdf";
         a.click();
         window.URL.revokeObjectURL(url);
         a.remove();
@@ -246,7 +247,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       {thead: 'Id', value: 'id', ttype: 'text', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
       {thead: 'Producto', value: 'productName',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre producto'},
       {thead: 'Categoría', value: 'category', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por categoría'},
-      {thead: 'Costo unitario', value: 'unitaryCost', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por Costo'},
+      {thead: 'Costo unitario', value: 'unitaryCost', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por Costo'},
       {thead: 'Stock', value: 'stock', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por stock'},
       {thead: 'Nivel', value: 'stockState', ttype: 'verified', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nivel'},
       {thead: 'Min', value: 'min', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por límite mínimo'},
@@ -261,12 +262,29 @@ export class WarehouseComponent implements OnInit, OnDestroy {
     this.enterpriseList = [];
     let observableEnterpriseList= this.enterpriseService.getEnterpriseListCombo();
 
-    forkJoin([observableEnterpriseList]).subscribe(
-      ([enterprises]) => {
+    forkJoin([observableEnterpriseList]).subscribe({
+      next: ([enterprises]) => {
         this.enterpriseList = enterprises.data;
-        this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''})
+      },
+      complete: () => {
+        if(this.enterpriseList.length == 1 ) {
+          this.formGroup.get('idBranchOffice').setValue(this.enterpriseList[0].id);
+
+          let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(this.formGroup.value.idBranchOffice);
+
+          forkJoin([observableBranchOfficeList]).subscribe(
+            ([branchOffices]) => {
+              this.branchOfficeList = branchOffices.data;
+              if(!!this.branchOfficeList) {
+                this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''});
+              }
+            }
+          );
+        } else {
+          this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''});
+        }
       }
-    );
+    });
   }
 
   getBranchOfficeCombo(event) {
@@ -277,7 +295,9 @@ export class WarehouseComponent implements OnInit, OnDestroy {
     forkJoin([observableBranchOfficeList]).subscribe(
       ([branchOffices]) => {
         this.branchOfficeList = branchOffices.data;
-        this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''})
+        if(!!this.branchOfficeList) {
+          this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''});
+        }
       }
     );
   }

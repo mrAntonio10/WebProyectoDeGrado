@@ -43,4 +43,8 @@ export class WarehouseService {
   getWarehouseById(idWarehouse: string): Observable<any> {
     return this.httpClient.get<any>(`${this.apiUrl}/api/v1/warehouses/${idWarehouse}`);
   }
+
+  getWarehouseByIdBranchOfficeProductNameAndBeverageFormat(idBranchOffice: string, produtName: string, beverageFormat: string): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/warehouses/${idBranchOffice}/${produtName}/${beverageFormat}`);
+  }
 }

@@ -1,6 +1,6 @@
 <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
     <p-card>
-    <h5> Producto {{ this.productName }}  </h5>
+    <h5> Producto: {{ this.productName }}  </h5>
 
 
     <div class="p-fluid p-formgrid grid">
@@ -12,25 +12,16 @@
 
         <div class="field col-12 md:col-4">
             <label> Sucursal </label>
-            <p-dropdown [formControlName]="'idBranchOffice'" [id]="'state'" [options]="branchOfficeList" optionLabel="name" optionValue="id" emptyMessage="No existen resultados."></p-dropdown>
+            <p-dropdown [formControlName]="'idBranchOffice'" [id]="'state'" [options]="branchOfficeList" optionLabel="name" optionValue="id" emptyMessage="No existen resultados." (onChange)="onBranchOfficeChange($event)"></p-dropdown>
         
             <small id="username-help" class="p-error" *ngIf="formGroup.get('idBranchOffice').invalid && formGroup.get('idBranchOffice').touched">
                 Requerido.
             </small>
         </div>
 
-        <!-- <div class="field col-12 md:col-4">
-            <label> Producto </label>
-            <p-dropdown [formControlName]="'idProduct'" [id]="'state'" [options]="productList" optionLabel="name" optionValue="id" emptyMessage="No existen resultados."></p-dropdown>
-        
-            <small id="username-help" class="p-error" *ngIf="formGroup.get('idProduct').invalid && formGroup.get('idProduct').touched">
-                Requerido.
-            </small>
-        </div> -->
-
         <div class="field col-12 md:col-4">
-            <label> Cantidad mínima </label>
-            <p-inputNumber  [formControlName]="'minProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
+            <label> Mínimo </label>
+            <p-inputNumber  [formControlName]="'minProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false" max="9999"/>
 
             <small id="username-help" class="p-error" *ngIf="formGroup.get('minProduct').invalid && formGroup.get('minProduct').touched">
                 Requerido. Mayor a 0.
@@ -38,17 +29,26 @@
         </div>
 
         <div class="field col-12 md:col-4">
-            <label> Cantidad máxima </label>
-            <p-inputNumber  [formControlName]="'maxProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
+            <label> Máximo </label>
+            <p-inputNumber  [formControlName]="'maxProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false" max="9999"/>
 
             <small id="username-help" class="p-error" *ngIf="formGroup.get('maxProduct').invalid && formGroup.get('maxProduct').touched">
                 Requerido. Mayor a 0.
             </small>
         </div>
 
+        <div class="field col-12 md:col-4" *ngIf="this.formGroup.value.actualStock != 0">
+            <label> Stock actual </label>
+            <p-inputNumber [formControlName]="'actualStock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false" [readonly]="true"/>
+
+            <small id="username-help" class="p-error" *ngIf="formGroup.get('actualStock').invalid && formGroup.get('actualStock').touched">
+                Requerido. Mayor a 0.
+            </small>
+        </div>
+
         <div class="field col-12 md:col-4">
-            <label> Stock </label>
-            <p-inputNumber  [formControlName]="'stock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
+            <label> Actualizar stock </label>
+            <p-inputNumber  [formControlName]="'stock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false" max="9999"/>
 
             <small id="username-help" class="p-error" *ngIf="formGroup.get('stock').invalid && formGroup.get('stock').touched">
                 Requerido. Mayor a 0.
@@ -75,3 +75,7 @@
         </div>
     </p-toolbar>
 </form>
+
+<div class="col-6  flex justify-content-center">
+    <p-toast/>
+</div>

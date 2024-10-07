@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html'
 })
-export class AppTopBarComponent implements OnDestroy{
+export class AppTopBarComponent {
 
     constructor(public app: AppMainComponent,
         private userService: LoginService,
@@ -27,10 +27,6 @@ export class AppTopBarComponent implements OnDestroy{
             },
         }
         );
-    }
-
-    ngOnDestroy(): void {
-        localStorage.clear();
     }
 
 }

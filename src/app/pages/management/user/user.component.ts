@@ -175,7 +175,7 @@ export class UserComponent implements OnInit, OnDestroy {
       {thead: 'Id', value: 'id', ttype: 'text', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
       {thead: 'Nombre completo', value: 'fullname',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre completo'},
       {thead: 'Email', value: 'email', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por email'},
-      {thead: 'Celular', value: 'phoneNumber', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'},
+      {thead: 'Celular', value: 'phoneNumber', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'},
       {thead: 'Rol', value: 'rol', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por rol'},
       {thead: 'Sucursal', value: 'branchOfficeName', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por empresa'},
       {thead: 'Estado', value: 'state', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por estado'}
@@ -187,12 +187,29 @@ export class UserComponent implements OnInit, OnDestroy {
   private getEnterpriseCombo() {
     let observableEnterpriseList= this.enterpriseService.getEnterpriseListCombo();
 
-    forkJoin([observableEnterpriseList]).subscribe(
-      ([enterprises]) => {
+    forkJoin([observableEnterpriseList]).subscribe({
+      next:  ([enterprises]) => {
         this.enterpriseList = enterprises.data;
-        this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''})
+      },
+      complete: () => {
+        if(this.enterpriseList.length == 1 ) {
+          this.formGroup.get('idBranchOffice').setValue(this.enterpriseList[0].id);
+
+          let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(this.formGroup.value.idBranchOffice);
+
+          forkJoin([observableBranchOfficeList]).subscribe(
+            ([branchOffices]) => {
+              this.branchOfficeList = branchOffices.data;
+              if(!!this.branchOfficeList) {
+                this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''});
+              }
+            }
+          );
+        } else {
+          this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''});
+        }
       }
-    );
+    });
   }
 
   getBranchOfficeCombo(event) {

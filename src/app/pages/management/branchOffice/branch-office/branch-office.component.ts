@@ -125,12 +125,18 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
   private getEnterpriseCombo() {
     let observableEnterpriseList= this.enterpriseService.getEnterpriseListCombo();
 
-    forkJoin([observableEnterpriseList]).subscribe(
-      ([enterprises]) => {
+    forkJoin([observableEnterpriseList]).subscribe({
+      next: ([enterprises]) => {
         this.enterpriseList = enterprises.data;
-        this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''})
+      },
+      complete: () => {
+        if(this.enterpriseList.length == 1 ) {
+          this.formGroup.get('idBranchOffice').setValue(this.enterpriseList[0].id);
+        } else {
+          this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''});
+        }
       }
-    );
+    });
   }
 
   blockBranchOffice(data: IBranchOfficePage) {
@@ -206,7 +212,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       {thead: 'Id', value: 'id',ttype: 'number', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
       {thead: 'Nombre', value: 'name',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre'},
       {thead: 'Ubicación', value: 'location', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por ubucación'},
-      {thead: 'Celular', value: 'phoneNumber', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'},
+      {thead: 'Celular', value: 'phoneNumber', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'},
       {thead: 'Empresa', value: 'enterpriseName', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por empresa'},
       {thead: 'Factura', value: 'invoice', ttype: 'verified', visible: true, hasFilter: false, filterplaceholder: 'Buscar por facturación'}
     ]
