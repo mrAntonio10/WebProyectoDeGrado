@@ -2,12 +2,14 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { ColumnStructure, FormConfig } from 'src/app/demo/domain/columnDataStructure';
 import { IProductPage } from 'src/app/model/product/product';
 import { IDetailWarehouseProducts, IWarehouseProductsPageable } from 'src/app/model/warehouse/warehouse';
 import { ProductService } from 'src/app/services/product/product.service';
 import { WarehouseService } from 'src/app/services/warehouse/warehouse.service';
+import { FindByNameCodeComponent } from '../find-by-name-code/find-by-name-code.component';
 
 @Component({
   selector: 'app-select-product',
@@ -36,6 +38,7 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
   constructor(private router: Router,
     private messageService: MessageService,
     private fb: FormBuilder,
+    private dialogService: DialogService,
     private warehouseService: WarehouseService,
     private confirmationService: ConfirmationService,
   ) {
@@ -54,13 +57,13 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
     sessionStorage.removeItem('formData');
   }
 
-  // @HostListener('window:keydown', ['$event'])
-  // handleKeyDown(event: KeyboardEvent) {
-  //   if (event.ctrlKey && event.key === 'f') {
-  //     event.preventDefault(); //Prevenimos la pantalla de impresión
-  //     this.routeAddProductToDetail(); 
-  //   }
-  // }
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 'f') {
+      event.preventDefault(); //Prevenimos la pantalla de impresión
+      this.dialogFindProductWarehouseByCode(); 
+    }
+  }
 
   private getProductPageableData(params: any = { page: 0, size: 5 }) {
     let productObservable = this.warehouseService.getWarehouseProductsPageable(params);
@@ -101,14 +104,36 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
         var completeDetail: IDetailWarehouseProducts[] = JSON.parse(sessionStorage.getItem('productDetail'))?.content ?? [];
 
         var newDetail: IDetailWarehouseProducts = {idProduct: data.idProduct, productName: data.productName, unitaryCost: data.unitaryCost, quantity: 1, totalDiscount: 0, totalPrice: 1*data.unitaryCost };
-        completeDetail.push(newDetail);
+       
+        var checkIfExist = completeDetail.find(d => d.productName === newDetail.productName);
         
-        sessionStorage.setItem('productDetail', JSON.stringify({content: completeDetail, page: {totalElements: completeDetail.length, size:  10}}));
-
-        this.router.navigate(['/dashboard/comercial-management/sales-panel']);
+        if(checkIfExist) {
+          this.messageService.add({severity: 'info', summary: 'Info', detail: 'El producto actualmente forma parte del detalle.'});
+        } else {
+          completeDetail.push(newDetail);
+        
+          sessionStorage.setItem('productDetail', JSON.stringify({content: completeDetail, page: {totalElements: completeDetail.length, size:  10}}));
+  
+          this.router.navigate(['/dashboard/comercial-management/sales-panel']);
+        }
       },
       reject: () => {
         console.log('Acción de bloqueo cancelada');
+      }
+    });
+  }
+
+  dialogFindProductWarehouseByCode() {
+    const ref = this.dialogService.open(FindByNameCodeComponent, {
+      header: 'Buscar producto por nombre o código',
+      width: '40%',
+    });
+
+    ref.onClose.subscribe({
+      next: (filterValue) => {
+        let params = { filter: filterValue ?? ''};
+
+        this.getProductPageableData(params);
       }
     });
   }

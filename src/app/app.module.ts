@@ -86,6 +86,9 @@ import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 import {FullCalendarModule} from '@fullcalendar/angular';
+import {AutoFocusModule} from 'primeng/autofocus';
+
+
 
 // Application Components
 import {AppCodeModule} from './blocks/app-code/app.code.component';
@@ -167,6 +170,7 @@ import { SetProductValuesComponent } from './pages/management/warehouse/create-w
 import { SelectProductComponent } from './pages/management/warehouse/create-warehouse/select-product/select-product.component';
 import { SalesPanelComponent } from './pages/comercial-management/sales-panel/sales-panel.component';
 import { DetailSelectProductComponent } from './pages/comercial-management/sales-panel/select-product/select-product.component';
+import { FindByNameCodeComponent } from './pages/comercial-management/sales-panel/find-by-name-code/find-by-name-code.component';
 
 @NgModule({
     imports: [
@@ -258,6 +262,7 @@ import { DetailSelectProductComponent } from './pages/comercial-management/sales
         ReactiveFormsModule,
         CommonModule,
         RouterModule,
+        AutoFocusModule
     ],
     declarations: [
         AppComponent,
@@ -317,6 +322,7 @@ import { DetailSelectProductComponent } from './pages/comercial-management/sales
         SelectProductComponent,
         SalesPanelComponent,
         DetailSelectProductComponent,
+        FindByNameCodeComponent,
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
