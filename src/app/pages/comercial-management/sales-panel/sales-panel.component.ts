@@ -6,7 +6,7 @@ import { forkJoin } from 'rxjs';
 import { ColumnStructure, FormConfig } from 'src/app/demo/domain/columnDataStructure';
 import { IBranchOffice, IBranchOfficePage, ICreateBranchOffice, IUpdateBranchOffice } from 'src/app/model/branchOffice/branchOffice';
 import { IEnterpriseState } from 'src/app/model/enterprise/enterprise';
-import { IDetailWarehouseProducts } from 'src/app/model/warehouse/warehouse';
+import { IDetailWarehouseProducts, ISalesPanelPageableContent } from 'src/app/model/warehouse/warehouse';
 import { BranchOfficeService } from 'src/app/services/branchOffice/branchOffice.service';
 import { EnterpriseService } from 'src/app/services/enterprise/enterprise.service';
 import { PermissionService } from 'src/app/services/permission/permission.service';
@@ -18,7 +18,7 @@ import { PermissionService } from 'src/app/services/permission/permission.servic
   styleUrls: ['./sales-panel.component.scss']
 })
 export class SalesPanelComponent implements OnInit, OnDestroy {
-  pageableData: IDetailWarehouseProducts[] = [];
+  pageableData: ISalesPanelPageableContent;
   tableStructure: ColumnStructure[];
   gobalFilters;
 
@@ -86,7 +86,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 
   }
 
-  handleActionTriggered(event: { action: string, data: IBranchOfficePage }) {
+  handleActionTriggered(event: { action: string, data: IDetailWarehouseProducts }) {
     switch(event.action) {
       case 'block':
         this.deleteProductFromOrder(event.data);
@@ -121,23 +121,22 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     )
   }
 
-  deleteProductFromOrder(data: IBranchOfficePage) {
+  deleteProductFromOrder(data: IDetailWarehouseProducts) {
     this.confirmationService.confirm({
-      message: `¿Estás seguro de eliminar el producto ${data.name}?`,
+      message: `¿Estás seguro de eliminar el producto ${data.productName}?`,
       header: 'Eliminar producto',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        let deleteObservable = this.branchOfficeService.deleteBranchOffice(data.id);
+          var deleteItemIndex = this.pageableData.content.findIndex(d => d.idProduct === data.idProduct);
 
-        forkJoin([deleteObservable]).subscribe({
-          next: ([deleted]) => {
-            this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto eliminado exitosamente.' });
-              this.ngOnInit();
-          },
-          error: (err) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+          if (deleteItemIndex !== -1) {
+            this.pageableData.content.splice(deleteItemIndex, 1);
+
+            sessionStorage.setItem('productDetail', JSON.stringify(this.pageableData))
           }
-        });
+      
+          this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto eliminado exitosamente.' });
+          this.getProductsFromOrderPageableData();
       },
       reject: () => {
         console.log('Acción de bloqueo cancelada');

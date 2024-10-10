@@ -48,6 +48,11 @@ export interface IWarehouseProductsPageable {
   unitaryCost: string;
 }
 
+export interface ISalesPanelPageableContent {
+  content: IDetailWarehouseProducts[],
+  page : [];
+}
+
 export interface IDetailWarehouseProducts {
   productName: string;
   quantity: number;
