@@ -131,7 +131,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         if(this.enterpriseList.length == 1 ) {
-          this.formGroup.get('idBranchOffice').setValue(this.enterpriseList[0].id);
+          this.formGroup.get('idEnterprise').setValue(this.enterpriseList[0].id);
         } else {
           this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''});
         }
@@ -247,7 +247,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       next: ([created]) => {
         sessionStorage.removeItem('formData');
         this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Sucursal creada exitosamente.' });
-        this.ngOnInit(); 
+        // this.ngOnInit(); 
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
@@ -262,10 +262,12 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       next: ([created]) => {
         sessionStorage.removeItem('formData');
         this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Sucursal Actualizada exitosamente.' });
-        this.ngOnInit(); 
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      },
+      complete: () => {
+        this.ngOnInit(); 
       }
     })
   }

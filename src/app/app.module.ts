@@ -165,6 +165,8 @@ import { CreateWarehouseComponent } from './pages/management/warehouse/create-wa
 import { EditWarehouseComponent } from './pages/management/warehouse/edit-warehouse/edit-warehouse.component';
 import { SetProductValuesComponent } from './pages/management/warehouse/create-warehouse/set-product-values/set-product-values.component';
 import { SelectProductComponent } from './pages/management/warehouse/create-warehouse/select-product/select-product.component';
+import { SalesPanelComponent } from './pages/comercial-management/sales-panel/sales-panel.component';
+import { DetailSelectProductComponent } from './pages/comercial-management/sales-panel/select-product/select-product.component';
 
 @NgModule({
     imports: [
@@ -312,7 +314,9 @@ import { SelectProductComponent } from './pages/management/warehouse/create-ware
         CreateWarehouseComponent,
         EditWarehouseComponent,
         SetProductValuesComponent,
-        SelectProductComponent
+        SelectProductComponent,
+        SalesPanelComponent,
+        DetailSelectProductComponent,
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

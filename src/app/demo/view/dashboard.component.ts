@@ -33,7 +33,6 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit() {
         let user = localStorage.getItem('user');
-        console.log("Mensajeee", user);
 
         this.service.add({ severity: 'success', summary: 'Bienvenido', detail: user });
     }

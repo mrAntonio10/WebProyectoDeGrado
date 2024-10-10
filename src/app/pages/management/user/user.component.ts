@@ -193,9 +193,9 @@ export class UserComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         if(this.enterpriseList.length == 1 ) {
-          this.formGroup.get('idBranchOffice').setValue(this.enterpriseList[0].id);
+          this.formGroup.get('idEnterprise').setValue(this.enterpriseList[0].id);
 
-          let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(this.formGroup.value.idBranchOffice);
+          let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(this.formGroup.value.idEnterprise);
 
           forkJoin([observableBranchOfficeList]).subscribe(
             ([branchOffices]) => {
@@ -236,7 +236,6 @@ export class UserComponent implements OnInit, OnDestroy {
 
   submitForm() {
     if (this.formGroup.valid) {
-        console.log("aaaa", this.formGroup.value.idBranchOffice);
 
         this.idBranchOfficeFilter = this.formGroup.value.idBranchOffice;
 

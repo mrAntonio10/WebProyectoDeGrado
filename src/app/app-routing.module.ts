@@ -42,6 +42,8 @@ import { AuthClassGuard } from './auth--class.guard';
 import { WarehouseComponent } from './pages/management/warehouse/warehouse.component';
 import { CreateProductComponent } from './pages/management/warehouse/create-product/create-product.component';
 import { CreateWarehouseComponent } from './pages/management/warehouse/create-warehouse/create-warehouse.component';
+import { SalesPanelComponent } from './pages/comercial-management/sales-panel/sales-panel.component';
+import { DetailSelectProductComponent } from './pages/comercial-management/sales-panel/select-product/select-product.component';
 
 @NgModule({
     imports: [
@@ -67,6 +69,10 @@ import { CreateWarehouseComponent } from './pages/management/warehouse/create-wa
 
                     //configuration settings
                     {path: 'configuration/permission', component: PermissionsComponent, canActivate: [AuthClassGuard],},
+
+                    //Comercial management
+                    {path: 'comercial-management/sales-panel', component: SalesPanelComponent, canActivate: [AuthClassGuard],},
+                    {path: 'comercial-management/sales-panel/add-product', component: DetailSelectProductComponent, canActivate: [AuthClassGuard],},
 
                     //OTHERS
 

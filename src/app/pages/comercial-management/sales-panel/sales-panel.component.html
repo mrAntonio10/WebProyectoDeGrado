@@ -1,0 +1,35 @@
+<div>
+	<div class="grid">
+		<div class="col-12">
+			<div class="card">
+
+                <p-panel header="Opciones" [toggleable]="true" [collapsed]="false">
+                    <div class="field col-12 md:col-4">
+                        <button pButton type="button" label="Agregar producto" icon="pi pi-plus-circle" class="p-button-success" (click)="routeAddProductToDetail()"></button>
+                    </div>
+                </p-panel>
+            </div>
+        </div>
+    </div>
+</div>
+
+<paging-filter
+    (pageChangeTriggered)="onPageChange($event)"
+    *ngIf="this.tableStructure && !!this.pageableData" 
+    [title]="'Detalle'"
+    [principalLabel]="'Gestión comercial'"
+    [sucessorLabel]="'Detalle'"
+    [data]="this.pageableData"
+    [globalFilters]="gobalFilters"
+    [dataStructure]="this.tableStructure"
+    [createVisible]="isVisibleCreate"
+    [actions]="actions"
+    (actionTriggered)="handleActionTriggered($event)"
+    > 
+</paging-filter>
+
+    <div class="col-6  flex justify-content-center">
+        <p-toast/>
+    </div>
+    <p-confirmDialog></p-confirmDialog>
+

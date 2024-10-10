@@ -268,9 +268,9 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         if(this.enterpriseList.length == 1 ) {
-          this.formGroup.get('idBranchOffice').setValue(this.enterpriseList[0].id);
+          this.formGroup.get('idEnterprise').setValue(this.enterpriseList[0].id);
 
-          let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(this.formGroup.value.idBranchOffice);
+          let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(this.formGroup.value.idEnterprise);
 
           forkJoin([observableBranchOfficeList]).subscribe(
             ([branchOffices]) => {
@@ -391,10 +391,12 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       next:  ([created]) => {
         sessionStorage.removeItem('formData');
         this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto registrado exitosamente.' });
-        this.ngOnInit(); 
       }, 
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      },
+      complete: () => {
+         this.getWarehousePageableData();
       }
     }
     )
@@ -407,10 +409,12 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       next: ([created]) => {
         sessionStorage.removeItem('formData');
         this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto almacén actualizado exitosamente.' });
-        this.ngOnInit(); 
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      },
+      complete: () => {
+        this.getWarehousePageableData();
       }
     }
     )

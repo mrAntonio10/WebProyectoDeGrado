@@ -28,6 +28,18 @@ export class WarehouseService {
     return this.httpClient.get<any>(`${this.apiUrl}/api/v1/warehouses`,  { params });
   }
 
+  getWarehouseProductsPageable(paramsObj: any): Observable<any> {
+    let params = new HttpParams;
+
+    for (let key in paramsObj) {
+      if (paramsObj.hasOwnProperty(key)) {
+        params = params.set(key, paramsObj[key]);
+      }
+    }
+
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/warehouses/warehouse-products`,  { params });
+  }
+
   createWarehouse(warehouseObj: ICreateWarehouse): Observable<any> {
     return this.httpClient.post(`${this.apiUrl}/api/v1/warehouses`, warehouseObj);
   }

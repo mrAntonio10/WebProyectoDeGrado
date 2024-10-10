@@ -99,8 +99,8 @@ export class PagingFilterComponent implements OnInit {
 
     buildData() {
         this.value = this.data.content;
-        this.totalRecords = this.data.page.totalElements;
-        this.rows = this.data.page.size;
+        this.totalRecords = this.data.page?.totalElements | 1;
+        this.rows = this.data.page?.size;
     }
 
     loadData(event: any) {

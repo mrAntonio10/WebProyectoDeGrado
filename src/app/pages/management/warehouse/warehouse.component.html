@@ -7,7 +7,7 @@
                         <div class="p-fluid p-formgrid grid">
                             <div class="field col-12 md:col-4">
                                 <label> Empresa </label>
-                                <p-dropdown [formControlName]="'idEnterprise'" [id]="'state'" [options]="enterpriseList" optionLabel="name" optionValue="id" (onChange)="getBranchOfficeCombo($event)" emptyMessage="No se encontraron empresas."></p-dropdown>
+                                <p-dropdown [formControl]="formGroup.controls['idEnterprise']" [id]="'state'" [options]="enterpriseList" optionLabel="name" optionValue="id" (onChange)="getBranchOfficeCombo($event)" emptyMessage="No se encontraron empresas."></p-dropdown>
                             </div>
 
                             <div class="field col-12 md:col-4">

@@ -40,3 +40,19 @@ export interface IWarehouse {
   minProduct: number;
   branchOffice: IBranchOffice;
 }
+
+export interface IWarehouseProductsPageable {
+  idProduct: string;
+  productCode: string;
+  productName: string;
+  unitaryCost: string;
+}
+
+export interface IDetailWarehouseProducts {
+  productName: string;
+  quantity: number;
+  totalPrice: number;
+  totalDiscount: number;
+  unitaryCost: number;
+  idProduct: string;
+}

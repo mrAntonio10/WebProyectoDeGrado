@@ -37,7 +37,7 @@ export class AppLoginComponent implements OnInit {
           if (resp) {
             localStorage.setItem('token', resp.data.token);
             localStorage.setItem('email', resp.data.user);
-            this.router.navigate(['/dashboard']);
+            this.router.navigate([resp.data.resourceUrl]);
           }
         },
       error: err => {
