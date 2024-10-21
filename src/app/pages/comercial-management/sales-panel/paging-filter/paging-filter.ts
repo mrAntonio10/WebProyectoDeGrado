@@ -10,10 +10,10 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'paging-filter',
+    selector: 'sales-paging-filter',
     templateUrl: './paging-filter.component.html',
     providers: [MessageService, ConfirmationService],
-    styleUrls: ['../../../../assets/demo/badges.scss'],
+    styleUrls: ['../../../../../assets/demo/badges.scss'],
     styles: [`
         :host ::ng-deep .custom-button:focus, 
         :host ::ng-deep .custom-button:focus-visible {
@@ -35,7 +35,7 @@ import { ActivatedRoute } from '@angular/router';
         }
     `]
 })
-export class PagingFilterComponent implements OnInit {
+export class SalesPagingFilterComponent implements OnInit {
 
     @Input() title: string = 'xddd';
     @Input() globalFilters: string[];
@@ -44,6 +44,7 @@ export class PagingFilterComponent implements OnInit {
     @Input() data: any;
     @Input() dataStructure: ColumnStructure[];
     @Input() buttonLabelMessage: string = 'Crear';
+    @Input() saleTotalPrice: number = 0;
 
     @Output() pageChangeTriggered = new EventEmitter<any>();
 

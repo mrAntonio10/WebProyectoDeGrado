@@ -43,7 +43,9 @@ import { WarehouseComponent } from './pages/management/warehouse/warehouse.compo
 import { CreateProductComponent } from './pages/management/warehouse/create-product/create-product.component';
 import { CreateWarehouseComponent } from './pages/management/warehouse/create-warehouse/create-warehouse.component';
 import { SalesPanelComponent } from './pages/comercial-management/sales-panel/sales-panel.component';
-import { DetailSelectProductComponent } from './pages/comercial-management/sales-panel/select-product/select-product.component';
+import { DetailSelectProductComponent } from './pages/comercial-management/select-product/select-product.component';
+import { ClientInfoComponent } from './pages/comercial-management/client-info/client-info.component';
+import { PaymentMethodComponent } from './pages/comercial-management/payment-method/payment-method.component';
 
 @NgModule({
     imports: [
@@ -73,6 +75,9 @@ import { DetailSelectProductComponent } from './pages/comercial-management/sales
                     //Comercial management
                     {path: 'comercial-management/sales-panel', component: SalesPanelComponent, canActivate: [AuthClassGuard],},
                     {path: 'comercial-management/sales-panel/add-product', component: DetailSelectProductComponent, canActivate: [AuthClassGuard],},
+                    {path: 'comercial-management/sales-panel/add-client-info', component: ClientInfoComponent, canActivate: [AuthClassGuard],},
+                    {path: 'comercial-management/sales-panel/payment-method', component: PaymentMethodComponent, canActivate: [AuthClassGuard],},
+
 
                     //OTHERS
 

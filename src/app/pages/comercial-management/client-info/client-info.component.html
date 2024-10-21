@@ -1,0 +1,31 @@
+<div class="grid">
+	<div class="col-12">
+	  <div class="card">
+		<h5> {{ this.buttonValue }} sucursal </h5>
+		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+		  <div class="p-fluid p-formgrid grid">
+
+			<div class="field col-12 md:col-12">
+				<label> Nombre cliente </label>
+				<input pInputText [formControlName]="'name'" [id]="'name'" pAutoFocus [autofocus]="true" autocomplete="off"/>
+
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('name').invalid && formGroup.get('name').touched">
+					Requerido. Máximo 60 caracteres.
+				</small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash" class="p-button-secondary" 
+                [tabIndex]="-1"
+                (click)="redirectToSalesPanel()"></button>
+            </div>
+		  </div>
+		</form>
+	  </div>
+	</div>
+  </div>
+  

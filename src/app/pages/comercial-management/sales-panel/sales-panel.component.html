@@ -2,10 +2,31 @@
 	<div class="grid">
 		<div class="col-12">
 			<div class="card">
-
                 <p-panel header="Opciones" [toggleable]="true" [collapsed]="false">
-                    <div class="field col-12 md:col-4">
-                        <button pButton type="button" label="Agregar producto" icon="pi pi-plus-circle" class="p-button-success" (click)="routeAddProductToDetail()"></button>
+                    <div class="p-fluid p-formgrid grid">
+
+                        <div class="field col-12 md:col-6" *ngIf="!!this.clientName">
+                            <label> Nombre cliente </label>
+                            <input pInputText [id]="'name'" [value]="this.clientName" readonly/>
+                        </div>
+
+                        </div>
+                        <div class="p-fluid p-formgrid grid">
+                        <div class="field col-12 md:col-4">
+                            <button pButton type="button" label="Limpiar detalle (Ctrl + l)" icon="pi pi-trash" class="p-button-secondary" 
+                            [tabIndex]="-1"
+                            (click)="deleteAllProductsFromDetail()"></button>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <button pButton type="button" label="Información cliente (Ctrl + c)" icon="pi pi-user-plus" class="p-button-info" 
+                            [tabIndex]="-1"
+                            (click)="routeAddClientInfo()"></button>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <button pButton type="button" label="Agregar producto (Ctrl + p)" icon="pi pi-plus-circle" class="p-button-success" 
+                            [tabIndex]="-1"
+                            (click)="routeAddProductToDetail()"></button>
+                        </div>
                     </div>
                 </p-panel>
             </div>
@@ -13,7 +34,7 @@
     </div>
 </div>
 
-<paging-filter
+<sales-paging-filter
     (pageChangeTriggered)="onPageChange($event)"
     *ngIf="this.tableStructure && !!this.pageableData" 
     [title]="'Detalle'"
@@ -24,10 +45,10 @@
     [dataStructure]="this.tableStructure"
     [createVisible]="isVisibleCreate"
     [actions]="actions"
+    [saleTotalPrice]="this.totalPrice"
     (actionTriggered)="handleActionTriggered($event)"
     > 
-</paging-filter>
-
+</sales-paging-filter>
     <div class="col-6  flex justify-content-center">
         <p-toast/>
     </div>

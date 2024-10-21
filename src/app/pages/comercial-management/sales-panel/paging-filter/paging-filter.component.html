@@ -19,7 +19,7 @@
 					styleClass="p-datatable-gridlines" [paginator]="true" 
 					[globalFilterFields]="globalFilters" 
 					responsiveLayout="scroll"
-				>
+					>
 					<ng-template pTemplate="caption">
 						<div class="flex justify-content-between flex-column sm:flex-row">
 							<button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear($event)" [tabIndex]="-1"></button>
@@ -42,7 +42,7 @@
 						</ng-template>
 					<ng-template pTemplate="body" let-data>
 						<tr>
-							<td *ngFor="let dt of visibleColumns"  [style]="'min-width:'+dt.width">
+							<td *ngFor="let dt of visibleColumns; let i = index"  [style]="'min-width:'+dt.width">
 								<ng-container [ngSwitch]="dt.ttype">
 
 									<ng-container *ngSwitchCase="'actions'">
@@ -76,14 +76,15 @@
 									<ng-container *ngSwitchCase="'decimal'">
 										<td style="min-width: 8rem;">
 											<ng-container *ngIf="dt.isEditable; else staticDisplayDecimal">
-												<p-inputNumber [(ngModel)]="data[dt.value]" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" max="999.99"
-												min="0"
-												(onBlur)="handleAction(dt.value, data)"
+												<p-inputNumber [(ngModel)]="data[dt.value]" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" 
+													[max]="data[visibleColumns[i + 1].value]"
+													min="0"
+													(onBlur)="handleAction(dt.value, data)"
 												/>
 											</ng-container>
 											<ng-template #staticDisplayDecimal>
 												<p-inputNumber [(ngModel)]="data[dt.value]" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" max="999.99"
-												[disabled]="true" 
+												[readonly]="true"
 												/>
 											</ng-template>
 										</td>
@@ -100,7 +101,28 @@
 							</td>
 						</tr>
 					</ng-template>
-					
+
+					<ng-template pTemplate="footer">
+                        <tr>
+							<td [attr.colspan]="3" class="text-center">
+								<button pButton type="button" label="Aceptar detalle (Ctrl + d)" icon="pi pi-plus-circle" class="p-button-outlined p-button-info" 
+								[tabIndex]="-1"
+								style="width: 100%;"
+								>
+							</button>
+                            </td>
+							<td [attr.colspan]="1" class="text-right">
+                                <h4><strong>Total a pagar:</strong></h4>
+                            </td>
+                            <td [attr.colspan]="1">
+								<p-inputNumber [ngModel]="this.saleTotalPrice" mode="currency" currency="BOB" locale="en-US" 
+								minFractionDigits="2" max="999.99" min="0"  [readonly]="true"
+								class="your-input-number-class"
+								/>
+                            </td>
+                        </tr>
+                    </ng-template>
+
 					<ng-template pTemplate="emptymessage">
 						<tr>
 							<td colspan="7">No se encontraron registros.</td>
@@ -108,8 +130,6 @@
 					</ng-template>
 				</p-table>
 			</div>
-
 		</div>
-
 	</div>
 </div>

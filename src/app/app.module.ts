@@ -169,8 +169,10 @@ import { EditWarehouseComponent } from './pages/management/warehouse/edit-wareho
 import { SetProductValuesComponent } from './pages/management/warehouse/create-warehouse/set-product-values/set-product-values.component';
 import { SelectProductComponent } from './pages/management/warehouse/create-warehouse/select-product/select-product.component';
 import { SalesPanelComponent } from './pages/comercial-management/sales-panel/sales-panel.component';
-import { DetailSelectProductComponent } from './pages/comercial-management/sales-panel/select-product/select-product.component';
-import { FindByNameCodeComponent } from './pages/comercial-management/sales-panel/find-by-name-code/find-by-name-code.component';
+import { DetailSelectProductComponent } from './pages/comercial-management/select-product/select-product.component';
+import { ClientInfoComponent } from './pages/comercial-management/client-info/client-info.component';
+import { SalesPagingFilterComponent } from './pages/comercial-management/sales-panel/paging-filter/paging-filter';
+import { PaymentMethodComponent } from './pages/comercial-management/payment-method/payment-method.component';
 
 @NgModule({
     imports: [
@@ -322,7 +324,9 @@ import { FindByNameCodeComponent } from './pages/comercial-management/sales-pane
         SelectProductComponent,
         SalesPanelComponent,
         DetailSelectProductComponent,
-        FindByNameCodeComponent,
+        ClientInfoComponent,
+        SalesPagingFilterComponent,
+        PaymentMethodComponent,
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

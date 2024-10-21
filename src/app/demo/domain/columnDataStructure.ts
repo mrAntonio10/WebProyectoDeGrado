@@ -7,6 +7,8 @@ export interface ColumnStructure {
   filterplaceholder?: string;
   hasFilter: boolean;
   visible: boolean;
+  isEditable? : boolean;
+  width?: string;
 }
 
 export interface FieldConfig {

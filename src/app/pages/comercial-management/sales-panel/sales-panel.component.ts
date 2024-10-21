@@ -5,9 +5,11 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
 import { ColumnStructure, FormConfig } from 'src/app/demo/domain/columnDataStructure';
 import { IBranchOffice, IBranchOfficePage, ICreateBranchOffice, IUpdateBranchOffice } from 'src/app/model/branchOffice/branchOffice';
+import { ICreateDocument } from 'src/app/model/document/document';
 import { IEnterpriseState } from 'src/app/model/enterprise/enterprise';
 import { IDetailWarehouseProducts, ISalesPanelPageableContent } from 'src/app/model/warehouse/warehouse';
 import { BranchOfficeService } from 'src/app/services/branchOffice/branchOffice.service';
+import { DocumentService } from 'src/app/services/document/document.service';
 import { EnterpriseService } from 'src/app/services/enterprise/enterprise.service';
 import { PermissionService } from 'src/app/services/permission/permission.service';
 
@@ -31,6 +33,8 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
   formData: any;
 
   productName: string = '';
+  clientName: string = '';
+  totalPrice: number = 0;
 
   constructor(private router: Router,
     private confirmationService: ConfirmationService,
@@ -39,6 +43,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     private permissionService: PermissionService,
     private messageService: MessageService,
     private enterpriseService: EnterpriseService,
+    private documentService: DocumentService,
     private fb: FormBuilder) {
 
   }
@@ -52,9 +57,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
   
       this.formData =  JSON.parse(sessionStorage.getItem('formData'));
   
-      if (this?.formData?.action === 'create') this.submitCreateBranchOffice(this.formData);
-      if (this?.formData?.action === 'update') this.submitUpdateBranchOffice(this.formData);
-
+      if (this?.formData?.action === 'create') this.messageCreatedSale(this.formData);
   }
 
   ngOnDestroy(): void {
@@ -68,21 +71,54 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       event.preventDefault(); //Prevenimos la pantalla de impresión
       this.routeAddProductToDetail();
     }
+    if (event.ctrlKey && event.key === 'l') {
+      event.preventDefault(); //Prevenimos la pantalla de impresión
+      this.deleteAllProductsFromDetail();
+    }
+    if (event.ctrlKey && event.key === 'c') {
+      event.preventDefault(); //Prevenimos la pantalla de impresión
+      this.routeAddClientInfo();
+    }
+    if (event.ctrlKey && event.key === 'd' && this.pageableData.content.length > 0) {
+      event.preventDefault(); //Prevenimos la pantalla de impresión
+      sessionStorage.setItem('totalPrice', this.totalPrice.toString());
+      this.routePaymentMethod();
+    }
   }
 
   routeAddProductToDetail() {
     this.router.navigate(['/dashboard/comercial-management/sales-panel/add-product']);
   }
 
+  routeAddClientInfo() {
+    this.router.navigate(['/dashboard/comercial-management/sales-panel/add-client-info']);
+  }
+
+  routePaymentMethod() {
+    this.router.navigate(['/dashboard/comercial-management/sales-panel/payment-method']);
+  }
+
+  deleteAllProductsFromDetail() {
+    sessionStorage.removeItem('clientName');
+    this.clientName = '';
+    sessionStorage.removeItem('productDetail');
+    this.totalPrice = 0;
+
+    this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Detalle eliminado exitosamente.' });
+    this.getProductsFromOrderPageableData();
+  }
 
   private getProductsFromOrderPageableData(params: any = { page: 0, size: 5}) {
     if(!!this.productName) {
 
       this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: `Producto ${this.productName} añadido exitosamente.` });
       sessionStorage.removeItem('pName');
+      this.productName = '';
     }
 
     this.pageableData = JSON.parse(sessionStorage.getItem('productDetail'));
+
+    this.totalPrice = this.getTotalPrice();
 
   }
 
@@ -90,6 +126,12 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     switch(event.action) {
       case 'block':
         this.deleteProductFromOrder(event.data);
+        break;
+      case 'quantity':
+        this.setTotalPriceByQuantityChange(event.data)
+        break;
+      case 'totalDiscount':
+        this.setTotalPriceByDiscountChange(event.data)
         break;
       }
   }
@@ -144,15 +186,72 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     });
   }
 
+  setTotalPriceByQuantityChange(data) {
+    var itemIndex = this.pageableData.content.findIndex(d => d.idProduct === data.idProduct);
+
+    if (itemIndex !== -1) {
+      if(this.pageableData.content[itemIndex].totalDiscount > (data.quantity * this.pageableData.content[itemIndex].unitaryCost)) {
+        this.pageableData.content[itemIndex].totalDiscount = (data.quantity * this.pageableData.content[itemIndex].unitaryCost);
+      }
+
+      this.pageableData.content[itemIndex].quantity = data.quantity;
+      this.pageableData.content[itemIndex].totalPrice = (data.quantity * this.pageableData.content[itemIndex].unitaryCost) - this.pageableData.content[itemIndex].totalDiscount;
+
+      sessionStorage.setItem('productDetail', JSON.stringify(this.pageableData));
+
+      let copyTotalPrices = JSON.parse(sessionStorage.getItem('totalPricesCopy'));
+      copyTotalPrices[itemIndex] = data.quantity * this.pageableData.content[itemIndex].unitaryCost;
+
+      sessionStorage.setItem('totalPricesCopy', JSON.stringify(copyTotalPrices));
+    }
+
+    this.getProductsFromOrderPageableData();
+  }
+
+  setTotalPriceByDiscountChange(data) {
+    var itemIndex = this.pageableData.content.findIndex(d => d.idProduct === data.idProduct);
+    var totalPricesCopy = JSON.parse(sessionStorage.getItem('totalPricesCopy'));
+
+    if (itemIndex !== -1) {
+      if(data.totalDiscount === 0) {
+        this.pageableData.content[itemIndex].totalPrice = (data.quantity * this.pageableData.content[itemIndex].unitaryCost);
+        totalPricesCopy[itemIndex] = this.pageableData.content[itemIndex].totalPrice;
+
+        sessionStorage.setItem('totalPricesCopy', JSON.stringify(totalPricesCopy));
+      } else {
+        this.pageableData.content[itemIndex].totalPrice = totalPricesCopy[itemIndex] - data.totalDiscount;
+      }
+
+      sessionStorage.setItem('productDetail', JSON.stringify(this.pageableData))
+    }
+
+    this.getProductsFromOrderPageableData();
+  }
+
+  getTotalPrice(): number {
+    let totalPrice = 0;
+
+    let productDetailList = JSON.parse(sessionStorage.getItem('productDetail'))?.content ?? [];
+
+    if(productDetailList.length > 0) {
+      productDetailList.forEach(d => {
+        totalPrice += d.totalPrice;
+      });
+    }
+    return totalPrice;
+  }
+
   private buildPageStructure() {
+    this.clientName = sessionStorage.getItem('clientName');
+
     this.tableStructure = [
         // Nueva columna para acciones
       {thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false},
       {thead: 'idProduct', value: 'idProduct', ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id'},
       {thead: 'Detalle', value: 'productName',ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre'},
-      {thead: 'Cantidad', value: 'quantity', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por cantidad'},
+      {thead: 'Cantidad', value: 'quantity', ttype: 'number', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por cantidad'},
+      {thead: 'Descuento (BOB)', value: 'totalDiscount', ttype: 'decimal', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por descuento'},
       {thead: 'Precio total', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por precio'},
-      {thead: 'Descuento', value: 'totalDiscount', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por descuento'}
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);
@@ -173,29 +272,19 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 }
 
 
-  submitCreateBranchOffice(submittedData: ICreateBranchOffice) {
-    let createObservable = this.branchOfficeService.createBranchOffice(submittedData);
+  messageCreatedSale(submittedData: ICreateDocument) {
+    let createDocumentObservable = this.documentService.createDocument(submittedData);
 
-    forkJoin([createObservable]).subscribe({
+    forkJoin([createDocumentObservable]).subscribe({
       next: ([created]) => {
         sessionStorage.removeItem('formData');
-        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Sucursal creada exitosamente.' });
-        this.ngOnInit(); 
-      },
-      error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
-      }
-    })
-  }
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Venta generada exitosamente.' });
+          sessionStorage.removeItem('clientName');
+          this.clientName = '';
+          sessionStorage.removeItem('productDetail');
+          this.totalPrice = 0;
 
-  submitUpdateBranchOffice(submittedData: IUpdateBranchOffice) {
-    let createObservable = this.branchOfficeService.updateBranchOffice(submittedData);
-
-    forkJoin([createObservable]).subscribe({
-      next: ([created]) => {
-        sessionStorage.removeItem('formData');
-        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Sucursal Actualizada exitosamente.' });
-        this.ngOnInit(); 
+        this.getProductsFromOrderPageableData();
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });

@@ -85,7 +85,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
         this.buildEditBranchOffice(event.data.id);
         break;
 
-      case 'branchOffice':
+      case 'user':
         this.usersViewByIdBranchOffice(event.data.id);
         break;
         
@@ -114,7 +114,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
               break;
             case 'UPDATE':
               this.actions.unshift({icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit'})
-              this.actions.unshift({icon: 'pi pi-user', class: 'p-button-warning', actionName: 'branchOffice'})
+              // this.actions.unshift({icon: 'pi pi-user', class: 'p-button-warning', actionName: 'user'})
               break;
           }
         });
@@ -141,7 +141,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
 
   blockBranchOffice(data: IBranchOfficePage) {
     this.confirmationService.confirm({
-      message: `¿Estás seguro de bloquear la sucursal ${data.name}?`,
+      message: `¿Estás seguro de eliminar la sucursal ${data.name}?`,
       header: 'Eliminar sucursal',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
@@ -211,7 +211,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       {thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false},
       {thead: 'Id', value: 'id',ttype: 'number', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
       {thead: 'Nombre', value: 'name',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre'},
-      {thead: 'Ubicación', value: 'location', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por ubucación'},
+      {thead: 'Dirección', value: 'location', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por ubucación'},
       {thead: 'Celular', value: 'phoneNumber', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'},
       {thead: 'Empresa', value: 'enterpriseName', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por empresa'},
       {thead: 'Factura', value: 'invoice', ttype: 'verified', visible: true, hasFilter: false, filterplaceholder: 'Buscar por facturación'}
@@ -247,10 +247,12 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
       next: ([created]) => {
         sessionStorage.removeItem('formData');
         this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Sucursal creada exitosamente.' });
-        // this.ngOnInit(); 
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      },
+      complete: () => {
+        this.ngOnInit(); 
       }
     })
   }

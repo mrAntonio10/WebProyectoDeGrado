@@ -5,14 +5,23 @@
                 <p-panel header="Opciones" [toggleable]="true" [collapsed]="false">
                     <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
                         <div class="p-fluid p-formgrid grid">
-
                             <div class="field col-12 md:col-4">
                                 <label> Categoría </label>
                                 <p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList" optionLabel="name" optionValue="id"></p-dropdown>
                             </div>
-
+                            <div class="field col-12 md:col-12">
+                                <label> Código o nombre producto </label>
+                                <input pInputText [formControlName]="'filter'" [id]="'filter'" pAutoFocus [autofocus]="true"/>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <button pButton type="submit" label="Buscar" [disabled]="!formGroup.valid" [tabIndex]="-1"></button>                    
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash" class="p-button-secondary" 
+                                [tabIndex]="-1"
+                                (click)="redirectToSalesPanel()"></button>
+                            </div>
                         </div>
-                        <button pButton type="submit" label="Buscar" [disabled]="!formGroup.valid"></button>
                     </form>
                 </p-panel>
             </div>

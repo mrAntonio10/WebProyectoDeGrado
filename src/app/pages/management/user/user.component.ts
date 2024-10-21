@@ -92,7 +92,6 @@ export class UserComponent implements OnInit, OnDestroy {
               break;
             case 'UPDATE':
               this.actions.unshift({icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit'})
-              this.actions.unshift({icon: 'pi pi-user', class: 'p-button-warning', actionName: 'branchOffice'})
               break;
           }
         });
@@ -126,7 +125,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   blockUser(data: IUserDto) {
     this.confirmationService.confirm({
-      message: `¿Estás seguro de bloquear al usuario ${data.fullname}?`,
+      message: `¿Estás seguro de eliminar al usuario ${data.fullname}?`,
       header: 'Eliminar usuario',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

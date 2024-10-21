@@ -1,0 +1,75 @@
+<div class="grid">
+	<div class="col-12">
+	  <div class="card">
+		<h5> {{ this.buttonValue }} sucursal </h5>
+		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+		  <div class="p-fluid p-formgrid grid">
+
+            <div class="field col-12 md:col-4">
+                <label> Total a pagar </label>
+                <p-inputNumber  [formControlName]="'totalPrice'" mode="currency" currency="BOB" 
+                locale="en-US" minFractionDigits="2" max="999.99"
+                readonly="true"
+                />
+    
+                <small id="username-help" class="p-error" *ngIf="formGroup.get('totalPrice').invalid && formGroup.get('totalPrice').touched">
+                    Requerido. Mayor a 0. Mínimo 2 decimales.
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <label> Descuento </label>
+                <p-inputNumber  [formControlName]="'totalDiscount'" mode="currency" currency="BOB" 
+                locale="en-US" minFractionDigits="2" [max]="this.saleTotalPrice" min="0" pAutoFocus [autofocus]="true"
+                (onBlur)="onTotalDiscountChange($event)"
+                />
+    
+                <small id="username-help" class="p-error" *ngIf="formGroup.get('totalDiscount').invalid && formGroup.get('totalDiscount').touched">
+                    Requerido. Mínimo 2 decimales.
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-4">	
+                <label> Método de pago </label>
+				<p-dropdown [formControlName]="'paymentMethod'" [id]="'state'" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
+            </div>
+
+            <div class="field col-12 md:col-4" *ngIf="this.formGroup.value.paymentMethod == 'EFECTIVO'">
+                <label> Monto </label>
+                <p-inputNumber  [formControlName]="'amount'" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" 
+                max="999.99" [min]="this.formGroup.value.totalPrice"
+                (onBlur)="onAmountChange($event)"
+                />
+    
+                <small id="username-help" class="p-error" *ngIf="formGroup.get('amount').invalid && formGroup.get('amount').touched">
+                    Requerido. Mínimo 2 decimales.
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-4" *ngIf="this.formGroup.value.paymentMethod == 'EFECTIVO'">
+                <label> Cambio </label>
+                <p-inputNumber  [formControlName]="'exchange'" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" max="999.99" min="0" readonly="true" tabindex="-1"/>
+    
+                <small id="username-help" class="p-error" *ngIf="formGroup.get('exchange').invalid && formGroup.get('exchange').touched">
+                    Requerido. Mínimo 2 decimales.
+                </small>
+            </div>
+		  </div>
+            <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-4">
+                    <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
+                </div>
+
+                <div class="field col-12 md:col-4">
+                    <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash" class="p-button-secondary" 
+                    (click)="redirectToSalesPanel()"></button>
+                </div>
+            </div>
+		</form>
+	  </div>
+	</div>
+  </div>
+  
+<div class="col-6  flex justify-content-center">
+    <p-toast/>
+</div>

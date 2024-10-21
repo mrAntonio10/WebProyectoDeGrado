@@ -58,7 +58,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     forkJoin([rolObservable]).subscribe(
       ([rol]) => {
-        console.log("ESTOOO ??", rol.data);
         this.permissions = rol.data;
       }
     )

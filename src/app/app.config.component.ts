@@ -6,7 +6,7 @@ import {AppMainComponent} from './app.main.component';
 @Component({
     selector: 'app-config',
     template: `
-        <a href="#" class="layout-config-button" (click)="onConfigButtonClick($event)">
+        <a href="#" class="layout-config-button" (click)="onConfigButtonClick($event)" [tabIndex]="-1">
             <i class="pi pi-cog"></i>
         </a>
         <div class="layout-config" [ngClass]="{'layout-config-exit-done': !appMain.configDialogActive,

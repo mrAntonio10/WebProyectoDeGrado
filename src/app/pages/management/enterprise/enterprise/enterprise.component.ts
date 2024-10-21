@@ -104,7 +104,7 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
               break;
             case 'UPDATE':
               this.actions.unshift({icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit'})
-              this.actions.unshift({icon: 'pi pi-building', class: 'p-button-warning', actionName: 'branchOffice'})
+              // this.actions.unshift({icon: 'pi pi-building', class: 'p-button-warning', actionName: 'branchOffice'})
               break;
           }
         });
@@ -114,7 +114,7 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
 
   blockEnterprise(data: IEnterprisePage) {
     this.confirmationService.confirm({
-      message: `¿Estás seguro de bloquear la empresa ${data.name}?`,
+      message: `¿Estás seguro de eliminar la empresa ${data.name}?`,
       header: 'Eliminar empresa',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
