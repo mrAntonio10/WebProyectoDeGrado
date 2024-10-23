@@ -97,7 +97,7 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
 
         var completeDetail: IDetailWarehouseProducts[] = JSON.parse(sessionStorage.getItem('productDetail'))?.content ?? [];
 
-        var newDetail: IDetailWarehouseProducts = {idProduct: data.idProduct, productName: data.productName, unitaryCost: data.unitaryCost, quantity: 1, totalDiscount: 0, totalPrice: 1*data.unitaryCost };
+        var newDetail: IDetailWarehouseProducts = {idProduct: data.idProduct, productName: data.productName, productCode: data.productCode,unitaryCost: data.unitaryCost, quantity: 1, totalDiscount: 0, totalPrice: 1*data.unitaryCost };
        
         var checkIfExist = completeDetail.find(d => d.productName === newDetail.productName);
         

@@ -83,7 +83,7 @@
 											</ng-container>
 											<ng-template #staticDisplayDecimal>
 												<p-inputNumber [(ngModel)]="data[dt.value]" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" max="999.99"
-												[disabled]="true" 
+												[readonly] = "true"
 												/>
 											</ng-template>
 										</td>

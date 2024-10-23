@@ -153,7 +153,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
             case 'CREATE':
               break;
             case 'DELETE':
-              this.actions.unshift({icon: 'pi pi-times', class: 'p-button-danger', actionName: 'block'})
+              this.actions.unshift({icon: 'pi pi-times', class: 'p-button-danger', actionName: 'block'});
               break;
             case 'UPDATE':
               break;
@@ -249,6 +249,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       {thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false},
       {thead: 'idProduct', value: 'idProduct', ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id'},
       {thead: 'Detalle', value: 'productName',ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre'},
+      {thead: 'Precio unitario', value: 'unitaryCost',ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre'},
       {thead: 'Cantidad', value: 'quantity', ttype: 'number', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por cantidad'},
       {thead: 'Descuento (BOB)', value: 'totalDiscount', ttype: 'decimal', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por descuento'},
       {thead: 'Precio total', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por precio'},

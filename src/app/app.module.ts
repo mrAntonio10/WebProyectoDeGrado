@@ -173,6 +173,8 @@ import { DetailSelectProductComponent } from './pages/comercial-management/selec
 import { ClientInfoComponent } from './pages/comercial-management/client-info/client-info.component';
 import { SalesPagingFilterComponent } from './pages/comercial-management/sales-panel/paging-filter/paging-filter';
 import { PaymentMethodComponent } from './pages/comercial-management/payment-method/payment-method.component';
+import { UserSalesDocumentComponent } from './pages/comercial-management/user-sales-document/user-sales-document.component';
+import { SalesDocumentInfoComponent } from './pages/comercial-management/sales-document-info/sales-document-info.component';
 
 @NgModule({
     imports: [
@@ -327,6 +329,8 @@ import { PaymentMethodComponent } from './pages/comercial-management/payment-met
         ClientInfoComponent,
         SalesPagingFilterComponent,
         PaymentMethodComponent,
+        UserSalesDocumentComponent,
+        SalesDocumentInfoComponent,
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

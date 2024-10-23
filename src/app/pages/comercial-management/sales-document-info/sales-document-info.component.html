@@ -1,0 +1,100 @@
+<div class="col-12" *ngIf="!!salesDocumentInfo">
+    <div class="card">
+        <h4 style="justify-content: center; display: flex; align-items: center;">Detalle de venta</h4>
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-4">
+                <label> Usuario </label>
+                <input pInputText [value]="salesDocumentInfo.userPOS" readonly/>
+            </div>
+            <div class="field col-12 md:col-4">
+                <label> Fecha </label>
+                <input pInputText [value]="salesDocumentInfo.salesDate" readonly/>
+            </div>
+            <div class="field col-12 md:col-4">
+                <label> Método de pago </label>
+                <input pInputText [value]="salesDocumentInfo.paymentMethod" readonly/>
+            </div>
+            <div class="field col-12 md:col-4">
+                <label> Cliente </label>
+                <input pInputText [value]="salesDocumentInfo.client" readonly/>
+            </div>
+
+        </div>
+
+        <p-table [value]="salesDocumentInfo.detailInfoList" rowGroupMode="subheader" groupRowsBy="representative.name" sortField="representative.name" sortMode="single" responsiveLayout="scroll" [scrollable]="true" scrollHeight="400px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Sku</th>
+                    <th>Producto</th>
+                    <th>Precio unitario</th>
+                    <th>Cantidad</th>
+                    <th>Descuento</th>
+                    <th>Total</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-info>
+               
+                <tr>
+                    <td style="min-width: 120px;">
+                        {{info.productCode}}
+                    </td>
+                    <td style="min-width: 200px;">
+                        {{info.productName}}
+                    </td>
+                    <td style="min-width: 100px;">
+                        <span style="text-align: right; display: block;">
+                            {{info.unitaryPrice}}
+                        </span>
+                    </td>
+                    <td style="min-width: 60px;">
+                        <span style="text-align: right; display: block;">
+                            {{info.quantity}}
+                        </span>
+                    </td>
+                    <td style="min-width: 140px;">
+                        <p-inputNumber [ngModel]="info.productDiscount" mode="currency" currency="BOB" locale="en-US" 
+                        minFractionDigits="2" max="999.99" min="0"  [readonly]="true"
+                        />
+                    </td>
+                    <td style="min-width: 140px;">
+                        <p-inputNumber [ngModel]="info.total" mode="currency" currency="BOB" locale="en-US" 
+                        minFractionDigits="2" max="999.99" min="0"  [readonly]="true"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <tr>
+                    <td [attr.colspan]="1" class="text-right">
+                        <strong>Subtotal:</strong>
+                    </td>
+                    <td [attr.colspan]="1">
+                        <p-inputNumber [ngModel]="salesDocumentInfo.subTotal" mode="currency" currency="BOB" locale="en-US" 
+                        minFractionDigits="2" max="999.99" min="0"  [readonly]="true"
+                        />
+                    </td>
+                    <td [attr.colspan]="1" class="text-right">
+                        <strong>Descuento total:</strong>
+                    </td>
+                    <td [attr.colspan]="1">
+                        <p-inputNumber [ngModel]="salesDocumentInfo.totalDiscount" mode="currency" currency="BOB" locale="en-US" 
+                        minFractionDigits="2" max="999.99" min="0"  [readonly]="true"
+                        />
+                    </td>
+                    <td [attr.colspan]="1" class="text-right">
+                        <strong>Total a pagar:</strong>
+                    </td>
+                    <td [attr.colspan]="1">
+                        <p-inputNumber [ngModel]="salesDocumentInfo.totalPrice" mode="currency" currency="BOB" locale="en-US" 
+                        minFractionDigits="2" max="999.99" min="0"  [readonly]="true"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<div class="col-6  flex justify-content-center">
+    <p-toast/>
+</div>

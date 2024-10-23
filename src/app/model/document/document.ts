@@ -15,3 +15,32 @@ export interface IDetailList {
 
     idProduct: String;
 }
+
+export interface ISalesUserDocumet {
+    id: string;
+    client: string;
+    salesDate: string;
+    paymentMethod: string;
+    totalPrice: number;
+}
+
+export interface ISalesDocumentInfo {
+    id: string;
+    salesDate: string;
+    userPOS: string;
+    paymentMethod: string;
+    client: string;
+    totalDiscount: number;
+    totalPrice: number
+
+    detailInfoList: IDetailInfo[];
+}
+
+export interface IDetailInfo {
+    productCode: string;
+    productName: string;
+    quantity: number;
+    unitaryPrice: number;
+    productDiscount: number;
+    total: number;
+}

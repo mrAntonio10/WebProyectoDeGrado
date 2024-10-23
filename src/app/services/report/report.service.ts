@@ -28,5 +28,17 @@ export class ReportService {
     return this.httpClient.get<any>(`${this.apiUrl}/api/reports/min-products-warehouse`,  { params });
   }
 
+
+  getuserSalesPDFReport(paramsObj: any): Observable<any> {
+    let params = new HttpParams;
+
+    for (let key in paramsObj) {
+      if (paramsObj.hasOwnProperty(key)) {
+        params = params.set(key, paramsObj[key]);
+      }
+    }
+
+    return this.httpClient.get<any>(`${this.apiUrl}/api/reports/user-sales-report`,  { params });
+  }
   
 }

@@ -46,6 +46,8 @@ import { SalesPanelComponent } from './pages/comercial-management/sales-panel/sa
 import { DetailSelectProductComponent } from './pages/comercial-management/select-product/select-product.component';
 import { ClientInfoComponent } from './pages/comercial-management/client-info/client-info.component';
 import { PaymentMethodComponent } from './pages/comercial-management/payment-method/payment-method.component';
+import { UserSalesDocumentComponent } from './pages/comercial-management/user-sales-document/user-sales-document.component';
+import { SalesDocumentInfoComponent } from './pages/comercial-management/sales-document-info/sales-document-info.component';
 
 @NgModule({
     imports: [
@@ -77,6 +79,8 @@ import { PaymentMethodComponent } from './pages/comercial-management/payment-met
                     {path: 'comercial-management/sales-panel/add-product', component: DetailSelectProductComponent, canActivate: [AuthClassGuard],},
                     {path: 'comercial-management/sales-panel/add-client-info', component: ClientInfoComponent, canActivate: [AuthClassGuard],},
                     {path: 'comercial-management/sales-panel/payment-method', component: PaymentMethodComponent, canActivate: [AuthClassGuard],},
+
+                    {path: 'comercial-management/user-sales', component: UserSalesDocumentComponent, canActivate: [AuthClassGuard],},
 
 
                     //OTHERS

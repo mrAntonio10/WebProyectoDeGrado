@@ -55,6 +55,7 @@ export interface ISalesPanelPageableContent {
 
 export interface IDetailWarehouseProducts {
   productName: string;
+  productCode: string;
   quantity: number;
   totalPrice: number;
   totalDiscount: number;

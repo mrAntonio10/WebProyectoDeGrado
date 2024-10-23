@@ -16,8 +16,24 @@ export class DocumentService {
   constructor(private httpClient: HttpClient) {
   }
 
+  getSalesUserDocumentPageable(paramsObj: any): Observable<any> {
+    let params = new HttpParams;
+
+    for (let key in paramsObj) {
+      if (paramsObj.hasOwnProperty(key)) {
+        params = params.set(key, paramsObj[key]);
+      }
+    }
+
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/documents`,  { params });
+  }
+
   createDocument(documentObj: ICreateDocument): Observable<any> {
     return this.httpClient.post(`${this.apiUrl}/api/v1/documents`, documentObj);
+  }
+
+  getDocumentById(idDocument: string): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/documents/${idDocument}`);
   }
 
 }
