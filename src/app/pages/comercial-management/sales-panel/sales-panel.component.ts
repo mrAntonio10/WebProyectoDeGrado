@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
+import { BreadcrumbService } from 'src/app/app.breadcrumb.service';
 import { ColumnStructure, FormConfig } from 'src/app/demo/domain/columnDataStructure';
 import { IBranchOffice, IBranchOfficePage, ICreateBranchOffice, IUpdateBranchOffice } from 'src/app/model/branchOffice/branchOffice';
 import { ICreateDocument } from 'src/app/model/document/document';
@@ -44,11 +45,18 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private enterpriseService: EnterpriseService,
     private documentService: DocumentService,
+    private breadcrumbService: BreadcrumbService,
     private fb: FormBuilder) {
 
   }
 
   ngOnInit(): void {
+
+      this.breadcrumbService.setItems([
+        {label: 'Gestión comercial'},
+        {label: 'Panel de ventas'}
+      ]);
+    
       this.productName = sessionStorage.getItem('pName');
 
       this.getSalesPanelPermission();

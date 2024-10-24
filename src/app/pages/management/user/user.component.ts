@@ -199,27 +199,24 @@ export class UserComponent implements OnInit, OnDestroy {
           forkJoin([observableBranchOfficeList]).subscribe(
             ([branchOffices]) => {
               this.branchOfficeList = branchOffices.data;
-              if(!!this.branchOfficeList) {
-                this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''});
-              }
             }
           );
         } else {
-          this.enterpriseList.unshift({name: 'Todas las empresas', id: '', state: ''});
+          this.enterpriseList.unshift({name: 'Todas las empresas', id: '-', state: ''});
         }
       }
     });
   }
 
   getBranchOfficeCombo(event) {
-    console.log("EVENT ", event.value);
-
     let observableBranchOfficeList= this.branchOfficeService.getBranchOfficesListByIdEnterprise(event.value);
 
     forkJoin([observableBranchOfficeList]).subscribe(
       ([branchOffices]) => {
-        this.branchOfficeList = branchOffices.data;
-        this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''})
+        this.branchOfficeList = branchOffices.data ?? [];
+        if(this.branchOfficeList.length == 0) {
+          this.branchOfficeList.unshift({name: 'Todas las sucursales', id: '', state: ''});
+        }
       }
     );
   }

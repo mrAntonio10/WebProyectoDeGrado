@@ -29,7 +29,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   branchOfficeList : IEnterpriseState[];
 
   selectedRole: String;
-  permissions: [];
+  permissions: any[] = [];
   selectedState = null;
   states = [
     {name: 'Activo', code: 'ACTIVE'},
@@ -131,13 +131,18 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       }
     
       private getRolList() {
-        let rolObservable = this.rolService.getPermissionsByRol();
+        this.permissions = [
+          {name: 'ADMIN', code: '2c507390-0da0-4283-ba6b-0f1ba4f0d7fa'},
+          {name: 'SALES_POINT', code: 'a7763da1-19d2-4a6a-813e-755c37003ed0'}
+        ];
+        // let rolObservable = this.rolService.getPermissionsByRol();
     
-        forkJoin([rolObservable]).subscribe(
-          ([rol]) => {
-            this.permissions = rol.data;
-          }
-        )
+        // forkJoin([rolObservable]).subscribe(
+        //   ([rol]) => {
+        //     this.permissions = rol.data;
+        //     console.log("AAAAA", this.permissions);
+        //   }
+        // )
       }
 
       submitForm() {

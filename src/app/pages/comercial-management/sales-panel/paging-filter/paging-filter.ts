@@ -77,11 +77,6 @@ export class SalesPagingFilterComponent implements OnInit {
 
     ngOnInit() {
         this.buildData();
-        
-        this.breadcrumbService.setItems([
-            {label: this.principalLabel},  //Parent
-            {label: this.sucessorLabel}    //Resource-CHILD
-        ]);
     }
 
     ngOnChanges(changes: SimpleChanges) {

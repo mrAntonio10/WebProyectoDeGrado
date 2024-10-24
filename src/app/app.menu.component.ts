@@ -38,27 +38,27 @@ export class AppMenuComponent implements OnInit {
             {label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard']},
 
             //Componentes ejemplos
-            {
-                label: 'UI Kit', icon: 'pi pi-fw pi-star', routerLink: ['/uikit'],
-                items: [
-                    {label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/dashboard/uikit/formlayout']},
-                    {label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/dashboard/uikit/input']},
-                    {label: 'Float Label', icon: 'pi pi-bookmark', routerLink: ['/dashboard/uikit/floatlabel']},
-                    {label: 'Invalid State', icon: 'pi pi-exclamation-circle', routerLink: ['/dashboard/uikit/invalidstate']},
-                    {label: 'Button', icon: 'pi pi-fw pi-mobile', routerLink: ['/dashboard/uikit/button'], class: 'rotated-icon'},
-                    {label: 'Table', icon: 'pi pi-fw pi-table', routerLink: ['/dashboard/uikit/table']},
-                    {label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/dashboard/uikit/list']},
-                    {label: 'Tree', icon: 'pi pi-fw pi-share-alt', routerLink: ['/dashboard/uikit/tree']},
-                    {label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/dashboard/uikit/panel']},
-                    {label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/dashboard/uikit/overlay']},
-                    {label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/dashboard/uikit/media'], preventExact: true},
-                    {label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/dashboard/uikit/menu']},
-                    {label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/dashboard/uikit/message']},
-                    {label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/dashboard/uikit/file']},
-                    {label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/dashboard/uikit/charts']},
-                    {label: 'Misc', icon: 'pi pi-fw pi-circle-off', routerLink: ['/dashboard/uikit/misc']}
-                ]
-            },
+                // {
+                //     label: 'UI Kit', icon: 'pi pi-fw pi-star', routerLink: ['/uikit'],
+                //     items: [
+                //         {label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/dashboard/uikit/formlayout']},
+                //         {label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/dashboard/uikit/input']},
+                //         {label: 'Float Label', icon: 'pi pi-bookmark', routerLink: ['/dashboard/uikit/floatlabel']},
+                //         {label: 'Invalid State', icon: 'pi pi-exclamation-circle', routerLink: ['/dashboard/uikit/invalidstate']},
+                //         {label: 'Button', icon: 'pi pi-fw pi-mobile', routerLink: ['/dashboard/uikit/button'], class: 'rotated-icon'},
+                //         {label: 'Table', icon: 'pi pi-fw pi-table', routerLink: ['/dashboard/uikit/table']},
+                //         {label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/dashboard/uikit/list']},
+                //         {label: 'Tree', icon: 'pi pi-fw pi-share-alt', routerLink: ['/dashboard/uikit/tree']},
+                //         {label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/dashboard/uikit/panel']},
+                //         {label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/dashboard/uikit/overlay']},
+                //         {label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/dashboard/uikit/media'], preventExact: true},
+                //         {label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/dashboard/uikit/menu']},
+                //         {label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/dashboard/uikit/message']},
+                //         {label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/dashboard/uikit/file']},
+                //         {label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/dashboard/uikit/charts']},
+                //         {label: 'Misc', icon: 'pi pi-fw pi-circle-off', routerLink: ['/dashboard/uikit/misc']}
+                //     ]
+                // },
         ];
 
         this.resourcesList.forEach(resource => {
