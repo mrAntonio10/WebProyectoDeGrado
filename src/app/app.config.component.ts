@@ -176,6 +176,8 @@ export class AppConfigComponent implements OnInit {
     constructor(public app: AppComponent, public appMain: AppMainComponent) {}
 
     ngOnInit() {
+        this.app.horizontal = false;
+
         this.topbarThemes = [
             {name: 'Blue', file: 'blue', image: 'blue.svg'},
             {name: 'Ash', file: 'ash', image: 'ash.svg'},
