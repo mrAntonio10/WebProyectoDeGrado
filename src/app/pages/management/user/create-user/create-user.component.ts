@@ -134,10 +134,13 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     
         forkJoin([rolObservable]).subscribe(
           ([rol]) => {
-            this.permissions = rol.data;
+            this.permissions = rol.data.filter((p) => 
+              p.name === 'ADMIN' || p.name === 'SALES_POINT'
+            );
           }
-        )
-      }
+        );
+    }
+    
 
       submitForm() {
         if (this.formGroup.valid) {
