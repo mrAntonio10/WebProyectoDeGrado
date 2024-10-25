@@ -1,6 +1,6 @@
 <div class="layout-breadcrumb">
     <ul>
-        <li><a routerLink=""><i class="pi pi-home"></i></a></li>
+        <li><a [routerLink]="this.redirectUrl"><i class="pi pi-home"></i></a></li>
         <li><i class="pi pi-chevron-right"></i></li>
         <ng-template ngFor let-item let-last="last" [ngForOf]="items">
             <li>

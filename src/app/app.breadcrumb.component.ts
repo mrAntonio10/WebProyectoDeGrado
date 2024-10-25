@@ -13,7 +13,11 @@ export class AppBreadcrumbComponent implements OnDestroy {
 
     items: MenuItem[];
 
+    redirectUrl: string;
+
     constructor(public breadcrumbService: BreadcrumbService) {
+        this.redirectUrl = localStorage.getItem('redirect');
+
         this.subscription = breadcrumbService.itemsHandler.subscribe(response => {
             this.items = response;
         });

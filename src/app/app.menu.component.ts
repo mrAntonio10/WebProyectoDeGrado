@@ -35,7 +35,7 @@ export class AppMenuComponent implements OnInit {
 
     private buildResourceMenu() {
         this.model = [
-            {label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard']},
+            {label: 'Dashboard', icon: 'pi pi-home', routerLink: [localStorage.getItem('redirect')]},
 
             //Componentes ejemplos
                 // {

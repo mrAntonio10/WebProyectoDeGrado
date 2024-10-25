@@ -110,7 +110,7 @@ export class BranchOfficeComponent implements OnInit, OnDestroy {
               this.isVisibleCreate = true;
               break;
             case 'DELETE':
-              this.actions.unshift({icon: 'pi pi-lock', class: 'p-button-danger', actionName: 'block'})
+              this.actions.unshift({icon: 'pi pi-trash', class: 'p-button-danger', actionName: 'block'})
               break;
             case 'UPDATE':
               this.actions.unshift({icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit'})
