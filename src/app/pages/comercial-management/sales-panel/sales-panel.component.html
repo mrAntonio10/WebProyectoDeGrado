@@ -27,6 +27,14 @@
                             [tabIndex]="-1"
                             (click)="routeAddProductToDetail()"></button>
                         </div>
+                        <div class="field col-12 md:col-12" *ngIf="!!this.pageableData">
+                            <button pButton type="button" label="Aceptar detalle (Ctrl + d)" icon="pi pi-plus-circle" class="p-button-outlined p-button-info" 
+                                (click)="routePaymentMethod()"
+								[tabIndex]="-1"
+								style="width: 100%;"
+								>
+                            </button>
+                        </div>
                     </div>
                 </p-panel>
             </div>

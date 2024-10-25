@@ -89,7 +89,6 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     }
     if (event.ctrlKey && event.key === 'd' && this.pageableData.content.length > 0) {
       event.preventDefault(); //Prevenimos la pantalla de impresión
-      sessionStorage.setItem('totalPrice', this.totalPrice.toString());
       this.routePaymentMethod();
     }
   }
@@ -103,6 +102,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
   }
 
   routePaymentMethod() {
+    sessionStorage.setItem('totalPrice', this.totalPrice.toString());
     this.router.navigate(['/dashboard/comercial-management/sales-panel/payment-method']);
   }
 

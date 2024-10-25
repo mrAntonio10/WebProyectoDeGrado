@@ -151,6 +151,7 @@ export class SetProductValuesComponent implements OnInit, OnDestroy {
         group.addControl('actualStock', this.fb.control(('0')));
         group.addControl('stock', this.fb.control((''), [Validators.required, Validators.min(1)]));
         group.addControl('unitaryCost', this.fb.control((''), [Validators.required, Validators.min(1)]));
+        group.addControl('productCode', this.fb.control((''), [Validators.required, Validators.maxLength(6)]));
 
       return group;
     }

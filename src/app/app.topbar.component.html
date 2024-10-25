@@ -15,19 +15,19 @@
             <app-menu></app-menu>
         </div>
 
-        <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed">
+        <!-- <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed">
             <span class="layout-topbar-search">
                 <span class="p-input-icon-right">
                     <input type="text" pInputText placeholder="Search"/>
                     <i class="pi pi-search"></i>
                 </span>
             </span>
-        </div>
+        </div> -->
 
-        <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed">
+        <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed background-color-white">
             <a href="#" class="profile-menu-button" (click)="app.onTopbarUserMenuButtonClick($event)">
                 <!-- <img src="assets/layout/images/avatar.png" alt="sapphire-layout" /> -->
-                <i class="pi pi-user" style="font-size: 2.5rem; color: black;"></i>
+                <i class="pi pi-user" style="font-size: 2.5rem; color: whitesmoke; "></i>
             </a>
             <ul class="layout-profile-menu fadeInDown" [ngClass]="{'layout-profile-menu-active': app.topbarUserMenuActive}" (click)="app.onTopbarUserMenuClick($event)">
                 <li class="layout-profile-menu-search">
@@ -36,7 +36,7 @@
                         <label>Search</label>
                     </span>
                 </li>
-                <li role="menuitem">
+                <!-- <li role="menuitem">
                     <a href="#" pRipple (click)="app.onTopbarSubItemClick($event)">
                         <i class="pi pi-user"></i>
                         <span>Profile</span>
@@ -53,7 +53,7 @@
                         <i class="pi pi-cog"></i>
                         <span>Settings</span>
                     </a>
-                </li>
+                </li> -->
                 <li role="menuitem">
                     <a href="#" pRipple (click)="logOut()">
                         <i class="pi pi-times"></i>
