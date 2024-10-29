@@ -14,6 +14,12 @@ export class AppLoginComponent implements OnInit {
   // @ts-ignore
   form: FormGroup;
 
+  showPassword = false;
+  passwordType = 'password';
+  iconClass = 'pi pi-eye-slash';
+
+  loginAgainMessage: string;
+
 
   constructor(private router: Router,
               private loginService: LoginService,
@@ -27,6 +33,24 @@ export class AppLoginComponent implements OnInit {
       email:new FormControl('', [Validators.required, Validators.email]),
       password:new FormControl('', [Validators.required]),
     });
+
+    this.loginAgainMessage = localStorage.getItem('error-login-again') ?? '';
+    if (!!this.loginAgainMessage) {
+      setTimeout(() => {
+        this.loginAgainErrorMessage(); 
+      }, 100);
+    }
+  }
+
+  toggleShow() {
+    this.showPassword = !this.showPassword;
+    this.passwordType = this.showPassword ? 'text' : 'password';
+    this.iconClass = this.showPassword ? 'pi pi-eye' : 'pi pi-eye-slash';
+  }
+
+  private loginAgainErrorMessage() {
+    this.service.add({ severity: 'error', summary: 'Error', detail: this.loginAgainMessage });
+    localStorage.removeItem('error-login-again');
   }
 
   submitForm(){

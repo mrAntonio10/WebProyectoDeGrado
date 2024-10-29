@@ -87,6 +87,7 @@ import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 import {FullCalendarModule} from '@fullcalendar/angular';
 import {AutoFocusModule} from 'primeng/autofocus';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
 
 
@@ -176,6 +177,7 @@ import { PaymentMethodComponent } from './pages/comercial-management/payment-met
 import { UserSalesDocumentComponent } from './pages/comercial-management/user-sales-document/user-sales-document.component';
 import { SalesDocumentInfoComponent } from './pages/comercial-management/sales-document-info/sales-document-info.component';
 import { SalesAdminManagementComponent } from './pages/comercial-management/sales-admin-management/sales-admin-management.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 @NgModule({
     imports: [
@@ -267,7 +269,8 @@ import { SalesAdminManagementComponent } from './pages/comercial-management/sale
         ReactiveFormsModule,
         CommonModule,
         RouterModule,
-        AutoFocusModule
+        AutoFocusModule,
+        ProgressSpinnerModule
     ],
     declarations: [
         AppComponent,
@@ -333,6 +336,7 @@ import { SalesAdminManagementComponent } from './pages/comercial-management/sale
         UserSalesDocumentComponent,
         SalesDocumentInfoComponent,
         SalesAdminManagementComponent,
+        SpinnerComponent,
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

@@ -57,6 +57,7 @@ export class EditWarehouseComponent implements OnInit{
       group.addControl('id', this.fb.control((this.formValue.id), [Validators.required]));
       group.addControl('idBranchOffice', this.fb.control((this.formValue.branchOffice.id), [Validators.required]));
       group.addControl('idProduct', this.fb.control((this.formValue.product.id), [Validators.required]));
+      group.addControl('sku', this.fb.control((this.formValue.product.sku), [Validators.required, Validators.maxLength(6)]));
       group.addControl('minProduct', this.fb.control((this.formValue.minProduct), [Validators.required, Validators.min(1)]));
       group.addControl('maxProduct', this.fb.control((this.formValue.maxProduct), [Validators.required, Validators.min(1)]));
       group.addControl('actualStock', this.fb.control((this.formValue.stock), [Validators.required, Validators.min(1)]));

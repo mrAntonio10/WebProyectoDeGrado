@@ -43,7 +43,7 @@ export interface IWarehouse {
 
 export interface IWarehouseProductsPageable {
   idProduct: string;
-  productCode: string;
+  sku: string;
   productName: string;
   unitaryCost: string;
 }
@@ -55,7 +55,7 @@ export interface ISalesPanelPageableContent {
 
 export interface IDetailWarehouseProducts {
   productName: string;
-  productCode: string;
+  sku: string;
   quantity: number;
   totalPrice: number;
   totalDiscount: number;

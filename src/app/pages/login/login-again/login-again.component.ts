@@ -13,6 +13,10 @@ import { LoginService } from 'src/app/services/login/home.service';
 export class LoginAgainComponent implements OnInit {
   formGroup: FormGroup;
 
+  showPassword = false;
+  passwordType = 'password';
+  iconClass = 'pi pi-eye-slash';
+
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
@@ -22,6 +26,12 @@ export class LoginAgainComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = this.buildForm();
+  }
+
+  toggleShow() {
+    this.showPassword = !this.showPassword;
+    this.passwordType = this.showPassword ? 'text' : 'password';
+    this.iconClass = this.showPassword ? 'pi pi-eye' : 'pi pi-eye-slash';
   }
 
   buildForm(): FormGroup {
@@ -37,12 +47,16 @@ export class LoginAgainComponent implements OnInit {
         next: resp => {
           if (resp) {
             localStorage.setItem('token', resp.data.token);
-            this.ref.close();
           }
         },
         error: err => {
           console.log(err);
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+          localStorage.setItem('error-login-again', err.error.data.response);
+          // this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+          this.ref.close();
+        },
+        complete: () => {
+          this.ref.close();
         }
       });
     }

@@ -37,7 +37,7 @@ export interface ISalesDocumentInfo {
 }
 
 export interface IDetailInfo {
-    productCode: string;
+    sku: string;
     productName: string;
     quantity: number;
     unitaryPrice: number;

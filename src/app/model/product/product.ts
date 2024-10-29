@@ -16,6 +16,7 @@ export interface IProduct {
   category: string;
   beverageFormat: string;
   state: boolean;
+  sku: string;
 }
 
 export interface IProductPage {

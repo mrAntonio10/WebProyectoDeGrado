@@ -3,15 +3,15 @@
 		<div class="col-12">
 			<div class="card">
                 <p-panel header="Opciones" [toggleable]="true" [collapsed]="false">
-                    <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+                    <form [formGroup]="formGroup" (ngSubmit)="submitForm()" autocomplete="off">
                         <div class="p-fluid p-formgrid grid">
                             <div class="field col-12 md:col-4">
                                 <label> Categoría </label>
                                 <p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList" optionLabel="name" optionValue="id"></p-dropdown>
                             </div>
                             <div class="field col-12 md:col-12">
-                                <label> Código o nombre producto </label>
-                                <input pInputText [formControlName]="'filter'" [id]="'filter'" pAutoFocus [autofocus]="true"/>
+                                <label> Sku o nombre producto </label>
+                                <input pInputText [formControlName]="'filter'" [id]="'filter'" pAutoFocus [autofocus]="true" />
                             </div>
                             <div class="field col-12 md:col-4">
                                 <button pButton type="submit" label="Buscar" [disabled]="!formGroup.valid" [tabIndex]="-1"></button>                    

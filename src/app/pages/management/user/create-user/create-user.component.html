@@ -2,6 +2,7 @@
 	<div class="col-12">
 	  <div class="card">
 		<h5> {{ this.buttonValue }} usuario </h5>
+		<div class="login-panel-content">
 		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
 		  <div class="p-fluid p-formgrid grid">
 			<div class="field col-12 md:col-4">
@@ -24,7 +25,11 @@
 
 			<div class="field col-12 md:col-4">
 				<label for="password">Password</label>
-				<input id="password" type="password" pInputText formControlName="password">
+				
+				<span class="p-input-icon-right">
+					<i [class]="this.iconClass" (click)="toggleShow()"></i>
+					<input id="password" [type]="this.passwordType" pInputText formControlName="password">
+				</span>
 
 				<small id="username-help" class="p-error" *ngIf="formGroup.get('password').invalid && formGroup.get('password').touched">
 					Requerido. Máximo 60, Mínimo 8 caracteres. Al menos 2 números y 1 [mayúscula, minúscula, caracter especial].
@@ -88,7 +93,7 @@
 		  </div>
 		  <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
 		</form>
+		</div>
 	  </div>
 	</div>
   </div>
-  

@@ -1,7 +1,7 @@
 <div class="grid">
 	<div class="col-12">
 	  <div class="card">
-		<h5> {{ this.buttonValue }} sucursal </h5>
+		<h5> {{ this.buttonValue }} producto </h5>
 		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
 		  <div class="p-fluid p-formgrid grid">
 
@@ -31,6 +31,15 @@
 					Requerido. Máximo 30 caracteres.
 				</small>
             </div>
+
+			<div class="field col-12 md:col-4">
+				<label> Sku/código producto </label>
+				<input pInputText [formControlName]="'sku'" [id]="'sku'"/>
+	
+				<small id="username-help" class="p-error" *ngIf="formGroup.get('sku').invalid && formGroup.get('sku').touched">
+					Requerido. Máximo 6 caracteres.
+				</small>
+			</div>
 
 		  </div>
 		  <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>

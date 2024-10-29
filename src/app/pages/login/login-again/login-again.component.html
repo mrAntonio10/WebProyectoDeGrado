@@ -1,6 +1,7 @@
 <div class="grid">
 	<div class="col-12">
 	    <div class="card">
+            <div class="login-panel-content">
             <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
                 <div class="p-fluid p-formgrid grid">
                     <div class="col-12">
@@ -11,8 +12,11 @@
                     </div>
                     <div class="col-12">
                         <span class="p-float-label">
-                            <input id="password" type="password" pInputText formControlName="password">
                             <label for="password"> Password </label>
+                            <span class="p-input-icon-right">
+                                <i [class]="this.iconClass" (click)="toggleShow()"></i>
+                                <input id="password" [type]="this.passwordType" pInputText formControlName="password">
+                            </span>
                         </span>
                     </div>
                     <div class="col-12">
@@ -22,6 +26,7 @@
                 </div>
 
             </form>
+            </div>
         </div>
     </div>
 </div>

@@ -20,15 +20,6 @@
         </div>
 
         <div class="field col-12 md:col-4">
-            <label> Sku/código producto </label>
-            <input pInputText [formControlName]="'productCode'" [id]="'productCode'"/>
-
-            <small id="username-help" class="p-error" *ngIf="formGroup.get('productCode').invalid && formGroup.get('productCode').touched">
-                Requerido. Máximo 6 caracteres.
-            </small>
-        </div>
-
-        <div class="field col-12 md:col-4">
             <label> Mínimo </label>
             <p-inputNumber  [formControlName]="'minProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false" max="9999"/>
 

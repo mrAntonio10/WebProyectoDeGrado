@@ -122,17 +122,6 @@ export class SalesPagingFilterComponent implements OnInit {
         return this.dataStructure.filter(column => column.visible);
     }
 
-    navigateToCreate() {
-        this.activatedRoute.url.subscribe(urlSegments => {
-            const fullPath = urlSegments.map(segment => segment.path).join('/');
-            sessionStorage.setItem('fullPath', fullPath);
-
-            localStorage.setItem('dinamicFormConfig', JSON.stringify({...this.buildCreateForm, action: 'create'}));
-
-            this.router.navigate([`/dashboard/${fullPath}/create`]);
-          });
-    }
-
     handleAction(action: string, data: any) {
         this.actionTriggered.emit({ action, data });
       }

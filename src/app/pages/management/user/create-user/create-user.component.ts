@@ -27,6 +27,10 @@ export class CreateUserComponent implements OnInit, OnDestroy {
 
   enterpriseList : IEnterpriseState[];
   branchOfficeList : IEnterpriseState[];
+  
+  showPassword = false;
+  passwordType = 'password';
+  iconClass = 'pi pi-eye-slash';
 
   selectedRole: String;
   permissions: any[] = [];
@@ -65,6 +69,12 @@ export class CreateUserComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
       localStorage.removeItem('dinamicFormConfig');
+    }
+
+    toggleShow() {
+      this.showPassword = !this.showPassword;
+      this.passwordType = this.showPassword ? 'text' : 'password';
+      this.iconClass = this.showPassword ? 'pi pi-eye' : 'pi pi-eye-slash';
     }
 
     private getEnterpriseCombo() {

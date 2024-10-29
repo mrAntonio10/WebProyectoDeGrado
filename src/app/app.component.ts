@@ -17,7 +17,7 @@ export class AppComponent implements OnInit{
 
     topbarSize = 'large';
 
-    horizontal = true;
+    horizontal = false;
 
     inputStyle = 'outlined';
 
