@@ -233,6 +233,7 @@ export class UserComponent implements OnInit, OnDestroy {
   submitForm() {
     if (this.formGroup.valid) {
 
+      console.log("BUSCNADOOOO",  this.formGroup.value.idBranchOffice);
         this.idBranchOfficeFilter = this.formGroup.value.idBranchOffice;
 
         let params = { idBranchOffice: this.idBranchOfficeFilter };

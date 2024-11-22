@@ -362,6 +362,15 @@ export class WarehouseComponent implements OnInit, OnDestroy {
     if(!!this.limitFilter) {
       limitFilter = this.limitFilter;
     }
+    console.log("Limpiandoooo",sessionStorage.getItem('clear') );
+
+    if(sessionStorage.getItem('clear') === 'clear') {
+      branchOfficeFilter = '';
+      categoryFilter = '';
+      limitFilter = '';
+
+      sessionStorage.removeItem('clear');
+    }
 
     let params = { page: event.page, size: event.rows , filter: getFilter, idBranchOffice: branchOfficeFilter, category: categoryFilter, limit: limitFilter};
 

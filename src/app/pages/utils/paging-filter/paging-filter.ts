@@ -91,6 +91,8 @@ export class PagingFilterComponent implements OnInit {
     }
 
     clear() {
+        sessionStorage.setItem('clear', 'clear');
+        
         const lazyLoadEvent: LazyLoadEvent = {
             first: 0,
             rows: this.rows,

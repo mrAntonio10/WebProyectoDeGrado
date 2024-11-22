@@ -103,6 +103,7 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
         
         if(checkIfExist) {
           this.messageService.add({severity: 'info', summary: 'Info', detail: 'El producto actualmente forma parte del detalle.', life: 5000  });
+          sessionStorage.removeItem('pName');
         } else {
           completeDetail.push(newDetail);
         
@@ -165,6 +166,13 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
 
     if(!!this.categoryFilter) {
         categoryFilter = this.categoryFilter;
+    }
+
+    if(sessionStorage.getItem('clear') === 'clear') {
+      getFilter = '';
+      categoryFilter = '';
+
+      sessionStorage.removeItem('clear');
     }
 
     let params = { page: event.page, size: event.rows , filter: getFilter, category: categoryFilter };
