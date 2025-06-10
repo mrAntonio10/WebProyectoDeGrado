@@ -61,4 +61,5 @@ export interface IDetailWarehouseProducts {
   totalDiscount: number;
   unitaryCost: number;
   idProduct: string;
+  stock?: number;
 }

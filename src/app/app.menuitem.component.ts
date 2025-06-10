@@ -113,7 +113,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
                     this.active = false;
                 } else {
                     if (this.item.routerLink) {
-                        this.updateActiveStateFromRoute();
+                        // this.updateActiveStateFromRoute();
                     } else {
                         this.active = false;
                     }
@@ -122,15 +122,11 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        if (!this.app.horizontal && this.item.routerLink) {
-            this.updateActiveStateFromRoute();
-        }
-
         this.key = this.parentKey ? this.parentKey + '-' + this.index : String(this.index);
-    }
 
-    updateActiveStateFromRoute() {
-        this.active = this.router.isActive(this.item.routerLink[0], !this.item.items && !this.item.preventExact);
+         if (this.item.expanded) {
+            this.active = true;
+        }
     }
 
     itemClick(event: Event) {

@@ -212,6 +212,9 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 
       sessionStorage.setItem('totalPricesCopy', JSON.stringify(copyTotalPrices));
     }
+    if(data.quantity > data.stock) {
+      this.messageService.add({ severity: 'info', summary: 'Alerta', detail: `La cantidad supera el stock actual [${data.stock}].` });
+    }
 
     this.getProductsFromOrderPageableData();
   }
@@ -261,6 +264,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       {thead: 'Cantidad', value: 'quantity', ttype: 'number', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por cantidad'},
       {thead: 'Descuento (BOB)', value: 'totalDiscount', ttype: 'decimal', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por descuento'},
       {thead: 'Precio total', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por precio'},
+      {thead: 'Stock', value: 'stock', ttype: 'number', visible: false, hasFilter: false, filterplaceholder: 'Buscar por stock'},
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);

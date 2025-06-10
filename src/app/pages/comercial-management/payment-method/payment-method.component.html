@@ -1,7 +1,7 @@
 <div class="grid">
 	<div class="col-12">
 	  <div class="card">
-		<h5> {{ this.buttonValue }} sucursal </h5>
+		<h5> {{ this.buttonValue }} Orden </h5>
 		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
 		  <div class="p-fluid p-formgrid grid">
 
@@ -35,7 +35,7 @@
             </div>
 
             <div class="field col-12 md:col-4" *ngIf="this.formGroup.value.paymentMethod == 'EFECTIVO'">
-                <label> Monto </label>
+                <label> Monto Recibido</label>
                 <p-inputNumber  [formControlName]="'amount'" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" 
                 max="999.99" [min]="this.formGroup.value.totalPrice"
                 (onBlur)="onAmountChange($event)"

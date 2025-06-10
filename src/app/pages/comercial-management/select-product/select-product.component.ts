@@ -97,7 +97,7 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
 
         var completeDetail: IDetailWarehouseProducts[] = JSON.parse(sessionStorage.getItem('productDetail'))?.content ?? [];
 
-        var newDetail: IDetailWarehouseProducts = {idProduct: data.idProduct, productName: data.productName, sku: data.sku,unitaryCost: data.unitaryCost, quantity: 1, totalDiscount: 0, totalPrice: 1*data.unitaryCost };
+        var newDetail: IDetailWarehouseProducts = {idProduct: data.idProduct, productName: data.productName, sku: data.sku,unitaryCost: data.unitaryCost, quantity: 1, totalDiscount: 0, totalPrice: 1*data.unitaryCost, stock: data.stock};
        
         var checkIfExist = completeDetail.find(d => d.productName === newDetail.productName);
         
@@ -128,6 +128,7 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
       {thead: 'idProduct', value: 'idProduct', ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id'},
       {thead: 'Código', value: 'sku', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por código producto', width: '3rem'},
       {thead: 'Producto', value: 'productName',ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre producto'},
+      {thead: 'Stock', value: 'stock',ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre stock'},
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);

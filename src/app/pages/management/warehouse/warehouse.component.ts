@@ -247,7 +247,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       {thead: 'Id', value: 'id', ttype: 'text', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
       {thead: 'Producto', value: 'productName',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre producto'},
       {thead: 'Categoría', value: 'category', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por categoría'},
-      {thead: 'Costo unitario', value: 'unitaryCost', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por Costo'},
+      {thead: 'Precio unitario', value: 'unitaryCost', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por Precio'},
       {thead: 'Stock', value: 'stock', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por stock'},
       {thead: 'Nivel', value: 'stockState', ttype: 'verified', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nivel'},
       {thead: 'Min', value: 'min', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por límite mínimo'},

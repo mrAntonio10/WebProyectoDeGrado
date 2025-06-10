@@ -29,7 +29,7 @@
                         "assets": [
                             "src/assets",
                             "src/upload.php",
-                            "src/favicon.ico"
+                            "src/assets/layout/images/myImg/coff.png"
                         ],
                         "styles": [
                             "src/styles.scss"
@@ -111,7 +111,7 @@
                         "assets": [
                             "src/assets",
                             "src/upload.php",
-                            "src/favicon.ico"
+                            "src/src/assets/layout/images/myImg/coff.png"
                         ]
                     }
                 },

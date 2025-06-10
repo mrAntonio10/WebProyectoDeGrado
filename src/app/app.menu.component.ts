@@ -24,13 +24,15 @@ export class AppMenuComponent implements OnInit {
     private getResources() {
         let resourceObservable = this.resourceService.getResources();
 
-        forkJoin([resourceObservable]).subscribe(
-            ([resources]) => {
+        forkJoin([resourceObservable]).subscribe({ 
+            next: ([resources]) => {
                 this.resourcesList = resources.data;
+                
+            }, complete: () => {
                 //Armar el menú
                 this.buildResourceMenu();
             }
-        );
+        });
     }
 
     private buildResourceMenu() {
@@ -40,6 +42,7 @@ export class AppMenuComponent implements OnInit {
             //Componentes ejemplos
                 // {
                 //     label: 'UI Kit', icon: 'pi pi-fw pi-star', routerLink: ['/uikit'],
+                //     expanded: false, 
                 //     items: [
                 //         {label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/dashboard/uikit/formlayout']},
                 //         {label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/dashboard/uikit/input']},
@@ -62,10 +65,12 @@ export class AppMenuComponent implements OnInit {
         ];
 
         this.resourcesList.forEach(resource => {
+            
             let menuItem = {
                 label: resource.resourceName, 
                 icon: resource.icon, 
                 routerLink: resource.url, 
+                expanded: false, 
                 items: [] 
             };
 
@@ -76,6 +81,7 @@ export class AppMenuComponent implements OnInit {
                         label: child.resourceName, 
                         icon: child.icon, 
                         routerLink: child.url, 
+                        expanded: false, 
                     });
                 });
             }
@@ -84,6 +90,12 @@ export class AppMenuComponent implements OnInit {
             this.model.push(menuItem);
 
         });
+    }
+
+    onMenuItemClick(item: any) {
+        if (item.routerLink) {
+            localStorage.setItem('openResource', item.routerLink); // Guarda el recurso abierto
+        }
     }
 }
 
