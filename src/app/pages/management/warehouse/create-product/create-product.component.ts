@@ -45,7 +45,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
 
         group.addControl('id', this.fb.control(('')));
         group.addControl('name', this.fb.control((''), [Validators.required, Validators.maxLength(60)]));
-        group.addControl('category', this.fb.control(('almuerzo'), [Validators.required, Validators.maxLength(30)]));
+        group.addControl('category', this.fb.control(('salado'), [Validators.required, Validators.maxLength(30)]));
         group.addControl('beverageFormat', this.fb.control((''), [Validators.maxLength(30)]));
         group.addControl('sku', this.fb.control((''), [Validators.required, Validators.maxLength(6)]));
 
@@ -66,10 +66,10 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   }
 
   private getProductCategoryCombo() {
-    this.productCategoryList.push({name: 'Almuerzo', id: 'almuerzo'});
+    this.productCategoryList.push({name: 'Salado', id: 'salado'});
     this.productCategoryList.push({name: 'Bebida', id: 'bebida'});
     this.productCategoryList.push({name: 'Sándwich', id: 'sándwich'});
-    this.productCategoryList.push({name: 'Empanada', id: 'empanada'});
+    this.productCategoryList.push({name: 'Dulce', id: 'dulce'});
   }
 
 }

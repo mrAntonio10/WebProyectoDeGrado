@@ -57,8 +57,8 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
     let productObservable = this.productService.getProductPageable(params);
 
     forkJoin([productObservable]).subscribe(
-        ([warehouse]) => {
-            this.pageableData = warehouse.data;
+        ([product]) => {
+            this.pageableData = product.data;
         }
     );
   }
@@ -68,6 +68,9 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
       case 'get':
         this.getProduct(event.data);
         break;
+      case 'delete':
+        this.deleteProduct(event.data);
+        break;
       }
   }
 
@@ -76,9 +79,9 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
 
       this.productCategoryList.push({name: 'Todas las categorías', id: ''});
       this.productCategoryList.push({name: 'Bebida', id: 'bebida'});
-      this.productCategoryList.push({name: 'Almuerzo', id: 'almuerzo'});
+      this.productCategoryList.push({name: 'Salado', id: 'salado'});
       this.productCategoryList.push({name: 'Sándwich', id: 'sándwich'});
-      this.productCategoryList.push({name: 'Empanada', id: 'empanada'});
+      this.productCategoryList.push({name: 'Dulce', id: 'dulce'});
   }
 
   getProduct(data: any) {
@@ -117,7 +120,9 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
 }
 
   private buildPageStructure() {
-    this.actions.unshift({icon: 'pi pi-check', class: 'p-button-success', actionName: 'get'})
+    this.actions.unshift({icon: 'pi pi-trash', class: 'p-button-danger', actionName: 'delete'})
+
+    this.actions.unshift({icon: 'pi pi-check', class: 'flex justify-content p-button-success', actionName: 'get'})
 
     this.tableStructure = [
        // Nueva columna para acciones
@@ -166,6 +171,27 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
     let params = { page: event.page, size: event.rows , filter: getFilter, category: categoryFilter };
 
     this.getProductPageableData(params);
+  }
+
+  deleteProduct(data: any) {
+    this.confirmationService.confirm({
+      message: `Eliminar producto ${data.name} al almacén?`,
+      header: 'Eliminar producto',
+      icon: 'pi pi-trash',
+      accept: () => {
+        console.log(`Producto con ID ${data.id} eliminado`);
+        this.idProduct = data.id;
+        this.productService.deleteProduct(data.id).subscribe({
+          complete: () => {
+            this.messageService.add({ severity: 'error', summary: 'Eliminado', detail: `Producto ${data.name} eliminado exitosamente.` });
+            this.getProductPageableData();
+          }
+        });
+      },
+      reject: () => {
+        console.log('Acción de bloqueo cancelada');
+      }
+    });
   }
 
  

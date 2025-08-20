@@ -29,6 +29,7 @@ export interface IUpdateWarehouse {
   minProduct: number;
   maxProduct: number;
   unitaryCost: number;
+  beverageFormat: string;
 }
 
 export interface IWarehouse {

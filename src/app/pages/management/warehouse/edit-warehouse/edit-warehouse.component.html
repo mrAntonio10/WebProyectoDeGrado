@@ -22,6 +22,15 @@
                         </small>
                     </div>
 
+                    <div class="field col-12 md:col-4" *ngIf="formGroup.get('productCategory').value == 'Bebida'">
+                        <label> Formato Bebida </label>
+                        <input pInputText [formControlName]="'beverageFormat'" [id]="'beverageFormat'"/>
+
+                        <small id="username-help" class="p-error" *ngIf="formGroup.get('beverageFormat').invalid && formGroup.get('beverageFormat').touched">
+                            Requerido
+                        </small>
+                    </div>
+
                     <div class="field col-12 md:col-4">
                         <label> Stock actual </label>
                         <p-inputNumber [formControlName]="'actualStock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false" [readonly]="true"/>

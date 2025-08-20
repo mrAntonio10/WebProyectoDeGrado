@@ -307,9 +307,9 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
       this.productCategoryList.push({name: 'Todas las categorías', id: ''});
       this.productCategoryList.push({name: 'Bebida', id: 'bebida'});
-      this.productCategoryList.push({name: 'Almuerzo', id: 'almuerzo'});
+      this.productCategoryList.push({name: 'Salado', id: 'salado'});
       this.productCategoryList.push({name: 'Sándwich', id: 'sándwich'});
-      this.productCategoryList.push({name: 'Empanada', id: 'empanada'});
+      this.productCategoryList.push({name: 'Dulce', id: 'dulce'});
   }
 
   private getLimitCombo() {
@@ -413,7 +413,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
   submitUpdateProductWarehouse(submittedData: IUpdateWarehouse) {
     let updateObservable = this.warehouseService.updateWarehouse(submittedData);
-
+    console.log("UPDATE WAREHOUSE WITH - ", submittedData)
     forkJoin([updateObservable]).subscribe({
       next: ([created]) => {
         sessionStorage.removeItem('formData');
