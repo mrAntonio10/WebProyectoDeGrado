@@ -221,8 +221,10 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
                 getFilter = event.filters.name[0].value;
             }
         }
+
+        let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
         console.log("se ejecuta el onpagechange");
-        let params = { page: event.page, size: event.rows, filter: getFilter };
+        let params = { page: event.page, size: event.rows, filter: getFilter, date: d };
 
         this.getSalesUserDocumentPageableData(params);
   }

@@ -219,8 +219,9 @@ export class SalesAdminManagementComponent implements OnInit, OnDestroy {
                 getFilter = event.filters.name[0].value;
             }
         }
-        console.log("se ejecuta el onpagechange");
-        let params = { page: event.page, size: event.rows, filter: getFilter };
+        console.log("se ejecuta el onpagechange ",  event.rows, " Y fecha ", this.formGroup.value.date);
+        let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
+        let params = { page: event.page, size: event.rows, filter: getFilter, date: d };
 
         this.getSalesUserDocumentPageableData(params);
   }
