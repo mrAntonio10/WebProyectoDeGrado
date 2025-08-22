@@ -31,11 +31,12 @@ export class SalesDocumentInfoComponent implements OnInit {
   }
 
   private getSalesDocumentInfo(idDocument: string) {
-    let salesDocumentInfoObservable = this.documentService.getDocumentById(idDocument);
+    let salesDocumentInfoObservable = this.documentService.getSalesDocumentInfotByIdDocument(idDocument);
 
     forkJoin([salesDocumentInfoObservable]).subscribe({
       next: ([info]) => {
         this.salesDocumentInfo = info.data;
+        console.log("Sales Info ", this.salesDocumentInfo);
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });

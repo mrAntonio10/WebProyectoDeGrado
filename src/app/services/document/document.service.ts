@@ -32,8 +32,12 @@ export class DocumentService {
     return this.httpClient.post(`${this.apiUrl}/api/v1/documents`, documentObj);
   }
 
-  getDocumentById(idDocument: string): Observable<any> {
+  getSalesDocumentInfotByIdDocument(idDocument: string): Observable<any> {
     return this.httpClient.get<any>(`${this.apiUrl}/api/v1/documents/${idDocument}`);
+  }
+
+  deleteSalesDocumentByIdDocument(idDocument: string): Observable<any> {
+    return this.httpClient.delete<any>(`${this.apiUrl}/api/v1/documents/delete/${idDocument}`);
   }
 
 }

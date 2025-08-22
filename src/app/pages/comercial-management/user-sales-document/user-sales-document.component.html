@@ -16,7 +16,12 @@
 
                             <div class="field col-12 md:col-4">	
                                 <label> Método de pago </label>
-                                <p-dropdown [formControlName]="'paymentMethod'" [id]="'state'" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
+                                <p-dropdown [formControlName]="'paymentMethod'" [id]="'paymentMethods'" [options]="paymentMethods" optionLabel="name" optionValue="code" [(ngModel)]="selectedPaymentMethod"></p-dropdown>
+                            </div>
+
+                            <div class="field col-12 md:col-4">	
+                                <label> Estado Documento </label>
+                                <p-dropdown [formControlName]="'state'" [id]="'state'" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
                             </div>
 
                         </div>

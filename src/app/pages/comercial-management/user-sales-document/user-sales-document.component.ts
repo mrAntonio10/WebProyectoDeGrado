@@ -29,14 +29,20 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
   createFormStructure: FormConfig;
   isVisibleCreate: boolean = null;
   actions: any = [];
+  completeActionsList = [];
 
   date: Date = new Date;
+  selectedPaymentMethod = '';
+  paymentMethods = [
+    { name: 'Todos los métodos de pago', code: '' },
+    { name: 'Efectivo', code: 'Efectivo' },
+    { name: 'Qr', code: 'Qr' },
+    { name: 'Tarjeta', code: 'Tarjeta' },
+  ];
   selectedState = '';
   states = [
-    {name: 'Todos los métodos de pago', code: ''},
-    {name: 'Efectivo', code: 'Efectivo'},
-    {name: 'Qr', code: 'Qr'},
-    {name: 'Tarjeta', code: 'Tarjeta'},
+    { name: 'Aceptado', code: 'ACEPTADO' },
+    { name: 'Eliminado', code: 'DELETED' }
   ];
 
   formGroup: FormGroup;
@@ -48,7 +54,8 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private dialogService: DialogService,
     private messageService: MessageService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private confirmationService: ConfirmationService,
   ) {
 
   }
@@ -77,59 +84,77 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
     let salesUserDocObservable = this.documentService.getSalesUserDocumentPageable(params);
 
     forkJoin([salesUserDocObservable]).subscribe(
-        ([documents]) => {
-            this.pageableData = documents.data;
-        }
+      ([documents]) => {
+        this.pageableData = documents.data;
+      }
     );
   }
 
   buildForm(): FormGroup {
     const group = this.fb.group({});
 
-      group.addControl('date', this.fb.control((this.date)));
-      group.addControl('paymentMethod', this.fb.control(('')));
+    group.addControl('date', this.fb.control((this.date)));
+    group.addControl('paymentMethod', this.fb.control(('')));
+    group.addControl('state', this.fb.control(('ACEPTADO')));
 
-      return group;
+    return group;
   }
 
   submitForm() {
     if (this.formGroup.valid) {
       this.date = this.formGroup.value.date;
-      
-        let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
-        let f = this.formGroup.value.paymentMethod;
 
-        let params = { date: d, filter: f };
+      let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
+      let f = this.formGroup.value.paymentMethod;
+      let s = this.formGroup.value.state;
 
-        this.getSalesUserDocumentPageableData(params);
+      if (s == 'DELETED') {
+        this.actions = this.actions.filter(item => item.actionName !== 'delete');
+      } else {
+        this.actions = [...this.completeActionsList];
+      }
+
+      let params = { date: d, filter: f, state: s };
+
+      this.getSalesUserDocumentPageableData(params);
     }
-  } 
+  }
 
   handleActionTriggered(event: { action: string, data: IEnterprisePage }) {
-    switch(event.action) {
+    switch (event.action) {
       case 'info':
         this.viewSalesDocumentInfoDialog(event.data.id);
         break;
-      }
+      case 'delete':
+        this.deleteSalesDocument(event.data);
+        break;
+    }
   }
 
   getSalesUserDocumentPermissions() {
     let permissionsObservable = this.permissionService.getPermissionsByResourceUrl("/user-sales");
 
-    forkJoin([permissionsObservable]).subscribe(
-      ([permission]) => {
+    forkJoin([permissionsObservable]).subscribe({
+      next: ([permission]) => {
         console.log("PERMISOS ", permission.data);
         this.actions = [];
 
-        permission.data.forEach(permission => {          
+        permission.data.forEach(permission => {
           switch (permission.permissionName) {
             case 'VIEW':
               this.getSalesUserDocumentPageableData();
-              this.actions.unshift({icon: 'pi pi-eye', class: 'p-button-warning', actionName: 'info'});
+              this.actions.unshift({ icon: 'pi pi-eye', class: 'p-button-warning', actionName: 'info' });
+              break;
+            case 'DELETE':
+              this.actions.unshift({ icon: 'pi pi-trash', class: 'p-button-danger', actionName: 'delete' });
               break;
           }
         });
+      },
+      complete: () => {
+        this.completeActionsList = [...this.actions];
       }
+    }
     )
   }
 
@@ -137,7 +162,7 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
     const ref = this.dialogService.open(SalesDocumentInfoComponent, {
       width: '70%',
       height: '95%',
-      data: {idDocument: id}
+      data: { idDocument: id }
     });
 
     ref.onClose.subscribe({
@@ -147,12 +172,12 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
   }
 
   generatesalesPDFReport() {
-      this.date = this.formGroup.value.date;
-      
-        let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
-        let f = this.formGroup.value.paymentMethod;
+    this.date = this.formGroup.value.date;
 
-        let params = { date: d, filter: f };
+    let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
+    let f = this.formGroup.value.paymentMethod;
+
+    let params = { date: d, filter: f };
 
     let observablePdfReport = this.reportService.getuserSalesPDFReport(params);
     forkJoin([observablePdfReport]).subscribe({
@@ -177,55 +202,81 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
   public b64toBlob(b64Data, contentType) {
     contentType = contentType || '';
     let sliceSize = 512;
-  
+
     var byteCharacters = atob(b64Data);
     var byteArrays = [];
-  
+
     for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        var slice = byteCharacters.slice(offset, offset + sliceSize);
-  
-        var byteNumbers = new Array(slice.length);
-        for (var i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-        }
-  
-        var byteArray = new Uint8Array(byteNumbers);
-  
-        byteArrays.push(byteArray);
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      var byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
     }
-  
+
     var blob = new Blob(byteArrays, { type: contentType });
     return blob;
   }
 
- 
+
   private buildPageStructure() {
     this.tableStructure = [
-       // Nueva columna para acciones
-       {thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false},
-      {thead: 'Id', value: 'id',ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id'},
-      {thead: 'Fecha', value: 'salesDate',ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por fecha'},
-      {thead: 'Cliente', value: 'client', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por cliente'},
-      {thead: 'Método de pago', value: 'paymentMethod', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por método de pago'},
-      {thead: 'Monto', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por monto'}
+      // Nueva columna para acciones
+      { thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false },
+      { thead: 'Id', value: 'id', ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id' },
+      { thead: 'Fecha', value: 'salesDate', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por fecha' },
+      { thead: 'Cliente', value: 'client', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por cliente' },
+      { thead: 'Método de pago', value: 'paymentMethod', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por método de pago' },
+      { thead: 'Monto', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por monto' },
+      { thead: 'Estado', value: 'state', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por cliente' },
+
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);
   }
 
   onPageChange(event: any) {
-        var getFilter = '';
+    var getFilter = '';
 
-        if (event.filters && event.filters.name) {
-            if (!!event.filters.name[0].value) {
-                getFilter = event.filters.name[0].value;
-            }
-        }
+    if (event.filters && event.filters.name) {
+      if (!!event.filters.name[0].value) {
+        getFilter = event.filters.name[0].value;
+      }
+    }
 
-        let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
-        console.log("se ejecuta el onpagechange");
-        let params = { page: event.page, size: event.rows, filter: getFilter, date: d };
+    let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
+    console.log("se ejecuta el onpagechange");
+    let params = { page: event.page, size: event.rows, filter: getFilter, date: d };
 
-        this.getSalesUserDocumentPageableData(params);
+    this.getSalesUserDocumentPageableData(params);
+  }
+
+  deleteSalesDocument(data: IEnterprisePage) {
+    this.confirmationService.confirm({
+      message: `¿Estás seguro de eliminar el documento de ventas?`,
+      header: 'Eliminar Documento de Ventas',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        let deleteObservable = this.documentService.deleteSalesDocumentByIdDocument(data.id);
+
+        forkJoin([deleteObservable]).subscribe({
+          next: ([deleted]) => {
+            this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Documento de ventas eliminado exitosamente.' });
+            this.ngOnInit();
+          },
+          error: (err) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+          }
+        });
+      },
+      reject: () => {
+        console.log('Acción de bloqueo cancelada');
+      }
+    });
   }
 }
