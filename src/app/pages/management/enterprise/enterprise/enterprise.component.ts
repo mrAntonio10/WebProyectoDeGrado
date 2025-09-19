@@ -6,10 +6,12 @@ import { EnterpriseService } from 'src/app/services/enterprise/enterprise.servic
 import { FormConfig } from 'src/app/demo/domain/columnDataStructure';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ConfirmationService } from 'primeng/api'; 
+import { ConfirmationService } from 'primeng/api';
 import { IUpdateEnterprise } from 'src/app/model/enterprise/enterprise';
 import { PermissionService } from 'src/app/services/permission/permission.service';
 import { MessageService } from 'primeng/api';
+import { ICreatePaymentIntegration } from 'src/app/model/paymentIntegration/paymentIntegration';
+import { PaymentIntegrationService } from 'src/app/services/paymentIntegration/paymentIntegration.service';
 
 
 @Component({
@@ -36,6 +38,7 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private permissionService: PermissionService,
     private messageService: MessageService,
+    private paymentService: PaymentIntegrationService
   ) {
 
   }
@@ -45,10 +48,11 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
 
     this.buildPageStructure();
 
-    this.formData =  JSON.parse(sessionStorage.getItem('formData'));
+    this.formData = JSON.parse(sessionStorage.getItem('formData'));
 
     if (this?.formData?.action === 'create') this.submitCreateEnterprise(this.formData);
-     if (this?.formData?.action === 'update') this.submitUpdateEnterprise(this.formData);
+    if (this?.formData?.action === 'update') this.submitUpdateEnterprise(this.formData);
+    if (this?.formData?.action === 'payment') this.submitCreatePaymentIntegration(this.formData);
 
   }
 
@@ -60,14 +64,14 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
     let enterpriseObservable = this.enterpriseService.getEnterprisePageable(params);
 
     forkJoin([enterpriseObservable]).subscribe(
-        ([enterprises]) => {
-            this.pageableData = enterprises.data;
-        }
+      ([enterprises]) => {
+        this.pageableData = enterprises.data;
+      }
     );
   }
 
   handleActionTriggered(event: { action: string, data: IEnterprisePage }) {
-    switch(event.action) {
+    switch (event.action) {
       case 'block':
         this.blockEnterprise(event.data);
         break;
@@ -79,7 +83,11 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
       case 'branchOffice':
         this.branchOfficesViewByIdEnterprise(event.data.id);
         break;
-      }
+
+      case 'paymentIntegration':
+        this.buildPaymentMethod(event.data.id);
+        break;
+    }
   }
 
   getEnterprisePermissions() {
@@ -90,20 +98,22 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
         console.log("PERMISOS ", permission.data);
         this.actions = [];
 
-        permission.data.forEach(permission => {          
+        permission.data.forEach(permission => {
           switch (permission.permissionName) {
             case 'VIEW':
               this.getEnterprisesPageableData();
+              this.actions.unshift({ icon: 'pi pi-building', class: 'p-button-warning', actionName: 'branchOffice' })
               break;
             case 'CREATE':
               this.buildCreateForm();
               this.isVisibleCreate = true;
               break;
             case 'DELETE':
-              this.actions.unshift({icon: 'pi pi-trash', class: 'p-button-danger', actionName: 'block'})
+              this.actions.unshift({ icon: 'pi pi-trash', class: 'p-button-danger', actionName: 'block' })
               break;
             case 'UPDATE':
-              this.actions.unshift({icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit'})
+              this.actions.unshift({ icon: 'pi pi-credit-card', class: 'p-button-info', actionName: 'paymentIntegration' })
+              this.actions.unshift({ icon: 'pi pi-pencil', class: 'p-button-warning', actionName: 'edit' })
               // this.actions.unshift({icon: 'pi pi-building', class: 'p-button-warning', actionName: 'branchOffice'})
               break;
           }
@@ -124,7 +134,7 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
         forkJoin([deleteObservable]).subscribe({
           next: ([deleted]) => {
             this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Empresa eliminada exitosamente.' });
-            this.ngOnInit(); 
+            this.ngOnInit();
           },
           error: (err) => {
             this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
@@ -151,21 +161,21 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
       let enterpriseObservable = this.enterpriseService.getEnterpriseById(id);
 
       forkJoin([enterpriseObservable]).subscribe(
-          ([enterprise]) => {
+        ([enterprise]) => {
 
-            this.createFormStructure = {
-              title: 'Actualizar empresa',  data: [
-                { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', formValue: enterprise.data.name, visible: true,  validators: [ { name: 'required' }, { name: 'maxLength', args: 120 }], validatorMssg: 'Requerido. Máximo 120 caracteres.' },
-                { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', formValue: enterprise.data.email, visible: true, validators: [{ name: 'required' }, { name: 'email' }], validatorMssg: 'Requerido. Ingrese un correo electrónico válido.' },
-                { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', formValue: enterprise.data.description, visible: true, validators: [{ name: 'required' }],  validatorMssg: 'Requerido.' },
-                { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', formValue: enterprise.data.phoneNumber, visible: true, validators: [{ name: 'required' }, { name: 'pattern', args: '^[\\d]*$' }, { name: 'maxLength', args: 20 }],  validatorMssg: 'Requerido. Numérico.' },
-                { md_col: 'md:col-4', label: 'Estado', type: 'select', formName: 'state', formValue: enterprise.data.state, visible: true, validators: [{ name: 'required' }],  validatorMssg: 'Requerido' },
-                { md_col: 'md:col-4', label: 'Id', type: 'text', formName: 'id', formValue: enterprise.data.id, visible: false, validators: [{ name: 'required' }],  validatorMssg: 'Requerido' },
-               ]
-            };
-              localStorage.setItem('dinamicFormConfig', JSON.stringify({...this.createFormStructure, action: 'update'}));
-              this.router.navigate(['/dashboard/management/enterprise/create']);
-          }
+          this.createFormStructure = {
+            title: 'Actualizar empresa', data: [
+              { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', formValue: enterprise.data.name, visible: true, validators: [{ name: 'required' }, { name: 'maxLength', args: 120 }], validatorMssg: 'Requerido. Máximo 120 caracteres.' },
+              { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', formValue: enterprise.data.email, visible: true, validators: [{ name: 'required' }, { name: 'email' }], validatorMssg: 'Requerido. Ingrese un correo electrónico válido.' },
+              { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', formValue: enterprise.data.description, visible: true, validators: [{ name: 'required' }], validatorMssg: 'Requerido.' },
+              { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', formValue: enterprise.data.phoneNumber, visible: true, validators: [{ name: 'required' }, { name: 'pattern', args: '^[\\d]*$' }, { name: 'maxLength', args: 20 }], validatorMssg: 'Requerido. Numérico.' },
+              { md_col: 'md:col-4', label: 'Estado', type: 'select', formName: 'state', formValue: enterprise.data.state, visible: true, validators: [{ name: 'required' }], validatorMssg: 'Requerido' },
+              { md_col: 'md:col-4', label: 'Id', type: 'text', formName: 'id', formValue: enterprise.data.id, visible: false, validators: [{ name: 'required' }], validatorMssg: 'Requerido' },
+            ]
+          };
+          localStorage.setItem('dinamicFormConfig', JSON.stringify({ ...this.createFormStructure, action: 'update' }));
+          this.router.navigate(['/dashboard/management/enterprise/create']);
+        }
       );
     });
   }
@@ -173,12 +183,12 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
   buildCreateForm() {
     // Estructura del formulario de creación
     this.createFormStructure = {
-      title: 'Crear empresa', 
+      title: 'Crear empresa',
       data: [
-        { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', visible: true, validators: [ { name: 'required' }, { name: 'maxLength', args: 120 }], validatorMssg: 'Requerido. Máximo 120 caracteres.' },
+        { md_col: 'md:col-4', label: 'Nombre', type: 'text', formName: 'name', visible: true, validators: [{ name: 'required' }, { name: 'maxLength', args: 120 }], validatorMssg: 'Requerido. Máximo 120 caracteres.' },
         { md_col: 'md:col-4', label: 'Email', type: 'text', formName: 'email', visible: true, validators: [{ name: 'required' }, { name: 'email' }], validatorMssg: 'Requerido. Ingrese un correo electrónico válido.' },
-        { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', visible: true, validators: [{ name: 'required' }],  validatorMssg: 'Requerido.' },
-        { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', visible: true, validators: [{ name: 'required' }, { name: 'pattern', args: '^[\\d]*$' }, { name: 'maxLength', args: 20 }],  validatorMssg: 'Requerido. Numérico 20 caracteres.'}
+        { md_col: 'md:col-4', label: 'Descripción', type: 'text', formName: 'description', visible: true, validators: [{ name: 'required' }], validatorMssg: 'Requerido.' },
+        { md_col: 'md:col-4', label: 'Número telefónico', type: 'text', formName: 'phoneNumber', visible: true, validators: [{ name: 'required' }, { name: 'pattern', args: '^[\\d]*$' }, { name: 'maxLength', args: 20 }], validatorMssg: 'Requerido. Numérico 20 caracteres.' }
       ]
     };
   }
@@ -186,29 +196,29 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
 
   private buildPageStructure() {
     this.tableStructure = [
-       // Nueva columna para acciones
-      {thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false},
-      {thead: 'Id', value: 'id',ttype: 'number', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id'},
-      {thead: 'Nombre', value: 'name',ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre'},
-      {thead: 'Email', value: 'email', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por email'},
-      {thead: 'Celular', value: 'phoneNumber', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular'}
+      // Nueva columna para acciones
+      { thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false },
+      { thead: 'Id', value: 'id', ttype: 'number', visible: false, hasFilter: true, filterplaceholder: 'Buscar por id' },
+      { thead: 'Nombre', value: 'name', ttype: 'text', visible: true, hasFilter: true, filterplaceholder: 'Buscar por nombre' },
+      { thead: 'Email', value: 'email', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por email' },
+      { thead: 'Celular', value: 'phoneNumber', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por celular' }
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);
   }
 
   onPageChange(event: any) {
-        var getFilter = '';
+    var getFilter = '';
 
-        if (event.filters && event.filters.name) {
-            if (!!event.filters.name[0].value) {
-                getFilter = event.filters.name[0].value;
-            }
-        }
-        console.log("se ejecuta el onpagechange");
-        let params = { page: event.page, size: event.rows, filter: getFilter };
+    if (event.filters && event.filters.name) {
+      if (!!event.filters.name[0].value) {
+        getFilter = event.filters.name[0].value;
+      }
+    }
+    console.log("se ejecuta el onpagechange");
+    let params = { page: event.page, size: event.rows, filter: getFilter };
 
-        this.getEnterprisesPageableData(params);
+    this.getEnterprisesPageableData(params);
   }
 
 
@@ -219,12 +229,12 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
       next: ([created]) => {
         sessionStorage.removeItem('formData');
         this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Empresa creada exitosamente.' });
-        this.ngOnInit(); 
+        this.ngOnInit();
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
       }
-    })      
+    })
 
   }
 
@@ -235,11 +245,52 @@ export class EnterpriseComponent implements OnInit, OnDestroy {
       next: ([updated]) => {
         sessionStorage.removeItem('formData');
         this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Empresa actualizada exitosamente.' });
-        this.ngOnInit(); 
+        this.ngOnInit();
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
       }
     })
+  }
+
+  submitCreatePaymentIntegration(submittedData: ICreatePaymentIntegration) {
+    let createObservable = this.paymentService.createPaymentIntegration(submittedData);
+
+    forkJoin([createObservable]).subscribe({
+      next: ([resp]) => {
+        sessionStorage.removeItem('formData');
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Integración de pago creada exitosamente.' });
+        this.ngOnInit();
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      }
+    })
+  }
+
+  buildPaymentMethod(id: string) {
+    this.activatedRoute.url.subscribe(urlSegments => {
+      const fullPath = urlSegments.map(segment => segment.path).join('/');
+      sessionStorage.setItem('fullPath', fullPath);
+
+      let enterpriseObservable = this.enterpriseService.getEnterpriseById(id);
+
+      forkJoin([enterpriseObservable]).subscribe(
+        ([enterprise]) => {
+
+          this.createFormStructure = {
+            title: 'Crear Integración de Pago', data: [
+              { md_col: 'md:col-4', label: 'Usuario', type: 'text', formName: 'user', formValue: "", visible: true, validators: [{ name: 'required' }], validatorMssg: 'Requerido.' },
+              { md_col: 'md:col-4', label: 'Password', type: 'text', formName: 'password', formValue: "", visible: true, validators: [{ name: 'required' }], validatorMssg: 'Requerido.' },
+              { md_col: 'md:col-4', label: 'apiKey', type: 'text', formName: 'apiKey', formValue: "", visible: true, validators: [{ name: 'required' }], validatorMssg: 'Requerido.' },
+              { md_col: 'md:col-4', label: 'idEnterprise', type: 'text', formName: 'idEnterprise', formValue: id, visible: false, validators: [{ name: 'required' }] },
+            ]
+          };
+          
+          localStorage.setItem('dinamicFormConfig', JSON.stringify({ ...this.createFormStructure, action: 'payment' }));
+          this.router.navigate(['/dashboard/management/enterprise/paymentIntegration']);
+        }
+      );
+    });
   }
 }

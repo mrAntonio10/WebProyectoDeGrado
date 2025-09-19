@@ -58,6 +58,7 @@ import { UserSalesDocumentComponent } from './pages/comercial-management/user-sa
                      //Management
                     {path: 'management/enterprise', component: EnterpriseComponent, canActivate: [AuthClassGuard],},
                     {path: 'management/enterprise/create', component: AdvancedFormComponent, canActivate: [AuthClassGuard],},
+                    {path: 'management/enterprise/paymentIntegration', component: AdvancedFormComponent, canActivate: [AuthClassGuard],},
 
                     {path: 'management/branchOffice', component: BranchOfficeComponent, canActivate: [AuthClassGuard],},
                     {path: 'management/branchOffice/create', component: CreateBranchOfficeComponent, canActivate: [AuthClassGuard],},
