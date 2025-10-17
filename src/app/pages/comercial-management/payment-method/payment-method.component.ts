@@ -136,7 +136,7 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
       amount: this.formGroup.value.totalPrice?.toString(), // convierto a string
       currency: 'BOB',
       idempotencyKey: localStorage.getItem('email') + `-${Date.now()}`, // para que sea único
-      chargeReason: 'Pago de orden desde POS: ' + sessionStorage.getItem('clientName'),
+      chargeReason: 'Pago:' + sessionStorage.getItem('email'),
       stereumJwt: localStorage.getItem('paymentJwt')
     };
 
