@@ -1,0 +1,46 @@
+/* Category filter chips - mobile friendly */
+.category-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+
+    .p-button.p-button-rounded {
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-size: 0.85rem;
+        padding: 0.4rem 0.9rem;
+    }
+}
+
+/* Pagination info bar */
+.pagination-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface-100, #f1f3f5);
+    border-radius: 8px;
+
+    .info-text {
+        font-size: 0.9rem;
+        color: var(--text-color-secondary, #6c757d);
+
+        strong {
+            color: var(--text-color, #495057);
+        }
+    }
+
+    .p-progressbar {
+        height: 6px;
+        border-radius: 3px;
+    }
+}
+
+/* Product card selected state */
+.product-card-selected {
+    border: 2px solid var(--primary-color, #2196F3) !important;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2) !important;
+}

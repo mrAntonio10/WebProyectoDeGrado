@@ -3,6 +3,7 @@ export interface ICreateDocument {
     totalPrice: number;
     paymentMethod: string;
     deliveryInformation: string;
+    isInvoiced: boolean;
 
     detailList: IDetailList[];
 }

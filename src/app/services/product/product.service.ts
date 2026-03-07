@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import {Observable} from "rxjs";
+import { Observable } from "rxjs";
 
 import { environment } from 'src/environments/environment';
 import { ICreateEnterprise, IUpdateEnterprise } from 'src/app/model/enterprise/enterprise';
@@ -25,7 +25,7 @@ export class ProductService {
       }
     }
 
-    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/products`,  { params });
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/products`, { params });
   }
 
 
@@ -43,6 +43,18 @@ export class ProductService {
 
   getProductListByCategory(category: String): Observable<any> {
     return this.httpClient.get(`${this.apiUrl}/api/v1/products/list/${category}`)
+  }
+
+  getProductWithImagePageable(paramsObj: any): Observable<any> {
+    let params = new HttpParams;
+
+    for (let key in paramsObj) {
+      if (paramsObj.hasOwnProperty(key)) {
+        params = params.set(key, paramsObj[key]);
+      }
+    }
+
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/products/with-images`, { params });
   }
 
 }

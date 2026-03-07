@@ -178,6 +178,8 @@ import { UserSalesDocumentComponent } from './pages/comercial-management/user-sa
 import { SalesDocumentInfoComponent } from './pages/comercial-management/sales-document-info/sales-document-info.component';
 import { SalesAdminManagementComponent } from './pages/comercial-management/sales-admin-management/sales-admin-management.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { AdminSalesReportComponent } from './pages/reports/admin-sales-report/admin-sales-report.component';
+import { AgileAddProductComponent } from './pages/comercial-management/agile-add-product/agile-add-product.component';
 
 @NgModule({
     imports: [
@@ -337,6 +339,8 @@ import { SpinnerComponent } from './spinner/spinner.component';
         SalesDocumentInfoComponent,
         SalesAdminManagementComponent,
         SpinnerComponent,
+        AdminSalesReportComponent,
+        AgileAddProductComponent,
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

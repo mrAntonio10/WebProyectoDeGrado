@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import {Observable} from "rxjs";
+import { Observable } from "rxjs";
 
 import { environment } from 'src/environments/environment';
 import { ICreateEnterprise, IUpdateEnterprise } from 'src/app/model/enterprise/enterprise';
@@ -25,7 +25,7 @@ export class ReportService {
       }
     }
 
-    return this.httpClient.get<any>(`${this.apiUrl}/api/reports/min-products-warehouse`,  { params });
+    return this.httpClient.get<any>(`${this.apiUrl}/api/reports/min-products-warehouse`, { params });
   }
 
 
@@ -38,7 +38,18 @@ export class ReportService {
       }
     }
 
-    return this.httpClient.get<any>(`${this.apiUrl}/api/reports/user-sales-report`,  { params });
+    return this.httpClient.get<any>(`${this.apiUrl}/api/reports/user-sales-report`, { params });
   }
-  
+
+  getAdminSalesPDFReport(paramsObj: any): Observable<any> {
+    let params = new HttpParams;
+
+    for (let key in paramsObj) {
+      if (paramsObj.hasOwnProperty(key)) {
+        params = params.set(key, paramsObj[key]);
+      }
+    }
+
+    return this.httpClient.get<any>(`${this.apiUrl}/api/reports/admin-sales-report`, { params });
+  }
 }

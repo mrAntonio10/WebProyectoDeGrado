@@ -28,13 +28,14 @@ export class SalesAdminManagementComponent implements OnInit, OnDestroy {
   isVisibleCreate: boolean = null;
   actions: any = [];
 
-  date: Date = new Date;
+  startDate: Date = new Date();
+  endDate: Date = new Date();
   selectedState = '';
   states = [
-    {name: 'Todos los métodos de pago', code: ''},
-    {name: 'Efectivo', code: 'Efectivo'},
-    {name: 'Qr', code: 'Qr'},
-    {name: 'Tarjeta', code: 'Tarjeta'},
+    { name: 'Todos los métodos de pago', code: '' },
+    { name: 'Efectivo', code: 'Efectivo' },
+    { name: 'Qr', code: 'Qr' },
+    { name: 'Tarjeta', code: 'Tarjeta' },
   ];
 
   formGroup: FormGroup;
@@ -75,40 +76,43 @@ export class SalesAdminManagementComponent implements OnInit, OnDestroy {
     let salesUserDocObservable = this.documentService.getSalesUserDocumentPageable(params);
 
     forkJoin([salesUserDocObservable]).subscribe(
-        ([documents]) => {
-            this.pageableData = documents.data;
-        }
+      ([documents]) => {
+        this.pageableData = documents.data;
+      }
     );
   }
 
   buildForm(): FormGroup {
     const group = this.fb.group({});
 
-      group.addControl('date', this.fb.control((this.date)));
-      group.addControl('paymentMethod', this.fb.control(('')));
+    group.addControl('startDate', this.fb.control((this.startDate)));
+    group.addControl('endDate', this.fb.control((this.endDate)));
+    group.addControl('paymentMethod', this.fb.control(('')));
 
-      return group;
+    return group;
   }
 
   submitForm() {
     if (this.formGroup.valid) {
-      this.date = this.formGroup.value.date;
-      
-        let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
-        let f = this.formGroup.value.paymentMethod;
+      this.startDate = this.formGroup.value.startDate;
+      this.endDate = this.formGroup.value.endDate;
 
-        let params = { date: d, filter: f };
+      let sd = this.datePipe.transform(this.formGroup.value.startDate, 'dd/MM/yyyy');
+      let ed = this.datePipe.transform(this.formGroup.value.endDate, 'dd/MM/yyyy');
+      let f = this.formGroup.value.paymentMethod;
 
-        this.getSalesUserDocumentPageableData(params);
+      let params = { startDate: sd, endDate: ed, filter: f };
+
+      this.getSalesUserDocumentPageableData(params);
     }
-  } 
+  }
 
   handleActionTriggered(event: { action: string, data: IEnterprisePage }) {
-    switch(event.action) {
+    switch (event.action) {
       case 'info':
         this.viewSalesDocumentInfoDialog(event.data.id);
         break;
-      }
+    }
   }
 
   getSalesUserDocumentPermissions() {
@@ -119,11 +123,11 @@ export class SalesAdminManagementComponent implements OnInit, OnDestroy {
         console.log("PERMISOS ", permission.data);
         this.actions = [];
 
-        permission.data.forEach(permission => {          
+        permission.data.forEach(permission => {
           switch (permission.permissionName) {
             case 'VIEW':
               this.getSalesUserDocumentPageableData();
-              this.actions.unshift({icon: 'pi pi-eye', class: 'p-button-warning', actionName: 'info'});
+              this.actions.unshift({ icon: 'pi pi-eye', class: 'p-button-warning', actionName: 'info' });
               break;
           }
         });
@@ -135,7 +139,7 @@ export class SalesAdminManagementComponent implements OnInit, OnDestroy {
     const ref = this.dialogService.open(SalesDocumentInfoComponent, {
       width: '70%',
       height: '95%',
-      data: {idDocument: id}
+      data: { idDocument: id }
     });
 
     ref.onClose.subscribe({
@@ -145,12 +149,14 @@ export class SalesAdminManagementComponent implements OnInit, OnDestroy {
   }
 
   generatesalesPDFReport() {
-      this.date = this.formGroup.value.date;
-      
-        let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
-        let f = this.formGroup.value.paymentMethod;
+    this.startDate = this.formGroup.value.startDate;
+    this.endDate = this.formGroup.value.endDate;
 
-        let params = { date: d, filter: f };
+    let sd = this.datePipe.transform(this.formGroup.value.startDate, 'dd/MM/yyyy');
+    let ed = this.datePipe.transform(this.formGroup.value.endDate, 'dd/MM/yyyy');
+    let f = this.formGroup.value.paymentMethod;
+
+    let params = { startDate: sd, endDate: ed, filter: f };
 
     let observablePdfReport = this.reportService.getuserSalesPDFReport(params);
     forkJoin([observablePdfReport]).subscribe({
@@ -175,54 +181,55 @@ export class SalesAdminManagementComponent implements OnInit, OnDestroy {
   public b64toBlob(b64Data, contentType) {
     contentType = contentType || '';
     let sliceSize = 512;
-  
+
     var byteCharacters = atob(b64Data);
     var byteArrays = [];
-  
+
     for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        var slice = byteCharacters.slice(offset, offset + sliceSize);
-  
-        var byteNumbers = new Array(slice.length);
-        for (var i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-        }
-  
-        var byteArray = new Uint8Array(byteNumbers);
-  
-        byteArrays.push(byteArray);
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      var byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
     }
-  
+
     var blob = new Blob(byteArrays, { type: contentType });
     return blob;
   }
 
- 
+
   private buildPageStructure() {
     this.tableStructure = [
-       // Nueva columna para acciones
-       {thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false},
-      {thead: 'Id', value: 'id',ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id'},
-      {thead: 'Fecha', value: 'salesDate',ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por fecha'},
-      {thead: 'Cliente', value: 'client', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por cliente'},
-      {thead: 'Método de pago', value: 'paymentMethod', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por método de pago'},
-      {thead: 'Monto', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por monto'}
+      // Nueva columna para acciones
+      { thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false },
+      { thead: 'Id', value: 'id', ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id' },
+      { thead: 'Fecha', value: 'salesDate', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por fecha' },
+      { thead: 'Cliente', value: 'client', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por cliente' },
+      { thead: 'Método de pago', value: 'paymentMethod', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por método de pago' },
+      { thead: 'Monto', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por monto' }
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);
   }
 
   onPageChange(event: any) {
-        var getFilter = '';
+    var getFilter = '';
 
-        if (event.filters && event.filters.name) {
-            if (!!event.filters.name[0].value) {
-                getFilter = event.filters.name[0].value;
-            }
-        }
-        console.log("se ejecuta el onpagechange ",  event.rows, " Y fecha ", this.formGroup.value.date);
-        let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
-        let params = { page: event.page, size: event.rows, filter: getFilter, date: d };
+    if (event.filters && event.filters.name) {
+      if (!!event.filters.name[0].value) {
+        getFilter = event.filters.name[0].value;
+      }
+    }
+    console.log("se ejecuta el onpagechange ", event.rows, " Y fecha ", this.formGroup.value.date);
+    let sd = this.datePipe.transform(this.formGroup.value.startDate, 'dd/MM/yyyy');
+    let ed = this.datePipe.transform(this.formGroup.value.endDate, 'dd/MM/yyyy');
+    let params = { page: event.page, size: event.rows, filter: getFilter, startDate: sd, endDate: ed };
 
-        this.getSalesUserDocumentPageableData(params);
+    this.getSalesUserDocumentPageableData(params);
   }
 }

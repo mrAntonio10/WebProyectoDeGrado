@@ -1,84 +1,102 @@
 <div class="grid">
-	<div class="col-12">
-	    <div class="card" *ngIf="formValue">
+    <div class="col-12">
+        <div class="card" *ngIf="formValue">
             <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
                 <div class="p-fluid p-formgrid grid">
                     <div class="field col-12 md:col-4">
                         <label> Nombre producto </label>
-                        <input pInputText [formControlName]="'productName'" [id]="'productName'" readonly/>
+                        <input pInputText [formControlName]="'productName'" [id]="'productName'" readonly />
                     </div>
 
                     <div class="field col-12 md:col-4">
                         <label> Categoría </label>
-                        <input pInputText [formControlName]="'productCategory'" [id]="'productCategory'" readonly/>
+                        <input pInputText [formControlName]="'productCategory'" [id]="'productCategory'" readonly />
                     </div>
 
                     <div class="field col-12 md:col-4">
                         <label> Sku </label>
-                        <input pInputText [formControlName]="'sku'" [id]="'sku'"/>
+                        <input pInputText [formControlName]="'sku'" [id]="'sku'" />
 
-                        <small id="username-help" class="p-error" *ngIf="formGroup.get('sku').invalid && formGroup.get('sku').touched">
+                        <small id="username-help" class="p-error"
+                            *ngIf="formGroup.get('sku').invalid && formGroup.get('sku').touched">
                             Requerido. Máximo 6 caracteres.
                         </small>
                     </div>
 
                     <div class="field col-12 md:col-4" *ngIf="formGroup.get('productCategory').value == 'Bebida'">
                         <label> Formato Bebida </label>
-                        <input pInputText [formControlName]="'beverageFormat'" [id]="'beverageFormat'"/>
+                        <input pInputText [formControlName]="'beverageFormat'" [id]="'beverageFormat'" />
 
-                        <small id="username-help" class="p-error" *ngIf="formGroup.get('beverageFormat').invalid && formGroup.get('beverageFormat').touched">
+                        <small id="username-help" class="p-error"
+                            *ngIf="formGroup.get('beverageFormat').invalid && formGroup.get('beverageFormat').touched">
                             Requerido
                         </small>
                     </div>
 
                     <div class="field col-12 md:col-4">
                         <label> Stock actual </label>
-                        <p-inputNumber [formControlName]="'actualStock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false" [readonly]="true"/>
-            
-                        <small id="username-help" class="p-error" *ngIf="formGroup.get('actualStock').invalid && formGroup.get('actualStock').touched">
+                        <p-inputNumber [formControlName]="'actualStock'" mode="decimal" inputId="withoutgrouping"
+                            [useGrouping]="false" [readonly]="true" />
+
+                        <small id="username-help" class="p-error"
+                            *ngIf="formGroup.get('actualStock').invalid && formGroup.get('actualStock').touched">
                             Requerido. Mayor a 0.
                         </small>
                     </div>
 
                     <div class="field col-12 md:col-4">
                         <label> Actualizar stock </label>
-                        <p-inputNumber  [formControlName]="'stock'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
-    
-                        <small id="username-help" class="p-error" *ngIf="formGroup.get('stock').invalid && formGroup.get('stock').touched">
+                        <p-inputNumber [formControlName]="'stock'" mode="decimal" inputId="withoutgrouping"
+                            [useGrouping]="false" />
+
+                        <small id="username-help" class="p-error"
+                            *ngIf="formGroup.get('stock').invalid && formGroup.get('stock').touched">
                             Requerido. Mayor a 0.
                         </small>
                     </div>
 
                     <div class="field col-12 md:col-4">
                         <label> Mínimo </label>
-                        <p-inputNumber  [formControlName]="'minProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
-    
-                        <small id="username-help" class="p-error" *ngIf="formGroup.get('minProduct').invalid && formGroup.get('minProduct').touched">
+                        <p-inputNumber [formControlName]="'minProduct'" mode="decimal" inputId="withoutgrouping"
+                            [useGrouping]="false" />
+
+                        <small id="username-help" class="p-error"
+                            *ngIf="formGroup.get('minProduct').invalid && formGroup.get('minProduct').touched">
                             Requerido. Mayor a 0.
                         </small>
                     </div>
-    
+
                     <div class="field col-12 md:col-4">
                         <label> Máximo </label>
-                        <p-inputNumber  [formControlName]="'maxProduct'" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"/>
-    
-                        <small id="username-help" class="p-error" *ngIf="formGroup.get('maxProduct').invalid && formGroup.get('maxProduct').touched">
+                        <p-inputNumber [formControlName]="'maxProduct'" mode="decimal" inputId="withoutgrouping"
+                            [useGrouping]="false" />
+
+                        <small id="username-help" class="p-error"
+                            *ngIf="formGroup.get('maxProduct').invalid && formGroup.get('maxProduct').touched">
                             Requerido. Mayor a 0.
                         </small>
                     </div>
 
                     <div class="field col-12 md:col-4">
                         <label> Precio unitario </label>
-                        <p-inputNumber  [formControlName]="'unitaryCost'" mode="currency" currency="BOB" locale="en-US" minFractionDigits="2" max="999.99"/>
-    
-                        <small id="username-help" class="p-error" *ngIf="formGroup.get('unitaryCost').invalid && formGroup.get('unitaryCost').touched">
+                        <p-inputNumber [formControlName]="'unitaryCost'" mode="currency" currency="BOB" locale="en-US"
+                            minFractionDigits="2" max="999.99" />
+
+                        <small id="username-help" class="p-error"
+                            *ngIf="formGroup.get('unitaryCost').invalid && formGroup.get('unitaryCost').touched">
                             Requerido. Mayor a 0. Mínimo 2 decimales.
                         </small>
                     </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label> Nueva foto (Opcional) </label>
+                        <input type="file" accept="image/*" class="p-inputtext" (change)="onFileChange($event)" />
+                    </div>
                 </div>
                 <div>
-                    <p-toast/>
-                    <input pButton pRipple type="submit" class="submit" value="Actualizar" [disabled]="!formGroup.valid">
+                    <p-toast />
+                    <input pButton pRipple type="submit" class="submit" value="Actualizar"
+                        [disabled]="!formGroup.valid">
                 </div>
             </form>
         </div>

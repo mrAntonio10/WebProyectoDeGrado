@@ -1,22 +1,33 @@
 <div>
-	<div class="grid">
-		<div class="col-12">
-			<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
                 <p-panel header="Opciones" [toggleable]="true" [collapsed]="false">
                     <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
                         <div class="p-fluid p-formgrid grid">
 
                             <div class="field col-12 md:col-4">
-                                <label for="icondisplay" class="font-bold block mb-2"> Fecha </label>
+                                <label for="startDate" class="font-bold block mb-2"> Fecha inicio </label>
                                 <span class="p-input-icon-right">
-                                    <p-calendar [(ngModel)]="date" showIcon="true" icon="pi pi-calendar" [formControl]="formGroup.controls['date']"
-                                    dateFormat="dd-MM-yy"></p-calendar>
+                                    <p-calendar [(ngModel)]="startDate" showIcon="true" icon="pi pi-calendar"
+                                        [formControl]="formGroup.controls['startDate']"
+                                        dateFormat="dd-MM-yy"></p-calendar>
                                 </span>
                             </div>
 
-                            <div class="field col-12 md:col-4">	
+                            <div class="field col-12 md:col-4">
+                                <label for="endDate" class="font-bold block mb-2"> Fecha fin </label>
+                                <span class="p-input-icon-right">
+                                    <p-calendar [(ngModel)]="endDate" showIcon="true" icon="pi pi-calendar"
+                                        [formControl]="formGroup.controls['endDate']"
+                                        dateFormat="dd-MM-yy"></p-calendar>
+                                </span>
+                            </div>
+
+                            <div class="field col-12 md:col-4">
                                 <label> Método de pago </label>
-                                <p-dropdown [formControlName]="'paymentMethod'" [id]="'state'" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
+                                <p-dropdown [formControlName]="'paymentMethod'" [id]="'state'" [options]="states"
+                                    optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
                             </div>
 
                         </div>
@@ -26,8 +37,8 @@
                                 <button pButton type="submit" label="Buscar" [disabled]="!formGroup.valid"></button>
                             </div>
                             <div class="field col-12 md:col-4">
-                                <button pButton type="button" label="Reporte de ventas" icon="pi pi-file-pdf" class="p-button-help" (click)="generatesalesPDFReport()"
-                                ></button>
+                                <button pButton type="button" label="Reporte de ventas" icon="pi pi-file-pdf"
+                                    class="p-button-help" (click)="generatesalesPDFReport()"></button>
                             </div>
                         </div>
                     </form>
@@ -37,23 +48,13 @@
     </div>
 </div>
 
-<paging-filter
-    (pageChangeTriggered)="onPageChange($event)"
-    *ngIf="this.tableStructure && this.pageableData" 
-    [title]="'Documento de ventas'"
-    [principalLabel]="'Gestión comercial'"
-    [sucessorLabel]="'Gestión de ventas'"
-    [data]="this.pageableData"
-    [globalFilters]="gobalFilters"
-    [buildCreateForm]="createFormStructure"
-    [createVisible]="isVisibleCreate"
-    [actions]="actions"
-    [dataStructure]="this.tableStructure"
-    (actionTriggered)="handleActionTriggered($event)"
-    > </paging-filter>
+<paging-filter (pageChangeTriggered)="onPageChange($event)" *ngIf="this.tableStructure && this.pageableData"
+    [title]="'Documento de ventas'" [principalLabel]="'Gestión comercial'" [sucessorLabel]="'Gestión de ventas'"
+    [data]="this.pageableData" [globalFilters]="gobalFilters" [buildCreateForm]="createFormStructure"
+    [createVisible]="isVisibleCreate" [actions]="actions" [dataStructure]="this.tableStructure"
+    (actionTriggered)="handleActionTriggered($event)"> </paging-filter>
 
-    <div class="col-6  flex justify-content-center">
-        <p-toast/>
-    </div>
-    <p-confirmDialog></p-confirmDialog>
-
+<div class="col-6  flex justify-content-center">
+    <p-toast />
+</div>
+<p-confirmDialog></p-confirmDialog>

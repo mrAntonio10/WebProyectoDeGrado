@@ -30,6 +30,7 @@ export interface IUpdateWarehouse {
   maxProduct: number;
   unitaryCost: number;
   beverageFormat: string;
+  photo?: string;
 }
 
 export interface IWarehouse {
@@ -51,7 +52,7 @@ export interface IWarehouseProductsPageable {
 
 export interface ISalesPanelPageableContent {
   content: IDetailWarehouseProducts[],
-  page : [];
+  page: [];
 }
 
 export interface IDetailWarehouseProducts {

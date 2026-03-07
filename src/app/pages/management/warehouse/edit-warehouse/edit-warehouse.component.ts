@@ -64,8 +64,23 @@ export class EditWarehouseComponent implements OnInit {
     group.addControl('stock', this.fb.control((0), [Validators.required, Validators.min(0)]));
     group.addControl('unitaryCost', this.fb.control((this.formValue.unitaryCost), [Validators.required, Validators.min(1)]));
     group.addControl('beverageFormat', this.fb.control((this.formValue.product.beverageFormat)));
+    group.addControl('photo', this.fb.control((this.formValue.product.photo)));
 
     return group;
+  }
+
+  onFileChange(event: any) {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        // Guarda todo el data:image/...;base64,...
+        this.formGroup.patchValue({
+          photo: reader.result as string
+        });
+      };
+    }
   }
 
   submitForm() {

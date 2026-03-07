@@ -1,38 +1,39 @@
 <div>
-	<div class="grid">
-		<div class="col-12">
-			<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
                 <p-panel header="Opciones" [toggleable]="true" [collapsed]="false">
                     <div class="p-fluid p-formgrid grid">
 
                         <div class="field col-12 md:col-6" *ngIf="!!this.clientName">
                             <label> Nombre cliente </label>
-                            <input pInputText [id]="'name'" [value]="this.clientName" readonly/>
+                            <input pInputText [id]="'name'" [value]="this.clientName" readonly />
                         </div>
 
-                        </div>
-                        <div class="p-fluid p-formgrid grid">
+                    </div>
+                    <div class="p-fluid p-formgrid grid">
                         <div class="field col-12 md:col-4">
-                            <button pButton type="button" label="Limpiar detalle (Ctrl + l)" icon="pi pi-trash" class="p-button-secondary" 
-                            [tabIndex]="-1"
-                            (click)="deleteAllProductsFromDetail()"></button>
+                            <button pButton type="button" label="Limpiar detalle (Ctrl + l)" icon="pi pi-trash"
+                                class="p-button-secondary" [tabIndex]="-1"
+                                (click)="deleteAllProductsFromDetail()"></button>
                         </div>
-                        <div class="field col-12 md:col-4">
-                            <button pButton type="button" label="Información cliente (Ctrl + c)" icon="pi pi-user-plus" class="p-button-info" 
-                            [tabIndex]="-1"
-                            (click)="routeAddClientInfo()"></button>
+                        <div class="field col-12 md:col-3">
+                            <button pButton type="button" label="Información cliente (Ctrl + c)" icon="pi pi-user-plus"
+                                class="p-button-info" [tabIndex]="-1" (click)="routeAddClientInfo()"></button>
                         </div>
-                        <div class="field col-12 md:col-4">
-                            <button pButton type="button" label="Agregar producto (Ctrl + p)" icon="pi pi-plus-circle" class="p-button-success" 
-                            [tabIndex]="-1"
-                            (click)="routeAddProductToDetail()"></button>
+                        <div class="field col-12 md:col-3">
+                            <button pButton type="button" label="Agregar producto (Ctrl + p)" icon="pi pi-plus-circle"
+                                class="p-button-success" [tabIndex]="-1" (click)="routeAddProductToDetail()"></button>
+                        </div>
+                        <div class="field col-12 md:col-3">
+                            <button pButton type="button" label="Agregar productos -flash" icon="pi pi-bolt"
+                                class="p-button-warning" [tabIndex]="-1"
+                                (click)="routeAddAgileProductToDetail()"></button>
                         </div>
                         <div class="field col-12 md:col-12" *ngIf="!!this.pageableData">
-                            <button pButton type="button" label="Aceptar detalle (Ctrl + d)" icon="pi pi-plus-circle" class="p-button-outlined p-button-info" 
-                                (click)="routePaymentMethod()"
-								[tabIndex]="-1"
-								style="width: 100%;"
-								>
+                            <button pButton type="button" label="Aceptar detalle (Ctrl + d)" icon="pi pi-plus-circle"
+                                class="p-button-outlined p-button-info" (click)="routePaymentMethod()" [tabIndex]="-1"
+                                style="width: 100%;">
                             </button>
                         </div>
                     </div>
@@ -42,23 +43,12 @@
     </div>
 </div>
 
-<sales-paging-filter
-    (pageChangeTriggered)="onPageChange($event)"
-    *ngIf="this.tableStructure && !!this.pageableData" 
-    [title]="'Detalle'"
-    [principalLabel]="'Gestión comercial'"
-    [sucessorLabel]="'Detalle'"
-    [data]="this.pageableData"
-    [globalFilters]="gobalFilters"
-    [dataStructure]="this.tableStructure"
-    [createVisible]="isVisibleCreate"
-    [actions]="actions"
-    [saleTotalPrice]="this.totalPrice"
-    (actionTriggered)="handleActionTriggered($event)"
-    > 
+<sales-paging-filter (pageChangeTriggered)="onPageChange($event)" *ngIf="this.tableStructure && !!this.pageableData"
+    [title]="'Detalle'" [principalLabel]="'Gestión comercial'" [sucessorLabel]="'Detalle'" [data]="this.pageableData"
+    [globalFilters]="gobalFilters" [dataStructure]="this.tableStructure" [createVisible]="isVisibleCreate"
+    [actions]="actions" [saleTotalPrice]="this.totalPrice" (actionTriggered)="handleActionTriggered($event)">
 </sales-paging-filter>
-    <div class="col-6  flex justify-content-center">
-        <p-toast/>
-    </div>
-    <p-confirmDialog></p-confirmDialog>
-
+<div class="col-6  flex justify-content-center">
+    <p-toast />
+</div>
+<p-confirmDialog></p-confirmDialog>

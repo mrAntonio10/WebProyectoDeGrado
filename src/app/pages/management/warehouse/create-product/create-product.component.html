@@ -1,50 +1,59 @@
 <div class="grid">
 	<div class="col-12">
-	  <div class="card">
-		<h5> {{ this.buttonValue }} producto </h5>
-		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
-		  <div class="p-fluid p-formgrid grid">
+		<div class="card">
+			<h5> {{ this.buttonValue }} producto </h5>
+			<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+				<div class="p-fluid p-formgrid grid">
 
-			<div class="field col-12 md:col-4">
-				<label> Nombre </label>
-				<input pInputText [formControlName]="'name'" [id]="'name'"/>
+					<div class="field col-12 md:col-4">
+						<label> Nombre </label>
+						<input pInputText [formControlName]="'name'" [id]="'name'" />
 
-				<small id="username-help" class="p-error" *ngIf="formGroup.get('name').invalid && formGroup.get('name').touched">
-					Requerido. Máximo 60 caracteres.
-				</small>
-            </div>
+						<small id="username-help" class="p-error"
+							*ngIf="formGroup.get('name').invalid && formGroup.get('name').touched">
+							Requerido. Máximo 60 caracteres.
+						</small>
+					</div>
 
-            <div class="field col-12 md:col-4">
-                <label> Categoría </label>
-                <p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList" optionLabel="name" optionValue="id"></p-dropdown>
+					<div class="field col-12 md:col-4">
+						<label> Categoría </label>
+						<p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList"
+							optionLabel="name" optionValue="id"></p-dropdown>
 
-                <small id="username-help" class="p-error" *ngIf="formGroup.get('category').invalid && formGroup.get('category').touched">
-					Requerido.
-				</small>
-            </div>
+						<small id="username-help" class="p-error"
+							*ngIf="formGroup.get('category').invalid && formGroup.get('category').touched">
+							Requerido.
+						</small>
+					</div>
 
-            <div class="field col-12 md:col-4" *ngIf="this.formGroup.value.category === 'bebida'">
-                <label> Formato bebida </label>
-				<input pInputText [formControlName]="'beverageFormat'" [id]="'beverageFormat'"/>
+					<div class="field col-12 md:col-4" *ngIf="this.formGroup.value.category === 'bebida'">
+						<label> Formato bebida </label>
+						<input pInputText [formControlName]="'beverageFormat'" [id]="'beverageFormat'" />
 
-                <small id="username-help" class="p-error" *ngIf="formGroup.get('beverageFormat').invalid && formGroup.get('beverageFormat').touched">
-					Requerido. Máximo 30 caracteres.
-				</small>
-            </div>
+						<small id="username-help" class="p-error"
+							*ngIf="formGroup.get('beverageFormat').invalid && formGroup.get('beverageFormat').touched">
+							Requerido. Máximo 30 caracteres.
+						</small>
+					</div>
 
-			<div class="field col-12 md:col-4">
-				<label> Sku/código producto </label>
-				<input pInputText [formControlName]="'sku'" [id]="'sku'"/>
-	
-				<small id="username-help" class="p-error" *ngIf="formGroup.get('sku').invalid && formGroup.get('sku').touched">
-					Requerido. Máximo 6 caracteres.
-				</small>
-			</div>
+					<div class="field col-12 md:col-4">
+						<label> Sku/código producto </label>
+						<input pInputText [formControlName]="'sku'" [id]="'sku'" />
 
-		  </div>
-		  <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
-		</form>
-	  </div>
+						<small id="username-help" class="p-error"
+							*ngIf="formGroup.get('sku').invalid && formGroup.get('sku').touched">
+							Requerido. Máximo 6 caracteres.
+						</small>
+					</div>
+
+					<div class="field col-12 md:col-4">
+						<label> Foto </label>
+						<input type="file" accept="image/*" class="p-inputtext" (change)="onFileChange($event)" />
+					</div>
+
+				</div>
+				<button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
+			</form>
+		</div>
 	</div>
-  </div>
-  
+</div>

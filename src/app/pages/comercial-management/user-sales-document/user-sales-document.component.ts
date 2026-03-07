@@ -31,7 +31,8 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
   actions: any = [];
   completeActionsList = [];
 
-  date: Date = new Date;
+  startDate: Date = new Date();
+  endDate: Date = new Date();
   selectedPaymentMethod = '';
   paymentMethods = [
     { name: 'Todos los métodos de pago', code: '' },
@@ -93,7 +94,8 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
   buildForm(): FormGroup {
     const group = this.fb.group({});
 
-    group.addControl('date', this.fb.control((this.date)));
+    group.addControl('startDate', this.fb.control((this.startDate)));
+    group.addControl('endDate', this.fb.control((this.endDate)));
     group.addControl('paymentMethod', this.fb.control(('')));
     group.addControl('state', this.fb.control(('ACEPTADO')));
 
@@ -102,9 +104,11 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
 
   submitForm() {
     if (this.formGroup.valid) {
-      this.date = this.formGroup.value.date;
+      this.startDate = this.formGroup.value.startDate;
+      this.endDate = this.formGroup.value.endDate;
 
-      let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
+      let sd = this.datePipe.transform(this.formGroup.value.startDate, 'dd/MM/yyyy');
+      let ed = this.datePipe.transform(this.formGroup.value.endDate, 'dd/MM/yyyy');
       let f = this.formGroup.value.paymentMethod;
       let s = this.formGroup.value.state;
 
@@ -114,7 +118,7 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
         this.actions = [...this.completeActionsList];
       }
 
-      let params = { date: d, filter: f, state: s };
+      let params = { startDate: sd, endDate: ed, filter: f, state: s };
 
       this.getSalesUserDocumentPageableData(params);
     }
@@ -172,12 +176,15 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
   }
 
   generatesalesPDFReport() {
-    this.date = this.formGroup.value.date;
+    this.startDate = this.formGroup.value.startDate;
+    this.endDate = this.formGroup.value.endDate;
 
-    let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
+    let sd = this.datePipe.transform(this.formGroup.value.startDate, 'dd/MM/yyyy');
+    let ed = this.datePipe.transform(this.formGroup.value.endDate, 'dd/MM/yyyy');
     let f = this.formGroup.value.paymentMethod;
+    let s = this.formGroup.value.state;
 
-    let params = { date: d, filter: f };
+    let params = { startDate: sd, endDate: ed, filter: f, state: s };
 
     let observablePdfReport = this.reportService.getuserSalesPDFReport(params);
     forkJoin([observablePdfReport]).subscribe({
@@ -249,9 +256,10 @@ export class UserSalesDocumentComponent implements OnInit, OnDestroy {
       }
     }
 
-    let d = this.datePipe.transform(this.formGroup.value.date, 'dd/MM/yyyy');
+    let sd = this.datePipe.transform(this.formGroup.value.startDate, 'dd/MM/yyyy');
+    let ed = this.datePipe.transform(this.formGroup.value.endDate, 'dd/MM/yyyy');
     console.log("se ejecuta el onpagechange");
-    let params = { page: event.page, size: event.rows, filter: getFilter, date: d };
+    let params = { page: event.page, size: event.rows, filter: getFilter, startDate: sd, endDate: ed };
 
     this.getSalesUserDocumentPageableData(params);
   }

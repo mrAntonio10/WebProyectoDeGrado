@@ -56,6 +56,11 @@
                             Requerido. Mínimo 2 decimales.
                         </small>
                     </div>
+
+                    <div class="field col-12 md:col-4 flex align-items-center mb-0 mt-4">
+                        <p-checkbox [formControlName]="'isInvoiced'" [binary]="true" inputId="isInvoiced"></p-checkbox>
+                        <label for="isInvoiced" class="ml-2 mb-0">¿Necesita factura?</label>
+                    </div>
                     <div class="col-12 flex justify-content-center" *ngIf="this.formGroup.value.paymentMethod == 'QR'">
 
                         <!-- Botón SOLO si NO hay link -->
@@ -99,22 +104,21 @@
                             </div>
                         </div> -->
                     </div>
+                </div>
+
+                <!-- Divider -->
+                <hr *ngIf="this.formGroup.value.paymentMethod == 'QR'" style="margin: 1rem 0; border-color: #ddd;">
+
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-4">
+                        <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
                     </div>
 
-                    <!-- Divider -->
-                    <hr *ngIf="this.formGroup.value.paymentMethod == 'QR'" style="margin: 1rem 0; border-color: #ddd;">
-
-                    <div class="p-fluid p-formgrid grid">
-                        <div class="field col-12 md:col-4">
-                            <button pButton type="submit" [label]="this.buttonValue"
-                                [disabled]="!formGroup.valid"></button>
-                        </div>
-
-                        <div class="field col-12 md:col-4">
-                            <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash"
-                                class="p-button-secondary" (click)="redirectToSalesPanel()"></button>
-                        </div>
+                    <div class="field col-12 md:col-4">
+                        <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash"
+                            class="p-button-secondary" (click)="redirectToSalesPanel()"></button>
                     </div>
+                </div>
             </form>
         </div>
     </div>

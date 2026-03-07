@@ -1,0 +1,88 @@
+<div class="card p-fluid">
+    <div class="flex flex-column md:flex-row justify-content-between align-items-center mb-4 gap-3">
+        <h2 class="m-0">Agregar Productos Ágil</h2>
+        <span class="p-input-icon-left w-full md:w-20rem">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" class="w-full" placeholder="Buscar producto..." [(ngModel)]="searchQuery"
+                (keyup.enter)="onSearch()" />
+        </span>
+    </div>
+
+    <!-- Accept Button Block -->
+    <div class="flex justify-content-center w-full mb-4">
+        <button pButton type="button" label="ACEPTAR Y VOLVER AL PANEL" icon="pi pi-check"
+            class="p-button-success p-button-lg w-full" (click)="acceptAndReturn()">
+        </button>
+    </div>
+
+    <!-- Category Filters - Flex Wrap for mobile -->
+    <div class="category-scroll mb-4">
+        <button *ngFor="let cat of categories" pButton type="button" [label]="cat.name"
+            [ngClass]="{'p-button-outlined': selectedCategory !== cat.name && !(selectedCategory === '' && cat.name === 'Todas')}"
+            class="p-button-rounded" (click)="onCategorySelect(cat.name)">
+        </button>
+    </div>
+
+    <!-- Pagination Info Bar -->
+    <div class="pagination-info mb-3" *ngIf="products.length > 0">
+        <span class="info-text">
+            Mostrando <strong>{{products.length}}</strong> de <strong>{{totalElements}}</strong> productos
+        </span>
+        <div class="flex align-items-center gap-2" style="min-width: 150px;">
+            <p-progressBar [value]="getLoadedPercent()" [showValue]="false"
+                style="width: 100%; height: 6px;"></p-progressBar>
+            <span class="info-text" style="white-space: nowrap;">{{getLoadedPercent()}}%</span>
+        </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid">
+        <div class="col-6 sm:col-6 md:col-4 lg:col-3 xl:col-2 p-2" *ngFor="let product of products">
+            <div class="card p-0 shadow-2 hover:shadow-4 cursor-pointer transition-all transition-duration-200"
+                [ngClass]="{'product-card-selected': isProductSelected(product)}" (click)="selectProduct(product)"
+                style="height: 100%; display: flex; flex-direction: column;">
+
+                <!-- Image Wrapper -->
+                <div
+                    style="height: 130px; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: #f8f9fa; border-radius: 6px 6px 0 0;">
+                    <img [src]="getSafeImage(product.photo)" [alt]="product.name"
+                        style="max-width: 100%; max-height: 100%; object-fit: cover;" />
+                </div>
+
+                <div class="p-3 flex-grow-1 flex flex-column justify-content-between">
+                    <div>
+                        <div class="text-sm text-500 mb-1">{{product.category}}</div>
+                        <div class="font-bold text-base mb-1 line-height-2" style="word-break: break-word;">
+                            {{product.name}}</div>
+                    </div>
+                    <!-- Show quantity badge if selected -->
+                    <div class="flex align-items-center gap-2 mt-2" *ngIf="getProductQty(product) > 0">
+                        <span class="p-tag p-tag-success">x{{getProductQty(product)}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="text-center p-4 border-round-xl surface-50" *ngIf="products.length === 0 && !isLoading">
+        <i class="pi pi-box text-500 text-6xl mb-3"></i>
+        <div class="text-700 text-xl">No se encontraron productos en esta categoría o búsqueda.</div>
+    </div>
+
+    <!-- Load More Section with counter -->
+    <div class="flex flex-column align-items-center gap-2 mt-4" *ngIf="hasMore && products.length > 0">
+        <button pButton type="button" [label]="'Cargar Más Productos (' + products.length + ' / ' + totalElements + ')'"
+            [loading]="isLoading" icon="pi pi-angle-down" class="p-button-outlined p-button-secondary w-full"
+            (click)="loadMore()"></button>
+    </div>
+
+    <!-- All loaded indicator -->
+    <div class="text-center mt-3 text-500" *ngIf="!hasMore && products.length > 0">
+        <i class="pi pi-check-circle mr-2"></i>Todos los productos cargados ({{products.length}})
+    </div>
+</div>
+
+<div class="flex justify-content-center">
+    <p-toast />
+</div>

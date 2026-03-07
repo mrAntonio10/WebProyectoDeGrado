@@ -53,6 +53,7 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
       totalPrice: 0,
       paymentMethod: '',
       deliveryInformation: '',
+      isInvoiced: false,
       detailList: []
     };
 
@@ -98,6 +99,7 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
     group.addControl('totalPrice', this.fb.control((this.saleTotalPrice), [Validators.required]));
     group.addControl('totalDiscount', this.fb.control((0), [Validators.required]));
     group.addControl('paymentMethod', this.fb.control(('EFECTIVO'), [Validators.required]));
+    group.addControl('isInvoiced', this.fb.control((false), []));
 
     group.addControl('amount', this.fb.control((''),));
     group.addControl('exchange', this.fb.control((''),));
@@ -123,6 +125,7 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
       this.documentFormValue.paymentMethod = this.formGroup.value.paymentMethod;
       this.documentFormValue.totalDiscount = this.formGroup.value.totalDiscount;
       this.documentFormValue.totalPrice = this.formGroup.value.totalPrice;
+      this.documentFormValue.isInvoiced = this.formGroup.value.isInvoiced;
 
       sessionStorage.setItem('formData', JSON.stringify({ ...this.documentFormValue, action: 'create' }))
 

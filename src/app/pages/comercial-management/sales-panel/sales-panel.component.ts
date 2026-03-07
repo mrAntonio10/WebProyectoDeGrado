@@ -52,20 +52,20 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-      this.breadcrumbService.setItems([
-        {label: 'Gestión comercial'},
-        {label: 'Panel de ventas'}
-      ]);
-    
-      this.productName = sessionStorage.getItem('pName');
+    this.breadcrumbService.setItems([
+      { label: 'Gestión comercial' },
+      { label: 'Panel de ventas' }
+    ]);
 
-      this.getSalesPanelPermission();
+    this.productName = sessionStorage.getItem('pName');
 
-      this.buildPageStructure();
-  
-      this.formData =  JSON.parse(sessionStorage.getItem('formData'));
-  
-      if (this?.formData?.action === 'create') this.messageCreatedSale(this.formData);
+    this.getSalesPanelPermission();
+
+    this.buildPageStructure();
+
+    this.formData = JSON.parse(sessionStorage.getItem('formData'));
+
+    if (this?.formData?.action === 'create') this.messageCreatedSale(this.formData);
   }
 
   ngOnDestroy(): void {
@@ -97,6 +97,10 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     this.router.navigate(['/dashboard/comercial-management/sales-panel/add-product']);
   }
 
+  routeAddAgileProductToDetail() {
+    this.router.navigate(['/dashboard/comercial-management/agile-add-product']);
+  }
+
   routeAddClientInfo() {
     this.router.navigate(['/dashboard/comercial-management/sales-panel/add-client-info']);
   }
@@ -116,8 +120,8 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     this.getProductsFromOrderPageableData();
   }
 
-  private getProductsFromOrderPageableData(params: any = { page: 0, size: 5}) {
-    if(!!this.productName) {
+  private getProductsFromOrderPageableData(params: any = { page: 0, size: 5 }) {
+    if (!!this.productName) {
 
       this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: `Producto ${this.productName} añadido exitosamente.` });
       sessionStorage.removeItem('pName');
@@ -131,7 +135,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
   }
 
   handleActionTriggered(event: { action: string, data: IDetailWarehouseProducts }) {
-    switch(event.action) {
+    switch (event.action) {
       case 'block':
         this.deleteProductFromOrder(event.data);
         break;
@@ -141,7 +145,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       case 'totalDiscount':
         this.setTotalPriceByDiscountChange(event.data)
         break;
-      }
+    }
   }
 
   getSalesPanelPermission() {
@@ -161,7 +165,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
             case 'CREATE':
               break;
             case 'DELETE':
-              this.actions.unshift({icon: 'pi pi-times', class: 'p-button-danger', actionName: 'block'});
+              this.actions.unshift({ icon: 'pi pi-times', class: 'p-button-danger', actionName: 'block' });
               break;
             case 'UPDATE':
               break;
@@ -177,16 +181,16 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       header: 'Eliminar producto',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-          var deleteItemIndex = this.pageableData.content.findIndex(d => d.idProduct === data.idProduct);
+        var deleteItemIndex = this.pageableData.content.findIndex(d => d.idProduct === data.idProduct);
 
-          if (deleteItemIndex !== -1) {
-            this.pageableData.content.splice(deleteItemIndex, 1);
+        if (deleteItemIndex !== -1) {
+          this.pageableData.content.splice(deleteItemIndex, 1);
 
-            sessionStorage.setItem('productDetail', JSON.stringify(this.pageableData))
-          }
-      
-          this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto eliminado exitosamente.' });
-          this.getProductsFromOrderPageableData();
+          sessionStorage.setItem('productDetail', JSON.stringify(this.pageableData))
+        }
+
+        this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto eliminado exitosamente.' });
+        this.getProductsFromOrderPageableData();
       },
       reject: () => {
         console.log('Acción de bloqueo cancelada');
@@ -198,7 +202,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     var itemIndex = this.pageableData.content.findIndex(d => d.idProduct === data.idProduct);
 
     if (itemIndex !== -1) {
-      if(this.pageableData.content[itemIndex].totalDiscount > (data.quantity * this.pageableData.content[itemIndex].unitaryCost)) {
+      if (this.pageableData.content[itemIndex].totalDiscount > (data.quantity * this.pageableData.content[itemIndex].unitaryCost)) {
         this.pageableData.content[itemIndex].totalDiscount = (data.quantity * this.pageableData.content[itemIndex].unitaryCost);
       }
 
@@ -212,7 +216,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 
       sessionStorage.setItem('totalPricesCopy', JSON.stringify(copyTotalPrices));
     }
-    if(data.quantity > data.stock) {
+    if (data.quantity > data.stock) {
       this.messageService.add({ severity: 'info', summary: 'Alerta', detail: `La cantidad supera el stock actual [${data.stock}].` });
     }
 
@@ -224,7 +228,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     var totalPricesCopy = JSON.parse(sessionStorage.getItem('totalPricesCopy'));
 
     if (itemIndex !== -1) {
-      if(data.totalDiscount === 0) {
+      if (data.totalDiscount === 0) {
         this.pageableData.content[itemIndex].totalPrice = (data.quantity * this.pageableData.content[itemIndex].unitaryCost);
         totalPricesCopy[itemIndex] = this.pageableData.content[itemIndex].totalPrice;
 
@@ -244,7 +248,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 
     let productDetailList = JSON.parse(sessionStorage.getItem('productDetail'))?.content ?? [];
 
-    if(productDetailList.length > 0) {
+    if (productDetailList.length > 0) {
       productDetailList.forEach(d => {
         totalPrice += d.totalPrice;
       });
@@ -256,15 +260,15 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     this.clientName = sessionStorage.getItem('clientName');
 
     this.tableStructure = [
-        // Nueva columna para acciones
-      {thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false},
-      {thead: 'idProduct', value: 'idProduct', ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id'},
-      {thead: 'Detalle', value: 'productName',ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre'},
-      {thead: 'Precio unitario', value: 'unitaryCost',ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre'},
-      {thead: 'Cantidad', value: 'quantity', ttype: 'number', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por cantidad'},
-      {thead: 'Descuento (BOB)', value: 'totalDiscount', ttype: 'decimal', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por descuento'},
-      {thead: 'Precio total', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por precio'},
-      {thead: 'Stock', value: 'stock', ttype: 'number', visible: false, hasFilter: false, filterplaceholder: 'Buscar por stock'},
+      // Nueva columna para acciones
+      { thead: 'Acciones', value: 'actions', ttype: 'actions', visible: true, hasFilter: false },
+      { thead: 'idProduct', value: 'idProduct', ttype: 'text', visible: false, hasFilter: false, filterplaceholder: 'Buscar por id' },
+      { thead: 'Detalle', value: 'productName', ttype: 'text', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre' },
+      { thead: 'Precio unitario', value: 'unitaryCost', ttype: 'number', visible: true, hasFilter: false, filterplaceholder: 'Buscar por nombre' },
+      { thead: 'Cantidad', value: 'quantity', ttype: 'number', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por cantidad' },
+      { thead: 'Descuento (BOB)', value: 'totalDiscount', ttype: 'decimal', visible: true, hasFilter: false, isEditable: true, filterplaceholder: 'Buscar por descuento' },
+      { thead: 'Precio total', value: 'totalPrice', ttype: 'decimal', visible: true, hasFilter: false, filterplaceholder: 'Buscar por precio' },
+      { thead: 'Stock', value: 'stock', ttype: 'number', visible: false, hasFilter: false, filterplaceholder: 'Buscar por stock' },
     ]
 
     this.gobalFilters = this.tableStructure.filter(column => column.visible).map(column => column.value);
@@ -274,15 +278,15 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     var getFilter = '';
 
     if (event.filters && event.filters.name) {
-        if (!!event.filters.name[0].value) {
-            getFilter = event.filters.name[0].value;
-        }
+      if (!!event.filters.name[0].value) {
+        getFilter = event.filters.name[0].value;
+      }
     }
 
     let params = { page: event.page, size: event.rows, filter: getFilter };
 
     this.getProductsFromOrderPageableData(params);
-}
+  }
 
 
   messageCreatedSale(submittedData: ICreateDocument) {
@@ -292,10 +296,10 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       next: ([created]) => {
         sessionStorage.removeItem('formData');
         this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Venta generada exitosamente.' });
-          sessionStorage.removeItem('clientName');
-          this.clientName = '';
-          sessionStorage.removeItem('productDetail');
-          this.totalPrice = 0;
+        sessionStorage.removeItem('clientName');
+        this.clientName = '';
+        sessionStorage.removeItem('productDetail');
+        this.totalPrice = 0;
 
         this.getProductsFromOrderPageableData();
       },
