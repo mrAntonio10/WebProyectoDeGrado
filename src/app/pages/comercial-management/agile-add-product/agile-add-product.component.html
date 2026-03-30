@@ -16,12 +16,35 @@
     </div>
 
     <!-- Category Filters - Flex Wrap for mobile -->
-    <div class="category-scroll mb-4">
+    <div class="category-scroll mb-4 flex align-items-center gap-2" style="overflow-x: auto; white-space: nowrap;">
         <button *ngFor="let cat of categories" pButton type="button" [label]="cat.name"
             [ngClass]="{'p-button-outlined': selectedCategory !== cat.name && !(selectedCategory === '' && cat.name === 'Todas')}"
-            class="p-button-rounded" (click)="onCategorySelect(cat.name)">
+            class="p-button-rounded" (click)="onCategorySelect(cat)">
         </button>
+        <button pButton icon="pi pi-plus" class="p-button-rounded p-button-success"
+            (click)="showAddCategoryDialog()"></button>
+        <button *ngIf="selectedCategoryObj && selectedCategoryObj.id" pButton icon="pi pi-trash"
+            class="p-button-rounded p-button-danger" (click)="deleteSelectedCategory()"></button>
     </div>
+
+    <!-- Create Category Dialog -->
+    <p-dialog header="Crear Categoría" [(visible)]="displayAddCategory" [modal]="true" [style]="{width: '30vw'}">
+        <div class="flex flex-column gap-3 pt-3">
+            <div class="flex flex-column gap-2">
+                <label for="catName">Nombre</label>
+                <input pInputText id="catName" [(ngModel)]="newCategory.name" />
+            </div>
+            <div class="flex flex-column gap-2">
+                <label for="catDesc">Descripción</label>
+                <input pInputText id="catDesc" [(ngModel)]="newCategory.description" />
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-text"
+                (click)="displayAddCategory=false"></button>
+            <button pButton type="button" label="Guardar" icon="pi pi-check" (click)="createCategory()"></button>
+        </ng-template>
+    </p-dialog>
 
     <!-- Pagination Info Bar -->
     <div class="pagination-info mb-3" *ngIf="products.length > 0">

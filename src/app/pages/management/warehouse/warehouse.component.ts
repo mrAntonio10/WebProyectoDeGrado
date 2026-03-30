@@ -18,6 +18,7 @@ import { ProductService } from 'src/app/services/product/product.service';
 import { EditWarehouseComponent } from './edit-warehouse/edit-warehouse.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ReportService } from 'src/app/services/report/report.service';
+import { DomainService } from 'src/app/services/domain/domain.service';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -61,6 +62,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private dialogService: DialogService,
     private reportService: ReportService,
+    private domainService: DomainService,
   ) {
 
   }
@@ -304,12 +306,16 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
   private getProductCategoryCombo() {
     this.productCategoryList = [];
-
-      this.productCategoryList.push({name: 'Todas las categorías', id: ''});
-      this.productCategoryList.push({name: 'Bebida', id: 'bebida'});
-      this.productCategoryList.push({name: 'Salado', id: 'salado'});
-      this.productCategoryList.push({name: 'Sándwich', id: 'sándwich'});
-      this.productCategoryList.push({name: 'Dulce', id: 'dulce'});
+    this.domainService.getDomainValues('CATEGORIAS_PRODUCTOS').subscribe({
+      next: (res) => {
+        let fetchedCats = res.data || [];
+        this.productCategoryList = [{ name: 'Todas las categorías', id: '' }, ...fetchedCats];
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las categorías.' });
+        this.productCategoryList = [{ name: 'Todas las categorías', id: '' }];
+      }
+    });
   }
 
   private getLimitCombo() {

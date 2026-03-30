@@ -6,6 +6,7 @@ import { forkJoin } from 'rxjs';
 import { ColumnStructure, FormConfig } from 'src/app/demo/domain/columnDataStructure';
 import { IProductPage } from 'src/app/model/product/product';
 import { ProductService } from 'src/app/services/product/product.service';
+import { DomainService } from 'src/app/services/domain/domain.service';
 
 @Component({
   selector: 'app-select-product',
@@ -36,6 +37,7 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private productService: ProductService,
     private confirmationService: ConfirmationService,
+    private domainService: DomainService,
   ) {
 
   }
@@ -76,12 +78,16 @@ export class SelectProductComponent  implements OnInit, OnDestroy {
 
   private getProductCategoryCombo() {
     this.productCategoryList = [];
-
-      this.productCategoryList.push({name: 'Todas las categorías', id: ''});
-      this.productCategoryList.push({name: 'Bebida', id: 'bebida'});
-      this.productCategoryList.push({name: 'Salado', id: 'salado'});
-      this.productCategoryList.push({name: 'Sándwich', id: 'sándwich'});
-      this.productCategoryList.push({name: 'Dulce', id: 'dulce'});
+    this.domainService.getDomainValues('CATEGORIAS_PRODUCTOS').subscribe({
+      next: (res) => {
+        let fetchedCats = res.data || [];
+        this.productCategoryList = [{ name: 'Todas las categorías', id: '' }, ...fetchedCats];
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las categorías.' });
+        this.productCategoryList = [{ name: 'Todas las categorías', id: '' }];
+      }
+    });
   }
 
   getProduct(data: any) {

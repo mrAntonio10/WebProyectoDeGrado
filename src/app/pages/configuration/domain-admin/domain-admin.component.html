@@ -1,0 +1,86 @@
+<p-toast></p-toast>
+<div class="p-grid table-demo">
+  <div class="p-col-12">
+    <div class="card">
+      <h5>Gestión de Dominios (Admin)</h5>
+
+      <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+          <div class="p-d-flex p-ai-center">
+            <label class="p-mr-2"><strong>Dominio Principal:</strong></label>
+            <p-dropdown [options]="masterDomains" [(ngModel)]="selectedMasterDomain" optionLabel="label"
+              optionValue="value" (onChange)="onMasterDomainChange($event)" [style]="{'width':'250px'}"
+              placeholder="Selecciona un Dominio">
+            </p-dropdown>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"
+            [disabled]="!selectedMasterDomain"></button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table #dt [value]="domainValues" [rows]="10" [paginator]="true" [globalFilterFields]="['name','description']"
+        responsiveLayout="scroll" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} entradas"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            <h5 class="p-m-0">Valores del Dominio: {{selectedMasterDomain}}</h5>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Buscar..." />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+            <th pSortableColumn="description">Descripción <p-sortIcon field="description"></p-sortIcon></th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-val>
+          <tr>
+            <td>{{val.name}}</td>
+            <td>{{val.description}}</td>
+            <td>
+              <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                (click)="editDomainValue(val)"></button>
+              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                (click)="deleteDomainValue(val)"></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            En total hay {{domainValues ? domainValues.length : 0 }} valores.
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="displayDialog" [style]="{width: '450px'}" header="Detalle Valor Dominio" [modal]="true"
+      styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-field">
+          <label for="name">Nombre del Valor</label>
+          <input type="text" pInputText id="name" [(ngModel)]="domainValueToEdit.name" required autofocus />
+          <small class="p-invalid" *ngIf="!domainValueToEdit.name">El nombre es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="description">Descripción</label>
+          <textarea id="description" pInputTextarea [(ngModel)]="domainValueToEdit.description" required rows="3"
+            cols="20"></textarea>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+          (click)="saveDomainValue()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>

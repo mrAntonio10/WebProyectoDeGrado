@@ -3,6 +3,8 @@ import { MessageService } from 'primeng/api';
 import { ProductService } from 'src/app/services/product/product.service';
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
+import { DomainService } from 'src/app/services/domain/domain.service';
+import * as Notiflix from 'notiflix';
 
 @Component({
   selector: 'app-agile-add-product',
@@ -24,10 +26,14 @@ export class AgileAddProductComponent implements OnInit {
 
   // Filters
   selectedCategory: string = '';
+  selectedCategoryObj: any = null;
   searchQuery: string = '';
+  displayAddCategory: boolean = false;
+  newCategory = { name: '', description: '' };
 
   constructor(
     private productService: ProductService,
+    private domainService: DomainService,
     private messageService: MessageService,
     private router: Router
   ) { }
@@ -38,19 +44,16 @@ export class AgileAddProductComponent implements OnInit {
   }
 
   loadCategories() {
-    this.categories = [
-      { name: 'Todas', id: '' },
-      { name: 'Salado', id: 'salado' },
-      { name: 'Bebida', id: 'bebida' },
-      { name: 'Sándwich', id: 'sándwich' },
-      { name: 'Dulce', id: 'dulce' },
-      { name: 'Café', id: 'café' },
-      { name: 'Té', id: 'té' },
-      { name: 'Jugo', id: 'jugo' },
-      { name: 'Postre', id: 'postre' },
-      { name: 'Panadería', id: 'panadería' },
-      { name: 'Snack', id: 'snack' }
-    ];
+    this.domainService.getDomainValues('CATEGORIAS_PRODUCTOS').subscribe({
+      next: (res) => {
+        let fetchedCats = res.data || [];
+        this.categories = [{ name: 'Todas', id: '' }, ...fetchedCats];
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las categorías.' });
+        this.categories = [{ name: 'Todas', id: '' }];
+      }
+    });
   }
 
   loadProducts(reset: boolean = false) {
@@ -91,9 +94,76 @@ export class AgileAddProductComponent implements OnInit {
     this.loadProducts(false);
   }
 
-  onCategorySelect(categoryName: string) {
-    this.selectedCategory = categoryName === 'Todas' ? '' : categoryName;
+  onCategorySelect(cat: any) {
+    this.selectedCategoryObj = cat;
+    this.selectedCategory = cat.name === 'Todas' ? '' : cat.name;
     this.loadProducts(true);
+  }
+
+  showAddCategoryDialog() {
+    this.newCategory = { name: '', description: '' };
+    this.displayAddCategory = true;
+  }
+
+  createCategory() {
+    if (!this.newCategory.name) {
+      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'El nombre es obligatorio' });
+      return;
+    }
+    const createReq = {
+      domain: 'CATEGORIAS_PRODUCTOS',
+      name: this.newCategory.name,
+      description: this.newCategory.description
+    };
+    this.domainService.createDomainValue(createReq).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Categoría creada' });
+        this.displayAddCategory = false;
+        this.loadCategories();
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message || 'No se pudo crear la categoría' });
+      }
+    });
+  }
+
+  deleteSelectedCategory() {
+    if (!this.selectedCategoryObj || !this.selectedCategoryObj.id) return;
+
+    this.domainService.checkDomainValueUsage(this.selectedCategoryObj.id).subscribe({
+      next: (res) => {
+        const usageCount = res.data || 0;
+        if (usageCount > 0) {
+          Notiflix.Confirm.show(
+            'Confirmación',
+            `Actualmente cuentas con ${usageCount} registros de productos asignados a esta categoria.... Confirma la eliminacion?`,
+            'Sí', 'No',
+            () => this.performDeleteCategory(this.selectedCategoryObj.id),
+            () => { }
+          );
+        } else {
+          this.performDeleteCategory(this.selectedCategoryObj.id);
+        }
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo verificar el uso de la categoría' });
+      }
+    });
+  }
+
+  private performDeleteCategory(idDomain: string) {
+    this.domainService.deleteDomainValue(idDomain).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Categoría eliminada' });
+        this.selectedCategoryObj = null;
+        this.selectedCategory = '';
+        this.loadCategories();
+        this.loadProducts(true);
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la categoría' });
+      }
+    });
   }
 
   onSearch() {

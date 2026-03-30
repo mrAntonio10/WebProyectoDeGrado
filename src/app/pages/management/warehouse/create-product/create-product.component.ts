@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BreadcrumbService } from 'src/app/app.breadcrumb.service';
 import { ICreateProduct } from 'src/app/model/product/product';
+import { DomainService } from 'src/app/services/domain/domain.service';
 
 @Component({
   selector: 'app-create-product',
@@ -21,6 +22,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private activeRoute: ActivatedRoute,
+    private domainService: DomainService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Gestión' },
@@ -45,7 +47,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
 
     group.addControl('id', this.fb.control(('')));
     group.addControl('name', this.fb.control((''), [Validators.required, Validators.maxLength(60)]));
-    group.addControl('category', this.fb.control(('salado'), [Validators.required, Validators.maxLength(30)]));
+    group.addControl('category', this.fb.control((''), [Validators.required, Validators.maxLength(30)]));
     group.addControl('beverageFormat', this.fb.control((''), [Validators.maxLength(30)]));
     group.addControl('sku', this.fb.control((''), [Validators.required, Validators.maxLength(6)]));
     group.addControl('photo', this.fb.control(('')));
@@ -81,16 +83,15 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   }
 
   private getProductCategoryCombo() {
-    this.productCategoryList.push({ name: 'Salado', id: 'salado' });
-    this.productCategoryList.push({ name: 'Bebida', id: 'bebida' });
-    this.productCategoryList.push({ name: 'Sándwich', id: 'sándwich' });
-    this.productCategoryList.push({ name: 'Dulce', id: 'dulce' });
-    this.productCategoryList.push({ name: 'Café', id: 'café' });
-    this.productCategoryList.push({ name: 'Té', id: 'té' });
-    this.productCategoryList.push({ name: 'Jugo', id: 'jugo' });
-    this.productCategoryList.push({ name: 'Postre', id: 'postre' });
-    this.productCategoryList.push({ name: 'Panadería', id: 'panadería' });
-    this.productCategoryList.push({ name: 'Snack', id: 'snack' });
+    this.productCategoryList = [];
+    this.domainService.getDomainValues('CATEGORIAS_PRODUCTOS').subscribe({
+      next: (res) => {
+        this.productCategoryList = res.data || [];
+      },
+      error: () => {
+        this.productCategoryList = [];
+      }
+    });
   }
 
 }

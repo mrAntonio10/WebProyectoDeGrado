@@ -75,6 +75,7 @@ import { UserSalesDocumentComponent } from './pages/comercial-management/user-sa
 
                     //configuration settings
                     { path: 'configuration/permission', component: PermissionsComponent, canActivate: [AuthClassGuard], },
+                    { path: 'configuration/domain', loadChildren: () => import('./pages/configuration/domain-admin/domain-admin.module').then(m => m.DomainAdminModule), canActivate: [AuthClassGuard] },
 
                     //Comercial management
                     { path: 'comercial-management/sales-panel', component: SalesPanelComponent, canActivate: [AuthClassGuard], },

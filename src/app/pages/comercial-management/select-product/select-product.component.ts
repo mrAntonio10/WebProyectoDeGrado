@@ -8,6 +8,7 @@ import { ColumnStructure, FormConfig } from 'src/app/demo/domain/columnDataStruc
 import { IProductPage } from 'src/app/model/product/product';
 import { IDetailWarehouseProducts, IWarehouseProductsPageable } from 'src/app/model/warehouse/warehouse';
 import { WarehouseService } from 'src/app/services/warehouse/warehouse.service';
+import { DomainService } from 'src/app/services/domain/domain.service';
 
 @Component({
   selector: 'app-select-product',
@@ -37,6 +38,7 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
     private messageService: MessageService,
     private fb: FormBuilder,
     private warehouseService: WarehouseService,
+    private domainService: DomainService,
   ) {
 
   }
@@ -82,14 +84,18 @@ export class DetailSelectProductComponent  implements OnInit, OnDestroy {
       }
   }
 
-  private getProductCategoryCombo() {
+  getProductCategoryCombo() {
     this.productCategoryList = [];
-
-      this.productCategoryList.push({name: 'Todas las categorías', id: ''});
-      this.productCategoryList.push({name: 'Bebida', id: 'bebida'});
-      this.productCategoryList.push({name: 'Salado', id: 'salado'});
-      this.productCategoryList.push({name: 'Sándwich', id: 'sándwich'});
-      this.productCategoryList.push({name: 'Dulce', id: 'Dulce'});
+    this.domainService.getDomainValues('CATEGORIAS_PRODUCTOS').subscribe({
+      next: (res) => {
+        let fetchedCats = res.data || [];
+        this.productCategoryList = [{ name: 'Todas las categorías', id: '' }, ...fetchedCats];
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las categorías.' });
+        this.productCategoryList = [{ name: 'Todas las categorías', id: '' }];
+      }
+    });
   }
 
   getProduct(data: any) {
