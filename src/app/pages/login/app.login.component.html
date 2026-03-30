@@ -1,21 +1,22 @@
 <div class="login-body">
     <div class="login-panel p-fluid">
-        <div class="login-panel-header">
-            <img src="assets/layout/images/myImg/coff.png">
+        <div class="login-panel-header" style="border-radius: 8px;">
+            <img src="assets/layout/images/myImg/coff.png" style="border-radius: 8px; object-fit: contain;">
         </div>
-            <div class="login-panel-content">
+        <div class="login-panel-content">
             <form autocomplete="off" [formGroup]="form">
 
                 <div class="grid">
                     <div class="col-12">
-                        <h1>Coffe Manager</h1>
-                        <h2>Bienvenido, ¡tu próxima taza de café está por comenzar!</h2>
+                        <h1>Axia Dx Manager</h1>
+                        <h2>Bienvenido!</h2>
                     </div>
                     <div class="col-12">
                         <span class="p-float-label">
                             <input id="username" type="text" pInputText formControlName="email">
                             <label for="username">Email</label>
-                            <small id="username-help" class="p-error" *ngIf="form.get('email').invalid && form.get('email').touched">
+                            <small id="username-help" class="p-error"
+                                *ngIf="form.get('email').invalid && form.get('email').touched">
                                 Ingrese un correo electrónico válido.
                             </small>
                         </span>
@@ -30,11 +31,12 @@
                         </span>
                     </div>
                     <div class="col-12">
-                        <p-toast/>
-                        <input pButton pRipple type="submit" class="submit" value="Iniciar Sesión" (click)="submitForm()"  [disabled]="!form.valid">
+                        <p-toast />
+                        <input pButton pRipple type="submit" class="submit" value="Iniciar Sesión"
+                            (click)="submitForm()" [disabled]="!form.valid">
                     </div>
                 </div>
             </form>
-            </div>
+        </div>
     </div>
 </div>

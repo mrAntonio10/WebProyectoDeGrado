@@ -30,6 +30,12 @@ export class CreateBranchOfficeComponent implements OnInit, OnDestroy {
     {name: 'Eliminada', code: 'DELETED'},
   ];
   
+  branchTypes = [
+    {name: 'Almacén Central (Emisor)', code: 'CENTRAL'},
+    {name: 'Distribuidor Principal', code: 'DISTRIBUTOR'},
+    {name: 'Punto de Venta Local', code: 'POINT_OF_SALE'},
+  ];
+
   constructor(private breadcrumbService: BreadcrumbService,
       private fb: FormBuilder, 
       private router: Router,
@@ -70,6 +76,7 @@ export class CreateBranchOfficeComponent implements OnInit, OnDestroy {
         group.addControl('invoice', this.fb.control((!!this.formValue?.invoice ? this.valToggle = this.formValue?.invoice : ''), Validators.required));
         group.addControl('inCode', this.fb.control((!!this.formValue?.inCode ? this.formValue?.inCode : '')));
         group.addControl('state', this.fb.control((!!this.formValue?.state ? this.selectedState : '')));
+        group.addControl('branchType', this.fb.control((!!this.formValue?.branchType ? this.formValue.branchType : 'POINT_OF_SALE'), Validators.required));
 
       return group;
     }

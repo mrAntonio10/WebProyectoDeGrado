@@ -49,6 +49,11 @@
                 <label> Estado </label>
 				<p-dropdown [formControlName]="'state'" [id]="'state'" [options]="states" optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
             </div>
+
+            <div class="field col-12 md:col-4">	
+                <label> Tipo de Sucursal </label>
+				<p-dropdown [formControlName]="'branchType'" [options]="branchTypes" optionLabel="name" optionValue="code" placeholder="Seleccione el Rol"></p-dropdown>
+            </div>
             
 		  </div>
 		  <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>

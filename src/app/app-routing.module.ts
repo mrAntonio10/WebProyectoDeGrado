@@ -49,6 +49,9 @@ import { DetailSelectProductComponent } from './pages/comercial-management/selec
 import { ClientInfoComponent } from './pages/comercial-management/client-info/client-info.component';
 import { PaymentMethodComponent } from './pages/comercial-management/payment-method/payment-method.component';
 import { UserSalesDocumentComponent } from './pages/comercial-management/user-sales-document/user-sales-document.component';
+import { SupplierComponent } from './pages/management/supplier/supplier.component';
+import { TransferTicketComponent } from './pages/management/transfer-ticket/transfer-ticket.component';
+import { CreateTransferTicketComponent } from './pages/management/transfer-ticket/create-transfer-ticket/create-transfer-ticket.component';
 
 @NgModule({
     imports: [
@@ -71,6 +74,10 @@ import { UserSalesDocumentComponent } from './pages/comercial-management/user-sa
                     { path: 'management/warehouse', component: WarehouseComponent, canActivate: [AuthClassGuard], },
                     { path: 'management/warehouse/create-product', component: CreateProductComponent, canActivate: [AuthClassGuard], },
                     { path: 'management/warehouse/create', loadChildren: () => import('../app/pages/management/warehouse/create-warehouse/steps.module').then(m => m.StepsModule), canActivate: [AuthClassGuard], },
+
+                    { path: 'management/supplier', component: SupplierComponent, canActivate: [AuthClassGuard], },
+                    { path: 'management/transfer-ticket', component: TransferTicketComponent, canActivate: [AuthClassGuard], },
+                    { path: 'management/transfer-ticket/create', component: CreateTransferTicketComponent, canActivate: [AuthClassGuard], },
 
 
                     //configuration settings

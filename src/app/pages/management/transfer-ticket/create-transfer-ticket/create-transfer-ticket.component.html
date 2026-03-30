@@ -1,0 +1,81 @@
+<p-toast></p-toast>
+
+<div class="p-grid table-demo">
+  <div class="p-col-12">
+    <div class="card">
+        <h5>Solicitud de Abastecimiento o Traslado</h5>
+        
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-6">
+                <label>Tipo de Movimiento</label>
+                <p-dropdown [options]="transferTypes" [(ngModel)]="newTicketData.transferType" (onChange)="onSourceOrTypeChange()" optionLabel="label" optionValue="value" placeholder="Seleccione Tipo"></p-dropdown>
+            </div>
+
+            <div class="field col-12 md:col-6" *ngIf="newTicketData.transferType === 'EXTERNAL_SUPPLY'">
+                <label>Proveedor Emisor</label>
+                <p-dropdown [options]="availableSuppliers" [(ngModel)]="newTicketData.sourceId" (onChange)="onSourceOrTypeChange()" optionLabel="name" optionValue="id" placeholder="Seleccione Proveedor" [filter]="true"></p-dropdown>
+            </div>
+
+            <div class="field col-12 md:col-6" *ngIf="newTicketData.transferType === 'INTERNAL_TRANSFER'">
+                <label>Almacén Origen (Emisor)</label>
+                <p-dropdown [options]="availableBranches" [(ngModel)]="newTicketData.sourceId" (onChange)="onSourceOrTypeChange()" optionLabel="name" optionValue="id" placeholder="Seleccione Almacén Origen" [filter]="true"></p-dropdown>
+            </div>
+        </div>
+
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-6">
+                <label for="destBranch">Almacén Destino (Receptor)</label>
+                <p-dropdown [options]="availableBranches" [(ngModel)]="newTicketData.destinationId" optionLabel="name" optionValue="id" placeholder="Seleccione Almacén Destino" [filter]="true"></p-dropdown>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label for="createNotes">Comentarios Iniciales</label>
+                <textarea id="createNotes" pInputTextarea [(ngModel)]="newTicketData.comments" rows="1"></textarea>
+            </div>
+        </div>
+
+        <hr style="margin: 20px 0;">
+
+        <h5>Productos a Transferir</h5>
+        <div style="color:red; margin-bottom: 15px;" *ngIf="newTicketData.transferType === 'INTERNAL_TRANSFER' && !newTicketData.sourceId">
+        <small>* Selecciona un Almacén Origen para ver su Stock disponible.</small>
+        </div>
+
+        <div *ngFor="let det of newTicketData.details; let i = index" class="p-fluid p-formgrid grid p-mb-2 p-ai-end">
+            <div class="field col-12 md:col-7">
+                <label>Producto Existente</label>
+                <p-dropdown [options]="availableProducts" [(ngModel)]="det.productId" 
+                            [optionLabel]="newTicketData.transferType === 'INTERNAL_TRANSFER' ? 'label' : 'name'" 
+                            optionValue="id" 
+                            placeholder="Seleccione un Producto"
+                            [filter]="true" filterBy="name"
+                            [virtualScroll]="true" [virtualScrollItemSize]="38"
+                            [style]="{'width':'100%'}">
+                </p-dropdown>
+            </div>
+            <div class="field col-12 md:col-3">
+                <label>Cantidad (Uds)</label>
+                <p-inputNumber [(ngModel)]="det.quantityShipped" mode="decimal" [min]="1" [max]="getMaxStock(det.productId)"></p-inputNumber>
+                <div *ngIf="newTicketData.transferType === 'INTERNAL_TRANSFER' && getMaxStock(det.productId) !== 999999" style="font-size: 0.8rem; color: #666; margin-top: 2px;">
+                    Máximo: {{ getMaxStock(det.productId) }}
+                </div>
+            </div>
+            <div class="field col-12 md:col-2">
+                <label>&nbsp;</label>
+                <button pButton pRipple icon="pi pi-trash" label="Eliminar Fila" class="p-button-danger p-button-outlined" (click)="removeProductLine(i)" style="width: 100%;"></button>
+            </div>
+        </div>
+        
+        <div class="p-mt-3">
+            <button pButton pRipple label="Añadir Otro Producto" icon="pi pi-plus" class="p-button-sm p-button-secondary" (click)="addProductLine()"></button>
+        </div>
+
+        <hr style="margin: 20px 0;">
+
+        <div class="p-d-flex p-jc-end p-mt-4">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text p-mr-2" (click)="cancelCreation()"></button>
+            <button pButton pRipple label="Enviar Solicitud" icon="pi pi-check" class="p-button-success" (click)="saveNewTicket()"></button>
+        </div>
+    </div>
+  </div>
+</div>

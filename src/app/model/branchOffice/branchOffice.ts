@@ -15,6 +15,7 @@ export interface ICreateBranchOffice {
     idEnterprise: string;
     invoice: boolean;
     inCode: string;
+    branchType?: 'CENTRAL' | 'DISTRIBUTOR' | 'POINT_OF_SALE';
 }
 
 export interface IUpdateBranchOffice {
@@ -25,6 +26,7 @@ export interface IUpdateBranchOffice {
     invoice: boolean;
     inCode: string;
     state: string;
+    branchType?: string;
 }
 
 export interface IBranchOffice {
@@ -36,6 +38,7 @@ export interface IBranchOffice {
     invoice: boolean;
     inCode: string;
     enterprise: IEnterpriseState;
+    branchType?: string;
 }
 
 

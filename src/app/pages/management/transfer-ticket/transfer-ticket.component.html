@@ -1,0 +1,221 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="p-grid table-demo">
+  <div class="p-col-12">
+    <div class="card">
+      <h5>Gestión de Abastecimientos y Transferencias</h5>
+
+      <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Nuevo Traspaso" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openCreateTicket()"></button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table #dt [value]="tickets" [rows]="10" [paginator]="true" responsiveLayout="scroll" [rowHover]="true"
+        dataKey="id" [loading]="loading">
+        <ng-template pTemplate="caption">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            <h5 class="p-m-0">Tickets de Traslado</h5>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" placeholder="Buscar ticket..." />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id">ID Traspaso</th>
+            <th pSortableColumn="sourceName">Origen</th>
+            <th pSortableColumn="destinationName">Destino</th>
+            <th pSortableColumn="dateCreated">Fecha Registro</th>
+            <th pSortableColumn="currentStatus">Estado Actual</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ticket>
+          <tr>
+            <td>{{ticket.id}}</td>
+            <td>{{ getSourceName(ticket) }}</td>
+            <td>{{ ticket.destination?.name || ticket.destinationName || ticket.destinationId }}</td>
+            <td>{{ticket.dateCreated | date:'dd/MM/yyyy HH:mm'}}</td>
+            <td>
+              <span [class]="'customer-badge status-' + ticket.currentStatus.toLowerCase()">
+                {{ticket.currentStatus}}
+              </span>
+            </td>
+            <td>
+              <!-- Ver Timeline -->
+              <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info p-mr-2"
+                pTooltip="Ver Histórico" (click)="viewTimeline(ticket)"></button>
+                
+              <!-- Ver Detalle de Solicitud -->
+              <button pButton pRipple icon="pi pi-list" class="p-button-rounded p-button-secondary p-mr-2"
+                pTooltip="Ver Detalle" (click)="viewDetails(ticket)"></button>
+              
+              <!-- Si el ticket está pendiente y el usuario es Receptor, permitir aceptar/rechazar -->
+              <ng-container *ngIf="ticket.currentStatus === 'PENDING'">
+                <button pButton pRipple icon="pi pi-check" class="p-button-rounded p-button-success p-mr-2"
+                  pTooltip="Aceptar Mercadería" (click)="openActionDialog(ticket, 'ACCEPT')"></button>
+                <button pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-danger p-mr-2"
+                  pTooltip="Rechazar Todo" (click)="openActionDialog(ticket, 'REJECT')"></button>
+                <button pButton pRipple icon="pi pi-exclamation-triangle" class="p-button-rounded p-button-warning"
+                  pTooltip="Reportar Daño Parcial" (click)="openActionDialog(ticket, 'DAMAGE')"></button>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="empty">
+          <tr><td colspan="6">No se encontraron tickets registrados.</td></tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Histórico de Eventos (Línea de Vida INMUTABLE) -->
+<p-dialog [(visible)]="displayTimeline" header="Histórico del Ticket" [modal]="true"
+  styleClass="p-fluid" [style]="{width: '45vw'}">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 8px 0;">
+
+    <div *ngFor="let event of events"
+      style="width: 100%; max-width: 380px; border-radius: 10px; border: 1px solid #e5e7eb;
+             background: #ffffff; padding: 14px 20px; text-align: center;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
+
+      <!-- Icono + Estado -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
+        <span [style.background]="event.color"
+          style="width:28px; height:28px; border-radius:50%; display:inline-flex;
+                 align-items:center; justify-content:center;">
+          <i [class]="event.icon" style="color:white; font-size:0.75rem;"></i>
+        </span>
+        <strong [style.color]="event.color" style="font-size: 0.95rem;">{{ event.status }}</strong>
+      </div>
+
+      <!-- Fecha -->
+      <div style="color: #6b7280; font-size: 0.8rem; margin-bottom: 4px;">
+        {{ event.date | date:'dd/MM/yyyy HH:mm' }}
+      </div>
+
+      <!-- Usuario -->
+      <div style="font-size: 0.85rem; margin-bottom: 4px;">
+        <strong>Por:</strong> {{ event.user }}
+      </div>
+
+      <!-- Comentario -->
+      <div *ngIf="event.comment" style="font-style: italic; color: #374151; font-size: 0.85rem;">
+        &ldquo;{{ event.comment }}&rdquo;
+      </div>
+    </div>
+
+    <p *ngIf="events.length === 0" style="color: #9ca3af; text-align: center;">Sin eventos registrados.</p>
+  </div>
+</p-dialog>
+
+<!-- Modal Aceptar/Rechazar/Daño -->
+<p-dialog [(visible)]="displayActionDialog" [modal]="true" styleClass="p-fluid"
+  [header]="actionType === 'ACCEPT' ? '✅ Confirmar Recepción' : actionType === 'REJECT' ? '❌ Rechazar Ticket' : '⚠️ Reportar Daños Parciales'"
+  [style]="{width: '65vw'}">
+
+  <ng-template pTemplate="content">
+
+    <!-- Seccion Tabla de Productos (visible en ACCEPT y DAMAGE) -->
+    <div *ngIf="actionType !== 'REJECT'">
+      <h6 style="margin-bottom: 10px;">Ingresa las cantidades exactas recibidas por producto:</h6>
+      <p-table [value]="detailRows" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Producto</th>
+            <th class="p-text-center" style="width:120px">Enviados</th>
+            <th class="p-text-center" style="width:150px" *ngIf="actionType === 'DAMAGE'">Dañados 👉 ingresa aquí</th>
+            <th class="p-text-center" style="width:150px">Recibidos OK ✅</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row let-i="rowIndex">
+          <tr>
+            <td><strong>{{ row.productName }}</strong></td>
+            <td class="p-text-center">
+              <span class="p-tag p-tag-info">{{ row.shipped }}</span>
+            </td>
+            <td class="p-text-center">
+              <!-- CAMPO EDITABLE: cuántos llegaron dañados (solo visible en modo DAMAGE) -->
+              <p-inputNumber *ngIf="actionType === 'DAMAGE'" [(ngModel)]="detailRows[i].quantityDamaged"
+                [min]="0" [max]="row.shipped"
+                (onInput)="onDamagedChange(i)"
+                [inputStyle]="{'width':'90px', 'text-align':'center', 'border-color':'#ef4444'}"
+                inputStyleClass="p-inputtext-sm">
+              </p-inputNumber>
+            </td>
+            <td class="p-text-center">
+              <!-- CAMPO READONLY: calculado automáticamente -->
+              <span class="p-tag" [ngClass]="detailRows[i].quantityReceived === row.shipped ? 'p-tag-success' : 'p-tag-warning'"
+                style="font-size: 1rem; padding: 6px 12px;">
+                {{ detailRows[i].quantityReceived }}
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <small class="p-text-secondary" style="display:block; margin-top:8px;">
+        ⚠️ La suma de <em>Recibidos + Dañados</em> no puede superar la cantidad Enviada.
+        Los productos dañados se contabilizan como merma y NO regresan al inventario de origen.
+      </small>
+      <hr style="margin: 16px 0 10px;">
+    </div>
+
+    <!-- Comentarios siempre visibles -->
+    <div class="p-field">
+      <label for="comment">Comentarios / Observaciones</label>
+      <textarea id="comment" pInputTextarea [(ngModel)]="actionComment" rows="2" style="width:100%"></textarea>
+      <small style="color: red;" *ngIf="actionType === 'REJECT'">* Al rechazar, el comentario es obligatorio y el stock se reintegrará al origen.</small>
+    </div>
+
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="displayActionDialog = false"></button>
+    <button pButton pRipple
+      [label]="actionType === 'ACCEPT' ? 'Confirmar Recepción' : actionType === 'REJECT' ? 'Rechazar Todo' : 'Registrar Daños'"
+      [icon]="actionType === 'REJECT' ? 'pi pi-times' : 'pi pi-check'"
+      [class]="actionType === 'REJECT' ? 'p-button-danger' : 'p-button-success'"
+      (click)="submitAction()">
+    </button>
+  </ng-template>
+</p-dialog>
+
+<!-- Modal Listar Detalles del Ticket -->
+<p-dialog [(visible)]="displayDetails" header="Detalles del Ticket" [modal]="true"
+  styleClass="p-fluid" [style]="{width: '60vw'}">
+  <div class="card" *ngIf="selectedTicket">
+     <div class="p-mb-4">
+        <strong>Motivo / Comentarios Iniciales: </strong> <br>
+        <span class="p-text-secondary">{{ selectedTicket.comments || 'Sin comentarios' }}</span>
+     </div>
+     <p-table [value]="selectedTicket.details" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <!-- Mostramos también la caja virtual por si la tuvieran -->
+            <th class="p-text-right">Cant. Solicitada</th>
+            <th class="p-text-right">Cant. Recibida</th>
+            <th class="p-text-right">Cant. Dañada</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-detail>
+          <tr>
+            <td>{{detail.product?.name || detail.productId}}</td>
+            <td>{{detail.product?.category || 'N/A'}}</td>
+            <td class="p-text-right"><strong>{{detail.quantityShipped}}</strong></td>
+            <td class="p-text-right" style="color:var(--green-600)">{{detail.quantityReceived !== null && detail.quantityReceived !== undefined ? detail.quantityReceived : '-'}}</td>
+            <td class="p-text-right" style="color:var(--red-500)">{{detail.quantityDamaged !== null && detail.quantityDamaged !== undefined ? detail.quantityDamaged : '-'}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="empty">
+          <tr><td colspan="5">No se encontraron productos.</td></tr>
+        </ng-template>
+     </p-table>
+  </div>
+</p-dialog>
+
