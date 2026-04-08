@@ -1,25 +1,28 @@
 <div>
-	<div class="grid">
-		<div class="col-12">
-			<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
                 <p-panel header="Opciones" [toggleable]="true" [collapsed]="false">
                     <form [formGroup]="formGroup" (ngSubmit)="submitForm()" autocomplete="off">
                         <div class="p-fluid p-formgrid grid">
                             <div class="field col-12 md:col-4">
                                 <label> Categoría </label>
-                                <p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList" optionLabel="name" optionValue="id"></p-dropdown>
+                                <p-dropdown [formControlName]="'category'" [id]="'state'"
+                                    [options]="productCategoryList" optionLabel="name" optionValue="name"></p-dropdown>
                             </div>
                             <div class="field col-12 md:col-12">
                                 <label> Sku o nombre producto </label>
-                                <input pInputText [formControlName]="'filter'" [id]="'filter'" pAutoFocus [autofocus]="true" />
+                                <input pInputText [formControlName]="'filter'" [id]="'filter'" pAutoFocus
+                                    [autofocus]="true" />
                             </div>
                             <div class="field col-12 md:col-4">
-                                <button pButton type="submit" label="Buscar" [disabled]="!formGroup.valid" [tabIndex]="-1"></button>                    
+                                <button pButton type="submit" label="Buscar" [disabled]="!formGroup.valid"
+                                    [tabIndex]="-1"></button>
                             </div>
                             <div class="field col-12 md:col-4">
-                                <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash" class="p-button-secondary" 
-                                [tabIndex]="-1"
-                                (click)="redirectToSalesPanel()"></button>
+                                <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash"
+                                    class="p-button-secondary" [tabIndex]="-1"
+                                    (click)="redirectToSalesPanel()"></button>
                             </div>
                         </div>
                     </form>
@@ -29,21 +32,12 @@
     </div>
 </div>
 
-<paging-filter
-    (pageChangeTriggered)="onPageChange($event)"
-    *ngIf="this.tableStructure && this.pageableData" 
-    [title]="'Productos'"
-    [principalLabel]="'Gestión'"
-    [sucessorLabel]="'Almacén'"
-    [data]="this.pageableData"
-    [globalFilters]="gobalFilters"
-    [dataStructure]="this.tableStructure"
-    [createVisible]="isVisibleCreate"
-    [actions]="actions"
-    (actionTriggered)="handleActionTriggered($event)"
-    > </paging-filter>
-    
-    <div class="col-6  flex justify-content-center">
-        <p-toast/>
-    </div>
-    <p-confirmDialog></p-confirmDialog>
+<paging-filter (pageChangeTriggered)="onPageChange($event)" *ngIf="this.tableStructure && this.pageableData"
+    [title]="'Productos'" [principalLabel]="'Gestión'" [sucessorLabel]="'Almacén'" [data]="this.pageableData"
+    [globalFilters]="gobalFilters" [dataStructure]="this.tableStructure" [createVisible]="isVisibleCreate"
+    [actions]="actions" (actionTriggered)="handleActionTriggered($event)"> </paging-filter>
+
+<div class="col-6  flex justify-content-center">
+    <p-toast />
+</div>
+<p-confirmDialog></p-confirmDialog>

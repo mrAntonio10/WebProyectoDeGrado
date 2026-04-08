@@ -1,14 +1,15 @@
 <div>
-	<div class="grid">
-		<div class="col-12">
-			<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
                 <p-panel header="Opciones" [toggleable]="true" [collapsed]="true">
                     <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
                         <div class="p-fluid p-formgrid grid">
 
                             <div class="field col-12 md:col-4">
                                 <label> Categoría </label>
-                                <p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList" optionLabel="name" optionValue="id"></p-dropdown>
+                                <p-dropdown [formControlName]="'category'" [id]="'state'"
+                                    [options]="productCategoryList" optionLabel="name" optionValue="name"></p-dropdown>
                             </div>
 
                         </div>
@@ -20,25 +21,16 @@
     </div>
 </div>
 
-<paging-filter
-    (pageChangeTriggered)="onPageChange($event)"
-    *ngIf="this.tableStructure && this.pageableData" 
-    [title]="'Productos'"
-    [principalLabel]="'Gestión'"
-    [sucessorLabel]="'Almacén'"
-    [data]="this.pageableData"
-    [globalFilters]="gobalFilters"
-    [dataStructure]="this.tableStructure"
-    [createVisible]="isVisibleCreate"
-    [actions]="actions"
-    (actionTriggered)="handleActionTriggered($event)"
-    > </paging-filter>
-    
-    <div class="grid grid-nogutter justify-content-end">
-        <p-button label="Siguiente" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
-    </div>
+<paging-filter (pageChangeTriggered)="onPageChange($event)" *ngIf="this.tableStructure && this.pageableData"
+    [title]="'Productos'" [principalLabel]="'Gestión'" [sucessorLabel]="'Almacén'" [data]="this.pageableData"
+    [globalFilters]="gobalFilters" [dataStructure]="this.tableStructure" [createVisible]="isVisibleCreate"
+    [actions]="actions" (actionTriggered)="handleActionTriggered($event)"> </paging-filter>
 
-    <div class="col-6  flex justify-content-center">
-        <p-toast/>
-    </div>
-    <p-confirmDialog></p-confirmDialog>
+<div class="grid grid-nogutter justify-content-end">
+    <p-button label="Siguiente" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+</div>
+
+<div class="col-6  flex justify-content-center">
+    <p-toast />
+</div>
+<p-confirmDialog></p-confirmDialog>

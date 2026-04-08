@@ -18,7 +18,7 @@
 					<div class="field col-12 md:col-4">
 						<label> Categoría </label>
 						<p-dropdown [formControlName]="'category'" [id]="'state'" [options]="productCategoryList"
-							optionLabel="name" optionValue="id"></p-dropdown>
+							optionLabel="name" optionValue="name"></p-dropdown>
 
 						<small id="username-help" class="p-error"
 							*ngIf="formGroup.get('category').invalid && formGroup.get('category').touched">
