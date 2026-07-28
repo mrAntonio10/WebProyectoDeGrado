@@ -47,7 +47,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
 
     group.addControl('id', this.fb.control(('')));
     group.addControl('name', this.fb.control((''), [Validators.required, Validators.maxLength(60)]));
-    group.addControl('category', this.fb.control((''), [Validators.required, Validators.maxLength(30)]));
+    group.addControl('category', this.fb.control(null, [Validators.required]));
     group.addControl('beverageFormat', this.fb.control((''), [Validators.maxLength(30)]));
     group.addControl('sku', this.fb.control((''), [Validators.required, Validators.maxLength(6)]));
     group.addControl('photo', this.fb.control(('')));
