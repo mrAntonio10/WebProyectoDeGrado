@@ -1,0 +1,342 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="grid">
+    <!-- CABECERA PORTAL ADMIN REKIDS: SINCRONIZAR + ABM EVENTOS + APLICAR DESCUENTOS -->
+    <div class="col-12">
+        <div class="card">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+                <div>
+                    <h4 style="margin: 0; color: #0f172a;">
+                        <i class="pi pi-calendar-plus" style="color: #0284c7; margin-right: 8px;"></i>
+                        {{ config.pageTitle }}
+                    </h4>
+                    <p style="margin: 0.35rem 0 0 0; color: #64748b; font-size: 0.9rem;">
+                        Sesión activa: <strong>{{ currentAdminLabel }}</strong> • Las prendas y el stock se sincronizan desde el portal externo (FeignClient).
+                    </p>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 0.6rem;">
+                    <!-- BOTÓN SINCRONIZAR DESDE PORTAL EXTERNO (FEIGNCLIENT) -->
+                    <button pButton pRipple type="button"
+                        [label]="isSyncing ? 'Sincronizando...' : 'SINCRONIZAR Prendas (FeignClient)'"
+                        icon="pi pi-sync"
+                        class="p-button-help"
+                        [disabled]="isSyncing"
+                        (click)="synchronizeGarmentsFromExternalPortal()">
+                    </button>
+
+                    <!-- BOTÓN APLICAR DESCUENTOS (MONTO FIJO O PORCENTUAL + ADMIN AUDIT) -->
+                    <button pButton pRipple type="button"
+                        label="Aplicar Descuento (Monto Fijo / %)"
+                        icon="pi pi-percentage"
+                        class="p-button-danger"
+                        (click)="openApplyDiscountDialog()">
+                    </button>
+
+                    <!-- BOTÓN CREAR NUEVO EVENTO (ABM EJ. NAVIDAD) -->
+                    <button pButton pRipple type="button"
+                        label="Nuevo Evento (ej. NAVIDAD)"
+                        icon="pi pi-plus"
+                        class="p-button-success"
+                        (click)="openCreateEventDialog()">
+                    </button>
+                </div>
+            </div>
+
+            <div *ngIf="lastSyncSummary"
+                style="margin-top: 1rem; padding: 0.75rem 1rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; color: #166534;">
+                <i class="pi pi-check-circle" style="margin-right: 6px;"></i>
+                {{ lastSyncSummary }}
+            </div>
+        </div>
+    </div>
+
+    <!-- TARJETAS DE EVENTOS (NOVEDADES Y DESCUENTOS SIEMPRE ACTIVOS + EVENTOS ABM COMO NAVIDAD) -->
+    <div class="col-12">
+        <div class="card">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <h5 style="margin: 0;">Eventos Activos (Novedades y Descuentos siempre presentes + ABM de Eventos)</h5>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <label style="font-weight: 600;">Filtrar por Región:</label>
+                    <p-dropdown [options]="config.regions" [(ngModel)]="selectedRegionFilter"
+                        optionLabel="label" optionValue="value" (onChange)="loadEvents()"></p-dropdown>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="col-12 md:col-4" *ngFor="let ev of events">
+                    <div (click)="selectEvent(ev)"
+                        [ngStyle]="{
+                            'border': selectedEvent?.id === ev.id ? '2px solid #0284c7' : '1px solid #e2e8f0',
+                            'background': selectedEvent?.id === ev.id ? '#f0f9ff' : '#ffffff',
+                            'border-radius': '10px',
+                            'padding': '1rem',
+                            'cursor': 'pointer',
+                            'height': '100%',
+                            'display': 'flex',
+                            'flex-direction': 'column',
+                            'justify-content': 'space-between'
+                        }">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i [class]="ev.code === 'NOVEDADES' ? 'pi pi-star-fill' : (ev.code === 'DESCUENTOS' ? 'pi pi-percentage' : 'pi pi-calendar')"
+                                        style="color: #0284c7; font-size: 1.2rem;"></i>
+                                    <span style="font-weight: 700; font-size: 1.1rem; color: #0f172a;">{{ ev.name }}</span>
+                                </div>
+                                <span *ngIf="ev.isDefault || ev.code === 'NOVEDADES' || ev.code === 'DESCUENTOS'"
+                                    class="p-tag p-tag-info" style="font-size: 0.72rem;">
+                                    Siempre Activo
+                                </span>
+                                <span *ngIf="!ev.isDefault && ev.code !== 'NOVEDADES' && ev.code !== 'DESCUENTOS'"
+                                    class="p-tag p-tag-warning" style="font-size: 0.72rem;">
+                                    Evento ABM
+                                </span>
+                            </div>
+
+                            <p style="color: #475569; font-size: 0.85rem; margin: 0 0 0.75rem 0;">
+                                {{ ev.description }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.6rem;">
+                                <strong>Prendas en evento:</strong> {{ getFilteredEventProducts(ev).length }}
+                                <span *ngIf="ev.approvedByAdminName"><br/><strong>Admin:</strong> {{ ev.approvedByAdminName }}</span>
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button pButton type="button" label="Seleccionar Prendas" icon="pi pi-check-square"
+                                    class="p-button-sm p-button-outlined p-button-info"
+                                    (click)="$event.stopPropagation(); openEditEventDialog(ev)"></button>
+                                <button *ngIf="!ev.isDefault && ev.code !== 'NOVEDADES' && ev.code !== 'DESCUENTOS'"
+                                    pButton type="button" icon="pi pi-trash"
+                                    class="p-button-sm p-button-outlined p-button-danger"
+                                    pTooltip="Eliminar Evento"
+                                    (click)="$event.stopPropagation(); deleteCustomEvent(ev)"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETALLE DE PRENDAS DEL EVENTO SELECCIONADO -->
+    <div class="col-12" *ngIf="selectedEvent">
+        <div class="card">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <h5 style="margin: 0;">
+                        Prendas en el Evento: <span style="color: #0284c7;">{{ selectedEvent.name }}</span>
+                    </h5>
+                    <small style="color: #64748b;">
+                        {{ selectedEvent.description }}
+                    </small>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <button *ngIf="selectedEvent.code === 'DESCUENTOS'" pButton type="button"
+                        label="Aplicar / Modificar Descuento (Monto Fijo o %)" icon="pi pi-percentage"
+                        class="p-button-sm p-button-danger" (click)="openApplyDiscountDialog()"></button>
+                    <button pButton type="button"
+                        label="Asignar / Seleccionar Prendas para {{ selectedEvent.name }}" icon="pi pi-list"
+                        class="p-button-sm p-button-info" (click)="openEditEventDialog(selectedEvent)"></button>
+                </div>
+            </div>
+
+            <p-table [value]="getFilteredEventProducts(selectedEvent)" [rows]="10" [paginator]="true"
+                responsiveLayout="scroll" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Prenda</th>
+                        <th>Detalle / Código</th>
+                        <th>Categoría / Talla / Marca</th>
+                        <th>Región Tienda</th>
+                        <th>Precio Original</th>
+                        <th>Tipo Descuento</th>
+                        <th>Valor Descuento</th>
+                        <th>Precio Final</th>
+                        <th>Admin que Aceptó / Aplicó</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ep>
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img *ngIf="ep.photo" [src]="ep.photo" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;" />
+                                <strong>{{ ep.productName }}</strong>
+                            </div>
+                        </td>
+                        <td><span class="p-tag p-tag-warning">{{ ep.sku }}</span></td>
+                        <td>{{ ep.category }} • Talla {{ ep.size || 'Única' }} • {{ ep.brand || 'Rekids' }}</td>
+                        <td>
+                            <span class="p-tag" [ngClass]="ep.region === 'SANTA_CRUZ' ? 'p-tag-success' : 'p-tag-info'">
+                                {{ ep.region === 'LA_PAZ' ? 'La Paz' : 'Santa Cruz' }}
+                            </span>
+                        </td>
+                        <td>{{ ep.originalPrice }} BOB</td>
+                        <td>
+                            <span *ngIf="ep.discountType === 'MONTO_FIJO'" class="p-tag p-tag-help">Monto Fijo (BOB)</span>
+                            <span *ngIf="ep.discountType === 'PORCENTUAL'" class="p-tag p-tag-danger">Porcentual (%)</span>
+                            <span *ngIf="!ep.discountType || ep.discountType === 'NONE'" class="p-tag p-tag-secondary">Sin descuento</span>
+                        </td>
+                        <td>
+                            <strong *ngIf="ep.discountValue && ep.discountValue > 0">
+                                -{{ ep.discountValue }}{{ ep.discountType === 'PORCENTUAL' ? '%' : ' BOB' }}
+                            </strong>
+                            <span *ngIf="!ep.discountValue || ep.discountValue === 0">-</span>
+                        </td>
+                        <td>
+                            <strong style="color: #16a34a; font-size: 1.05rem;">{{ ep.finalPrice }} BOB</strong>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.85rem;">
+                                <i class="pi pi-user-check" style="color: #0284c7; margin-right: 4px;"></i>
+                                <strong>{{ ep.approvedByAdminName || currentAdminLabel }}</strong>
+                                <div *ngIf="ep.approvedDate" style="color: #64748b; font-size: 0.75rem;">
+                                    {{ ep.approvedDate | date:'dd/MM/yyyy HH:mm' }}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button pButton pRipple type="button" icon="pi pi-times"
+                                class="p-button-rounded p-button-danger p-button-text"
+                                pTooltip="Quitar prenda de este evento"
+                                (click)="removeProductFromCurrentEvent(ep)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="empty">
+                    <tr>
+                        <td colspan="10" style="text-align: center; padding: 1.5rem; color: #64748b;">
+                            No hay prendas registradas en este evento para la región seleccionada.
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 1: ABM DE EVENTOS (CREAR/EDITAR EVENTO EJ. NAVIDAD Y SELECCIONAR 1 O VARIAS PRENDAS) -->
+<p-dialog [(visible)]="displayEventDialog"
+    [header]="isEditMode ? 'Configurar Prendas del Evento: ' + eventForm.name : 'Crear Nuevo Evento Rekids (ej. NAVIDAD)'"
+    [modal]="true" styleClass="p-fluid" [style]="{width: '70vw'}">
+    <ng-template pTemplate="content">
+        <div class="p-formgrid grid">
+            <div class="field col-12 md:col-6">
+                <label for="evName">Nombre del Evento *</label>
+                <input id="evName" type="text" pInputText [(ngModel)]="eventForm.name"
+                    [readonly]="isEditMode && (eventForm.name === 'Novedades' || eventForm.name === 'Descuentos')"
+                    placeholder="Ej. NAVIDAD, DÍA DEL NIÑO, INVIERNO" />
+            </div>
+            <div class="field col-12 md:col-6">
+                <label for="evDesc">Descripción</label>
+                <input id="evDesc" type="text" pInputText [(ngModel)]="eventForm.description"
+                    placeholder="Descripción de las prendas del evento" />
+            </div>
+        </div>
+
+        <h6 style="margin: 0.75rem 0 0.5rem 0;">
+            Selecciona 1 o varias prendas sincronizadas que se encontrarán en este evento ({{ eventForm.selectedGarments.length }} seleccionadas):
+        </h6>
+
+        <p-table [value]="allGarments" [(selection)]="eventForm.selectedGarments" dataKey="id"
+            [rows]="6" [paginator]="true" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                    <th>Código (SKU)</th>
+                    <th>Prenda</th>
+                    <th>Talla / Marca</th>
+                    <th>Región</th>
+                    <th>Precio (BOB)</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-g>
+                <tr>
+                    <td><p-tableCheckbox [value]="g"></p-tableCheckbox></td>
+                    <td><span class="p-tag p-tag-warning">{{ g.sku }}</span></td>
+                    <td><strong>{{ g.name }}</strong></td>
+                    <td>{{ g.size }} • {{ g.brand }}</td>
+                    <td>{{ g.region === 'LA_PAZ' ? 'La Paz' : 'Santa Cruz' }}</td>
+                    <td>{{ g.finalPrice || g.salePrice }} BOB</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="displayEventDialog = false"></button>
+        <button pButton type="button" label="Guardar Evento y Prendas Seleccionadas" icon="pi pi-check"
+            class="p-button-success" (click)="saveEvent()"></button>
+    </ng-template>
+</p-dialog>
+
+<!-- MODAL 2: APLICAR DESCUENTO POR ADMIN (MONTO FIJO O PORCENTUAL + REGISTRO DE ADMIN APROBADOR) -->
+<p-dialog [(visible)]="displayDiscountDialog"
+    header="Aplicar Descuento en Evento 'Descuentos' (Aprobación de Administrador)"
+    [modal]="true" styleClass="p-fluid" [style]="{width: '70vw'}">
+    <ng-template pTemplate="content">
+        <div style="padding: 0.75rem 1rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; margin-bottom: 1rem; color: #1e3a8a;">
+            <i class="pi pi-shield" style="margin-right: 6px;"></i>
+            <strong>Administrador que aprueba y aplica el descuento:</strong> {{ currentAdminLabel }}
+        </div>
+
+        <div class="p-formgrid grid">
+            <div class="field col-12 md:col-6">
+                <label>Tipo de Modificación de Descuento *</label>
+                <p-dropdown [options]="config.discountTypes" [(ngModel)]="discountForm.discountType"
+                    optionLabel="label" optionValue="value"></p-dropdown>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label>
+                    {{ discountForm.discountType === 'PORCENTUAL' ? 'Porcentaje de Descuento (%)' : 'Monto Fijo a Descontar (BOB)' }} *
+                </label>
+                <p-inputNumber [(ngModel)]="discountForm.discountValue" [min]="1"
+                    [max]="discountForm.discountType === 'PORCENTUAL' ? 99 : 1000"
+                    [suffix]="discountForm.discountType === 'PORCENTUAL' ? ' %' : ' BOB'">
+                </p-inputNumber>
+            </div>
+        </div>
+
+        <h6 style="margin: 0.75rem 0 0.5rem 0;">
+            Selecciona 1 o varias prendas para aplicar el descuento ({{ discountForm.selectedGarments.length }} seleccionadas):
+        </h6>
+
+        <p-table [value]="allGarments" [(selection)]="discountForm.selectedGarments" dataKey="id"
+            [rows]="6" [paginator]="true" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                    <th>Código (SKU)</th>
+                    <th>Prenda</th>
+                    <th>Región</th>
+                    <th>Precio Base</th>
+                    <th>Nuevo Precio con Descuento</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-g>
+                <tr>
+                    <td><p-tableCheckbox [value]="g"></p-tableCheckbox></td>
+                    <td><span class="p-tag p-tag-warning">{{ g.sku }}</span></td>
+                    <td><strong>{{ g.name }}</strong> ({{ g.size }})</td>
+                    <td>{{ g.region === 'LA_PAZ' ? 'La Paz' : 'Santa Cruz' }}</td>
+                    <td>{{ g.salePrice }} BOB</td>
+                    <td>
+                        <strong style="color: #16a34a;">{{ calculatePreviewFinalPrice(g) }} BOB</strong>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="displayDiscountDialog = false"></button>
+        <button pButton type="button" label="Aceptar y Aplicar Descuento (Registrar Admin)" icon="pi pi-check-circle"
+            class="p-button-danger" (click)="submitAdminDiscount()"></button>
+    </ng-template>
+</p-dialog>

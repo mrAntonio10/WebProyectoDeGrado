@@ -1,0 +1,868 @@
+/* PALETA DE MARCA OFICIAL RE KIDS — EL SEGUNDO ESTRENO
+   Rojo R/D:     #E30613
+   Azul Bebé E/S:#009FE3 / #0077D8
+   Naranja K:    #F39200
+   Verde Lima I: #76B82A
+   Crema Fondo:  #FFF8F1
+   Carbón Texto: #3C3C3B
+*/
+
+.rekids-store-wrapper {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding-bottom: 2.5rem;
+}
+
+.rekids-rainbow-bar {
+  height: 7px;
+  border-radius: 999px;
+  margin-bottom: 0.85rem;
+  background: linear-gradient(
+    90deg,
+    #E30613 0%,
+    #E30613 18%,
+    #009FE3 18%,
+    #009FE3 38%,
+    #F39200 38%,
+    #F39200 58%,
+    #76B82A 58%,
+    #76B82A 78%,
+    #E30613 78%,
+    #009FE3 100%
+  );
+}
+
+/* HERO BANNER RE KIDS */
+.rekids-hero-banner {
+  background: linear-gradient(135deg, #FFF8F1 0%, #FFF1E2 55%, #E0F4FF 100%);
+  border: 2px solid #BAE6FD;
+  border-radius: 22px;
+  padding: 1.35rem 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.35rem;
+  box-shadow: 0 12px 28px -8px rgba(0, 119, 216, 0.14);
+}
+
+.rekids-hero-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.35rem;
+  flex: 1;
+}
+
+.rekids-logo-card {
+  background: #ffffff;
+  padding: 0.5rem 0.85rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0, 119, 216, 0.12);
+  border: 2px solid #E0F2FE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rekids-main-logo {
+  height: 92px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.rekids-hero-copy {
+  flex: 1;
+  min-width: 240px;
+}
+
+.rekids-slogan-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0088E8;
+  color: #ffffff;
+  padding: 4px 13px;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.35rem;
+}
+
+.rekids-wordmark {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+}
+
+.rekids-wordmark .c-red {
+  color: #E30613;
+}
+.rekids-wordmark .c-blue {
+  color: #009FE3;
+}
+.rekids-wordmark .c-orange {
+  color: #F39200;
+}
+.rekids-wordmark .c-green {
+  color: #76B82A;
+}
+
+.rekids-hero-subtitle {
+  margin: 0.35rem 0 0 0;
+  color: #3C3C3B;
+  font-size: 0.96rem;
+  font-weight: 600;
+  max-width: 580px;
+}
+
+.rekids-hero-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.rekids-cart-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #ffffff;
+  color: #3C3C3B;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 2px solid #76B82A;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(118, 184, 42, 0.22);
+  transition: transform 0.15s ease;
+}
+
+.rekids-cart-pill:hover {
+  transform: translateY(-2px);
+}
+
+.rekids-cart-pill-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #76B82A;
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.rekids-cart-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #E30613;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rekids-cart-pill-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.rekids-cart-pill-info .label {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.rekids-cart-pill-info .amount {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #3C3C3B;
+}
+
+.rekids-admin-btn {
+  background: #ffffff !important;
+  color: #0077D8 !important;
+  border: 2px solid #009FE3 !important;
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+}
+
+/* PASO 1: REGIÓN */
+.rekids-region-section {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.1rem;
+  border: 1px solid #F1E4D8;
+  box-shadow: 0 4px 14px rgba(60, 60, 59, 0.05);
+}
+
+.rekids-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.rekids-section-header h4 {
+  margin: 0;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #3C3C3B;
+}
+
+.step-pill {
+  background: #F39200;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.rekids-region-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 2px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.rekids-region-card:hover {
+  border-color: #009FE3;
+  background: #FFFDFB;
+  transform: translateY(-2px);
+}
+
+.rekids-region-card.active {
+  border-color: #009FE3;
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFF8F1 100%);
+  box-shadow: 0 8px 20px rgba(0, 159, 227, 0.16);
+}
+
+.region-icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.region-icon-circle.icon-orange {
+  background: #FFF0D9;
+  color: #F39200;
+}
+
+.region-icon-circle.icon-blue {
+  background: #E0F4FF;
+  color: #0088E8;
+}
+
+.region-card-body {
+  flex: 1;
+}
+
+.region-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.region-name {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #3C3C3B;
+}
+
+.region-delivery-tag {
+  background: #EAF7DC;
+  color: #568B1C;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+.region-address {
+  margin: 0.2rem 0 0 0;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.selected-city-chip {
+  background: #76B82A;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.unselected-city-chip {
+  background: #F1F5F9;
+  color: #0077D8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.rekids-empty-region-prompt {
+  background: #FFF8F1;
+  border: 2px dashed #009FE3;
+  border-radius: 20px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: #3C3C3B;
+}
+
+.rekids-empty-region-prompt .prompt-logo {
+  height: 110px;
+  border-radius: 16px;
+  margin-bottom: 0.85rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.rekids-empty-region-prompt h3 {
+  font-family: 'Fredoka', sans-serif;
+  color: #0077D8;
+  margin-bottom: 0.4rem;
+}
+
+/* CATÁLOGO Y TABS DE EVENTOS */
+.rekids-catalog-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.35rem;
+  border: 1px solid #F1E4D8;
+  box-shadow: 0 4px 16px rgba(60, 60, 59, 0.05);
+}
+
+.rekids-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  margin-bottom: 1.35rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #FFF3E6;
+}
+
+.rekids-event-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.event-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  border: 2px solid #E2E8F0;
+  background: #ffffff;
+  color: #3C3C3B;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.event-tab-btn:hover {
+  border-color: #009FE3;
+  background: #F0F9FF;
+}
+
+.event-tab-btn.tab-all.active {
+  background: #0088E8;
+  color: #ffffff;
+  border-color: #0088E8;
+  box-shadow: 0 4px 12px rgba(0, 136, 232, 0.28);
+}
+
+.event-tab-btn.new-tab.active {
+  background: #76B82A;
+  color: #ffffff;
+  border-color: #76B82A;
+  box-shadow: 0 4px 12px rgba(118, 184, 42, 0.3);
+}
+
+.event-tab-btn.discount-tab.active {
+  background: #E30613;
+  color: #ffffff;
+  border-color: #E30613;
+  box-shadow: 0 4px 12px rgba(227, 6, 19, 0.28);
+}
+
+.event-tab-btn.custom-tab.active {
+  background: #F39200;
+  color: #ffffff;
+  border-color: #F39200;
+  box-shadow: 0 4px 12px rgba(243, 146, 0, 0.3);
+}
+
+.rekids-search-box {
+  min-width: 240px;
+  flex: 1;
+  max-width: 320px;
+}
+
+.rekids-search-input {
+  width: 100%;
+  border-radius: 999px !important;
+  border: 2px solid #E2E8F0 !important;
+}
+
+/* TARJETA DE PRENDA E-COMMERCE RE KIDS */
+.rekids-product-card {
+  border: 2px solid #F1E4D8;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #ffffff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.rekids-product-card:hover {
+  transform: translateY(-5px);
+  border-color: #009FE3;
+  box-shadow: 0 14px 28px -8px rgba(0, 159, 227, 0.2);
+}
+
+.product-image-container {
+  position: relative;
+  width: 100%;
+  height: 215px;
+  background: #FFF8F1;
+  overflow: hidden;
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.rekids-product-card:hover .product-img {
+  transform: scale(1.06);
+}
+
+.floating-badges-left {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event-pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.pill-new {
+  background: #76B82A;
+}
+
+.pill-discount {
+  background: #E30613;
+}
+
+.pill-custom {
+  background: #F39200;
+}
+
+.floating-badge-right {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #E30613;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 4px 11px;
+  border-radius: 999px;
+  box-shadow: 0 3px 8px rgba(227, 6, 19, 0.35);
+}
+
+.in-cart-overlay-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: #76B82A;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 4px 11px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.product-card-content {
+  padding: 1rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.product-brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.product-brand {
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0088E8;
+}
+
+.product-stock-pill {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.product-title {
+  margin: 0 0 0.5rem 0;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #3C3C3B;
+  line-height: 1.28;
+}
+
+.product-specs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 0.45rem;
+}
+
+.spec-chip {
+  background: #FFF8F1;
+  border: 1px solid #F1E4D8;
+  color: #3C3C3B;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
+.spec-chip.size-chip {
+  background: #E0F4FF;
+  border-color: #BAE6FD;
+  color: #0077D8;
+}
+
+.product-detail-code {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+}
+
+.product-footer {
+  border-top: 1px dashed #E2E8F0;
+  padding-top: 0.75rem;
+}
+
+.price-block {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 0.65rem;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #94a3b8;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.final-price {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #3C3C3B;
+}
+
+.final-price small {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0088E8;
+}
+
+.rekids-add-cart-btn {
+  width: 100%;
+  border-radius: 12px !important;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 0.96rem !important;
+  background: #76B82A !important;
+  border-color: #76B82A !important;
+  box-shadow: 0 4px 12px rgba(118, 184, 42, 0.28);
+}
+
+.rekids-add-cart-btn:hover {
+  background: #65a122 !important;
+  border-color: #65a122 !important;
+}
+
+/* SIDEBAR DE CARRITO Y COMPRA RÁPIDA */
+.rekids-checkout-sidebar {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.35rem;
+  box-shadow: 0 8px 24px rgba(0, 119, 216, 0.1);
+  border: 2px solid #BAE6FD;
+  position: sticky;
+  top: 1rem;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.85rem;
+  border-bottom: 2px solid #FFF3E6;
+  margin-bottom: 0.95rem;
+}
+
+.cart-header-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #E0F4FF;
+  color: #0088E8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.empty-cart-box {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: #FFF8F1;
+  border-radius: 14px;
+  color: #64748b;
+}
+
+.empty-cart-box h6 {
+  margin: 0.25rem 0;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.05rem;
+  color: #3C3C3B;
+}
+
+.empty-cart-box p {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.cart-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 330px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-bottom: 1rem;
+}
+
+.cart-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem;
+  border-radius: 12px;
+  background: #FFFDFB;
+  border: 1px solid #F1E4D8;
+}
+
+.cart-item-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.cart-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-item-title {
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: #3C3C3B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-meta {
+  font-size: 0.73rem;
+  color: #64748b;
+  margin-bottom: 0.35rem;
+}
+
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #BAE6FD;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.qty-btn {
+  border: none;
+  background: transparent;
+  width: 25px;
+  height: 23px;
+  font-weight: 800;
+  color: #0088E8;
+  cursor: pointer;
+}
+
+.qty-val {
+  padding: 0 7px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.cart-item-subtotal {
+  font-size: 0.9rem;
+  color: #3C3C3B;
+}
+
+.cart-item-remove {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.cart-item-remove:hover {
+  color: #E30613;
+}
+
+.totals-summary {
+  border-top: 1px solid #F1E4D8;
+  border-bottom: 1px solid #F1E4D8;
+  padding: 0.75rem 0;
+  margin-bottom: 0.85rem;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+}
+
+.total-line {
+  margin-bottom: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #3C3C3B;
+}
+
+.grand-total {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #76B82A;
+}
+
+.buyer-quick-box {
+  background: #FFF8F1;
+  border: 2px solid #F39200;
+  border-radius: 14px;
+  padding: 0.95rem;
+}
+
+.buyer-box-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: #3C3C3B;
+  margin-bottom: 0.7rem;
+}
+
+.rekids-pay-qr-btn {
+  width: 100%;
+  border-radius: 12px !important;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 600 !important;
+  background: linear-gradient(90deg, #0077D8 0%, #009FE3 100%) !important;
+  border: none !important;
+  box-shadow: 0 6px 16px rgba(0, 136, 232, 0.32);
+}
+
+.rekids-no-results {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #64748b;
+}
+
+.rekids-no-results i {
+  font-size: 2.2rem;
+  color: #009FE3;
+  margin-bottom: 0.5rem;
+}

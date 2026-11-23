@@ -1,121 +1,99 @@
 <div class="grid">
     <div class="col-12">
         <div class="card">
-            <h5> {{ this.buttonValue }} Orden </h5>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
+                <div>
+                    <h4 style="margin: 0;">Checkout Online Rekids — Pago por QR</h4>
+                    <small style="color: #64748b;">
+                        Tienda: <strong>{{ selectedRegion === 'LA_PAZ' ? 'Rekids La Paz' : 'Rekids Santa Cruz' }}</strong> •
+                        Canal: <strong>ONLINE</strong> • Método de Pago: <strong>QR</strong>
+                    </small>
+                </div>
+                <span class="p-tag p-tag-info" style="font-size: 0.9rem; padding: 0.4rem 0.8rem;">
+                    Canal: ONLINE | Pago: QR
+                </span>
+            </div>
+
             <form [formGroup]="formGroup" (ngSubmit)="submitForm()">
                 <div class="p-fluid p-formgrid grid">
 
-                    <div class="field col-12 md:col-4">
-                        <label> Total a pagar </label>
-                        <p-inputNumber [formControlName]="'totalPrice'" mode="currency" currency="BOB" locale="en-US"
-                            minFractionDigits="2" max="999.99" readonly="true" />
-
-                        <small id="username-help" class="p-error"
-                            *ngIf="formGroup.get('totalPrice').invalid && formGroup.get('totalPrice').touched">
-                            Requerido. Mayor a 0. Mínimo 2 decimales.
+                    <!-- NOMBRE Y TELÉFONO DEL COMPRADOR -->
+                    <div class="field col-12 md:col-6">
+                        <label>Nombre del Comprador *</label>
+                        <input pInputText [formControlName]="'clientName'" placeholder="Ingresa tu nombre completo" />
+                        <small class="p-error" *ngIf="formGroup.get('clientName').invalid && formGroup.get('clientName').touched">
+                            El nombre del comprador es obligatorio.
                         </small>
                     </div>
 
-                    <div class="field col-12 md:col-4">
-                        <label> Descuento </label>
-                        <p-inputNumber [formControlName]="'totalDiscount'" mode="currency" currency="BOB" locale="en-US"
-                            minFractionDigits="2" [max]="this.saleTotalPrice" min="0" pAutoFocus [autofocus]="true"
-                            (onBlur)="onTotalDiscountChange($event)" />
-
-                        <small id="username-help" class="p-error"
-                            *ngIf="formGroup.get('totalDiscount').invalid && formGroup.get('totalDiscount').touched">
-                            Requerido. Mínimo 2 decimales.
+                    <div class="field col-12 md:col-6">
+                        <label>Número de Teléfono / WhatsApp *</label>
+                        <input pInputText [formControlName]="'clientPhone'" placeholder="Ingresa tu número de teléfono (ej. 76012345)" />
+                        <small class="p-error" *ngIf="formGroup.get('clientPhone').invalid && formGroup.get('clientPhone').touched">
+                            El número de teléfono es obligatorio.
                         </small>
                     </div>
 
+                    <!-- CANAL ONLINE Y MÉTODO DE PAGO QR -->
                     <div class="field col-12 md:col-4">
-                        <label> Método de pago </label>
+                        <label>Canal de Venta</label>
+                        <input pInputText value="ONLINE" readonly />
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label>Método de Pago</label>
                         <p-dropdown [formControlName]="'paymentMethod'" [id]="'state'" [options]="states"
                             optionLabel="name" optionValue="code" [(ngModel)]="selectedState"></p-dropdown>
                     </div>
 
-                    <div class="field col-12 md:col-4" *ngIf="this.formGroup.value.paymentMethod == 'EFECTIVO'">
-                        <label> Monto Recibido</label>
-                        <p-inputNumber [formControlName]="'amount'" mode="currency" currency="BOB" locale="en-US"
-                            minFractionDigits="2" max="999.99" [min]="this.formGroup.value.totalPrice"
-                            (onBlur)="onAmountChange($event)" />
-
-                        <small id="username-help" class="p-error"
-                            *ngIf="formGroup.get('amount').invalid && formGroup.get('amount').touched">
-                            Requerido. Mínimo 2 decimales.
-                        </small>
+                    <div class="field col-12 md:col-4">
+                        <label>Total a Pagar (BOB)</label>
+                        <p-inputNumber [formControlName]="'totalPrice'" mode="currency" currency="BOB" locale="en-US"
+                            minFractionDigits="2" readonly="true" />
                     </div>
 
-                    <div class="field col-12 md:col-4" *ngIf="this.formGroup.value.paymentMethod == 'EFECTIVO'">
-                        <label> Cambio </label>
-                        <p-inputNumber [formControlName]="'exchange'" mode="currency" currency="BOB" locale="en-US"
-                            minFractionDigits="2" max="999.99" min="0" readonly="true" tabindex="-1" />
-
-                        <small id="username-help" class="p-error"
-                            *ngIf="formGroup.get('exchange').invalid && formGroup.get('exchange').touched">
-                            Requerido. Mínimo 2 decimales.
-                        </small>
-                    </div>
-
-                    <div class="field col-12 md:col-4 flex align-items-center mb-0 mt-4">
-                        <p-checkbox [formControlName]="'isInvoiced'" [binary]="true" inputId="isInvoiced"></p-checkbox>
-                        <label for="isInvoiced" class="ml-2 mb-0">¿Necesita factura?</label>
-                    </div>
-                    <div class="col-12 flex justify-content-center" *ngIf="this.formGroup.value.paymentMethod == 'QR'">
-
-                        <!-- Botón SOLO si NO hay link -->
-                        <div class="flex flex-column items-center" style="text-align: center;" *ngIf="!paymentLink">
+                    <!-- SECCIÓN GENERACIÓN Y VISUALIZACIÓN DE QR -->
+                    <div class="col-12 flex justify-content-center" style="margin: 1rem 0;">
+                        <div class="flex flex-column align-items-center" style="text-align: center;" *ngIf="!qrGenerated">
                             <button pButton type="button" class="p-button-outlined p-button-rounded"
-                                style="border-color: #6A0DAD; color: #6A0DAD; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 6rem; height: 6rem;"
+                                style="border-color: #0284c7; color: #0284c7; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 6rem; height: 6rem;"
                                 (click)="onGenerateQR()">
-                                <i class="pi pi-qrcode" style="font-size: 2rem;"></i>
+                                <i class="pi pi-qrcode" style="font-size: 2.2rem;"></i>
                             </button>
-                            <span
-                                style="display: block; margin-top: 0.5rem; font-weight: 600; font-size: 1.1rem; color: #6A0DAD;">
-                                Generar QR
+                            <span style="display: block; margin-top: 0.5rem; font-weight: 700; font-size: 1.05rem; color: #0284c7;">
+                                Generar QR de Pago ({{ formGroup.value.totalPrice }} BOB)
                             </span>
                         </div>
 
-                        <!-- Iframe SOLO si hay link -->
-                        <!-- <div class="flex justify-content-center" *ngIf="paymentLink">
-                            <div style="
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      width: 100%;
-      height: 550px; /* 🔑 asegura espacio reservado */
-      overflow: hidden;
-      position: relative;
-    ">
-                                <div style="
-        transform: scale(1.25);
-        transform-origin: top center;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-      ">
-                                    <iframe [src]="paymentLink" style="
-          width: 450px;
-          height: 500px;
-          border: 2px solid #6A0DAD;
-          border-radius: 10px;
-        "></iframe>
-                                </div>
+                        <div *ngIf="qrGenerated"
+                            style="border: 2px solid #0284c7; border-radius: 12px; padding: 1.25rem 2rem; background: #f8fafc; text-align: center; max-width: 360px;">
+                            <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">
+                                {{ config.mockQrData.bankName }}
                             </div>
-                        </div> -->
+                            <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1rem; display: inline-block; margin-bottom: 0.5rem;">
+                                <i class="pi pi-qrcode" style="font-size: 7rem; color: #0f172a;"></i>
+                            </div>
+                            <div style="font-size: 0.85rem; color: #334155;">
+                                Referencia: <strong>{{ qrReferenceCode }}</strong><br/>
+                                Monto: <strong>{{ formGroup.value.totalPrice }} BOB</strong>
+                            </div>
+                            <span class="p-tag p-tag-success" style="margin-top: 0.5rem;">
+                                QR Listo para Escanear
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Divider -->
-                <hr *ngIf="this.formGroup.value.paymentMethod == 'QR'" style="margin: 1rem 0; border-color: #ddd;">
+                <hr style="margin: 1rem 0; border-color: #e2e8f0;">
 
                 <div class="p-fluid p-formgrid grid">
-                    <div class="field col-12 md:col-4">
-                        <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
+                    <div class="field col-12 md:col-6">
+                        <button pButton type="submit" [label]="this.buttonValue" icon="pi pi-check-circle"
+                            class="p-button-success" [disabled]="!formGroup.valid"></button>
                     </div>
 
-                    <div class="field col-12 md:col-4">
-                        <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash"
+                    <div class="field col-12 md:col-6">
+                        <button pButton type="button" label="Volver al Punto de Venta (Esc)" icon="pi pi-arrow-left"
                             class="p-button-secondary" (click)="redirectToSalesPanel()"></button>
                     </div>
                 </div>
@@ -124,6 +102,6 @@
     </div>
 </div>
 
-<div class="col-6  flex justify-content-center">
+<div class="col-6 flex justify-content-center">
     <p-toast />
 </div>

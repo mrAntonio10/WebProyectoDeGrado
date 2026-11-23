@@ -1,25 +1,48 @@
 <div class="grid">
 	<div class="col-12">
 	  <div class="card">
-		<h5> {{ this.buttonValue }} sucursal </h5>
+		<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+			<h5 style="margin: 0;">{{ config.title }} (Región: {{ selectedRegion === 'LA_PAZ' ? 'La Paz' : 'Santa Cruz' }})</h5>
+			<button pButton type="button" label="Autocompletar Demo" icon="pi pi-user"
+				class="p-button-sm p-button-outlined p-button-info" (click)="fillDemoBuyer()"></button>
+		</div>
 		<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
 		  <div class="p-fluid p-formgrid grid">
 
-			<div class="field col-12 md:col-12">
-				<label> Nombre cliente </label>
-				<input pInputText [formControlName]="'name'" [id]="'name'" pAutoFocus [autofocus]="true" autocomplete="off"/>
-
-				<small id="username-help" class="p-error" *ngIf="formGroup.get('name').invalid && formGroup.get('name').touched">
-					Requerido. Máximo 60 caracteres.
+			<div class="field col-12 md:col-6">
+				<label>Nombre completo del comprador *</label>
+				<input pInputText [formControlName]="'name'" [id]="'name'" pAutoFocus [autofocus]="true"
+					placeholder="Ej. María Fernanda Suárez" autocomplete="off"/>
+				<small class="p-error" *ngIf="formGroup.get('name').invalid && formGroup.get('name').touched">
+					El nombre del comprador es obligatorio (máximo 60 caracteres).
 				</small>
             </div>
 
+			<div class="field col-12 md:col-6">
+				<label>Número de teléfono / WhatsApp *</label>
+				<input pInputText [formControlName]="'phone'" [id]="'phone'"
+					placeholder="Ej. 76012345" autocomplete="off"/>
+				<small class="p-error" *ngIf="formGroup.get('phone').invalid && formGroup.get('phone').touched">
+					El número de teléfono es obligatorio.
+				</small>
+            </div>
+
+			<div class="field col-12 md:col-6">
+				<label>Canal de Venta</label>
+				<input pInputText [formControlName]="'channel'" readonly />
+			</div>
+
+			<div class="field col-12 md:col-6">
+				<label>Método de Pago</label>
+				<input pInputText [formControlName]="'paymentMethod'" readonly />
+			</div>
+
             <div class="field col-12 md:col-4">
-                <button pButton type="submit" [label]="this.buttonValue" [disabled]="!formGroup.valid"></button>
+                <button pButton type="submit" [label]="this.buttonValue" icon="pi pi-check" [disabled]="!formGroup.valid"></button>
             </div>
 
             <div class="field col-12 md:col-4">
-                <button pButton type="button" label="Cancelar (esc)" icon="pi pi-trash" class="p-button-secondary" 
+                <button pButton type="button" label="Volver al Punto de Venta (Esc)" icon="pi pi-arrow-left" class="p-button-secondary" 
                 [tabIndex]="-1"
                 (click)="redirectToSalesPanel()"></button>
             </div>
@@ -27,5 +50,4 @@
 		</form>
 	  </div>
 	</div>
-  </div>
-  
+</div>

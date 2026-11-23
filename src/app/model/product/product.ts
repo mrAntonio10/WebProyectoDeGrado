@@ -19,6 +19,61 @@ export interface IProduct {
   state: boolean;
   sku: string;
   photo?: string;
+  size?: string;
+  color?: string;
+  gender?: string;
+  brand?: string;
+  purchasePrice?: number;
+  salePrice?: number;
+  region?: string;
+  externalId?: string;
+  discountType?: string;
+  discountValue?: number;
+  finalPrice?: number;
+  discountApprovedBy?: string;
+  discountApprovedDate?: number;
+  isNew?: boolean;
+  lastSyncDate?: number;
+  stock?: number;
+  unitaryCost?: number;
+  eventNames?: string[];
+}
+
+export interface IRekidsGarment {
+  id: string;
+  externalId?: string;
+  sku: string;
+  name: string;
+  productName?: string;
+  category: string;
+  size: string;
+  color: string;
+  gender: string;
+  brand: string;
+  purchasePrice?: number;
+  salePrice: number;
+  unitaryCost: number;
+  discountType?: 'MONTO_FIJO' | 'PORCENTUAL' | 'NONE' | string;
+  discountValue?: number;
+  finalPrice: number;
+  discountApprovedBy?: string;
+  discountApprovedDate?: number;
+  region: 'SANTA_CRUZ' | 'LA_PAZ' | string;
+  stock: number;
+  photo?: string;
+  isNew?: boolean;
+  eventNames?: string[];
+}
+
+export interface ISyncGarmentsResult {
+  totalFetched: number;
+  createdCount: number;
+  updatedCount: number;
+  addedToNovedadesCount: number;
+  syncedByAdmin: string;
+  syncTimestamp: number;
+  source: string;
+  garments: IRekidsGarment[];
 }
 
 export interface IProductPage {

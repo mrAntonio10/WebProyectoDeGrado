@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login/home.service';
 import { MessageService } from 'primeng/api';
+import { REKIDS_LOGIN_CONFIG } from './config';
 
 @Component({
   selector: 'app-login',
@@ -11,8 +11,8 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService]
 })
 export class AppLoginComponent implements OnInit {
-  // @ts-ignore
   form: FormGroup;
+  config = REKIDS_LOGIN_CONFIG;
 
   showPassword = false;
   passwordType = 'password';
@@ -20,24 +20,22 @@ export class AppLoginComponent implements OnInit {
 
   loginAgainMessage: string;
 
+  constructor(
+    private router: Router,
+    private loginService: LoginService,
+    private service: MessageService
+  ) {}
 
-  constructor(private router: Router,
-              private loginService: LoginService,
-              private service: MessageService,
-             ) {
-  }
   ngOnInit() {
-
-    // @ts-ignore
     this.form = new FormGroup({
-      email:new FormControl('', [Validators.required, Validators.email]),
-      password:new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required])
     });
 
     this.loginAgainMessage = localStorage.getItem('error-login-again') ?? '';
     if (!!this.loginAgainMessage) {
       setTimeout(() => {
-        this.loginAgainErrorMessage(); 
+        this.loginAgainErrorMessage();
       }, 100);
     }
   }
@@ -53,22 +51,53 @@ export class AppLoginComponent implements OnInit {
     localStorage.removeItem('error-login-again');
   }
 
-  submitForm(){
-    console.log(this.form.value)
+  goToPublicStore() {
+    this.router.navigate([this.config.publicStoreUrl]);
+  }
+
+  submitForm() {
+    const emailInput = (this.form.value.email || '').trim().toLowerCase();
+    const passwordInput = this.form.value.password || '';
+
     this.loginService.logInUser(this.form.value).subscribe({
-      next:
-        resp => {
-          if (resp) {
-            localStorage.setItem('token', resp.data.token);
-            localStorage.setItem('email', resp.data.user);
-            localStorage.setItem('redirect', resp.data.resourceUrl);
-            this.router.navigate([resp.data.resourceUrl]);
-          }
-        },
-      error: err => {
-          console.log(err);
-           this.service.add({ severity: 'error', summary: 'Error', detail: err.error.data.response });
+      next: (resp) => {
+        if (resp?.data) {
+          localStorage.setItem('token', resp.data.token);
+          localStorage.setItem('email', resp.data.user);
+          localStorage.setItem('redirect', this.config.adminRedirectUrl);
+          this.router.navigate([this.config.adminRedirectUrl]);
         }
-    })
+      },
+      error: (err) => {
+        // Si el backend respondió con error explícito (401/403)
+        if (err?.status === 401 || err?.status === 403) {
+          this.service.add({
+            severity: 'error',
+            summary: 'Acceso Restringido',
+            detail: err?.error?.data?.response || 'Solo los administradores pueden iniciar sesión en el sistema Rekids.'
+          });
+          return;
+        }
+
+        // Fallback mock de config.ts cuando el backend está offline:
+        // SOLO permite login a cuentas ADMIN
+        const matchedAdmin = this.config.allowedAdminAccounts.find(
+          a => a.email.toLowerCase() === emailInput && a.password === passwordInput
+        );
+
+        if (matchedAdmin) {
+          localStorage.setItem('token', 'mock-rekids-admin-jwt-' + Date.now());
+          localStorage.setItem('email', matchedAdmin.email);
+          localStorage.setItem('redirect', this.config.adminRedirectUrl);
+          this.router.navigate([this.config.adminRedirectUrl]);
+        } else {
+          this.service.add({
+            severity: 'error',
+            summary: 'Acceso Denegado',
+            detail: 'Solo los administradores autorizados (ej. admin@gmail.com) pueden iniciar sesión en el portal Rekids.'
+          });
+        }
+      }
+    });
   }
 }

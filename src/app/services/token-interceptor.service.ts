@@ -45,15 +45,13 @@ export class AuthInterceptorService implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((err: HttpErrorResponse) => {
+        const hasToken = !!localStorage.getItem('token');
 
-        if (err.status === 401) {
+        if (err.status === 401 && hasToken) {
           this.router.navigateByUrl('/home');
-          console.log("Login error: " + err.error.data.response);
         }
-        if (err.status === 403) {
-          console.log("jwt expired: ");
-
-          if(!this.dialogShown) {
+        if (err.status === 403 && hasToken) {
+          if (!this.dialogShown) {
             const ref = this.dialogService.open(LoginAgainComponent, {
               header: 'Login',
               width: '70%',
@@ -64,10 +62,9 @@ export class AuthInterceptorService implements HttpInterceptor {
             ref.onClose.subscribe(() => {
               this.dialogShown = false;
             });
-
           }
         }
-      
+
         return throwError( err );
 
       }),

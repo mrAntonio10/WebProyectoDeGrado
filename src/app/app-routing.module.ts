@@ -52,6 +52,7 @@ import { UserSalesDocumentComponent } from './pages/comercial-management/user-sa
 import { SupplierComponent } from './pages/management/supplier/supplier.component';
 import { TransferTicketComponent } from './pages/management/transfer-ticket/transfer-ticket.component';
 import { CreateTransferTicketComponent } from './pages/management/transfer-ticket/create-transfer-ticket/create-transfer-ticket.component';
+import { EventsComponent } from './pages/management/events/events.component';
 
 @NgModule({
     imports: [
@@ -78,21 +79,23 @@ import { CreateTransferTicketComponent } from './pages/management/transfer-ticke
                     { path: 'management/supplier', component: SupplierComponent, canActivate: [AuthClassGuard], },
                     { path: 'management/transfer-ticket', component: TransferTicketComponent, canActivate: [AuthClassGuard], },
                     { path: 'management/transfer-ticket/create', component: CreateTransferTicketComponent, canActivate: [AuthClassGuard], },
+                    { path: 'management/events', component: EventsComponent, canActivate: [AuthClassGuard], },
+                    { path: 'events', component: EventsComponent, canActivate: [AuthClassGuard], },
 
 
                     //configuration settings
                     { path: 'configuration/permission', component: PermissionsComponent, canActivate: [AuthClassGuard], },
                     { path: 'configuration/domain', loadChildren: () => import('./pages/configuration/domain-admin/domain-admin.module').then(m => m.DomainAdminModule), canActivate: [AuthClassGuard] },
 
-                    //Comercial management
-                    { path: 'comercial-management/sales-panel', component: SalesPanelComponent, canActivate: [AuthClassGuard], },
-                    { path: 'comercial-management/sales-panel/add-product', component: DetailSelectProductComponent, canActivate: [AuthClassGuard], },
-                    { path: 'comercial-management/sales-panel/add-client-info', component: ClientInfoComponent, canActivate: [AuthClassGuard], },
-                    { path: 'comercial-management/sales-panel/payment-method', component: PaymentMethodComponent, canActivate: [AuthClassGuard], },
+                    //Comercial management - Rekids Tienda Online / Punto de Venta Público (SIN NECESIDAD DE LOGUEARSE)
+                    { path: 'comercial-management/sales-panel', component: SalesPanelComponent },
+                    { path: 'comercial-management/sales-panel/add-product', component: DetailSelectProductComponent },
+                    { path: 'comercial-management/sales-panel/add-client-info', component: ClientInfoComponent },
+                    { path: 'comercial-management/sales-panel/payment-method', component: PaymentMethodComponent },
 
                     { path: 'comercial-management/user-sales', component: UserSalesDocumentComponent, canActivate: [AuthClassGuard], },
                     // {path: 'comercial-management/sales-management', component: SalesDocumentComponent, canActivate: [AuthClassGuard],},
-                    { path: 'comercial-management/agile-add-product', component: AgileAddProductComponent, canActivate: [AuthClassGuard], },
+                    { path: 'comercial-management/agile-add-product', component: AgileAddProductComponent },
 
                     // Admin Sales Report
                     { path: 'reports/admin-sales-report', component: AdminSalesReportComponent, canActivate: [AuthClassGuard], },
@@ -126,7 +129,8 @@ import { CreateTransferTicketComponent } from './pages/management/transfer-ticke
                     { path: 'blocks', component: BlocksComponent },
                 ]
             },
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
+            { path: '', redirectTo: 'dashboard/comercial-management/sales-panel', pathMatch: 'full' },
+            { path: 'tienda', redirectTo: 'dashboard/comercial-management/sales-panel', pathMatch: 'full' },
             { path: 'error', component: AppErrorComponent },
             { path: 'access', component: AppAccessdeniedComponent },
             { path: 'notfound', component: AppNotfoundComponent },

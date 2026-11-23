@@ -4,6 +4,10 @@ export interface ICreateDocument {
     paymentMethod: string;
     deliveryInformation: string;
     isInvoiced: boolean;
+    clientName?: string;
+    clientPhone?: string;
+    channel?: string;
+    region?: string;
 
     detailList: IDetailList[];
 }
@@ -15,11 +19,17 @@ export interface IDetailList {
     unitaryCost: number;
 
     idProduct: String;
+    sku?: string;
+    productName?: string;
 }
 
 export interface ISalesUserDocumet {
     id: string;
     client: string;
+    clientName?: string;
+    clientPhone?: string;
+    channel?: string;
+    region?: string;
     salesDate: string;
     paymentMethod: string;
     totalPrice: number;
@@ -31,8 +41,12 @@ export interface ISalesDocumentInfo {
     userPOS: string;
     paymentMethod: string;
     client: string;
+    clientName?: string;
+    clientPhone?: string;
+    channel?: string;
+    region?: string;
     totalDiscount: number;
-    totalPrice: number
+    totalPrice: number;
 
     detailInfoList: IDetailInfo[];
 }

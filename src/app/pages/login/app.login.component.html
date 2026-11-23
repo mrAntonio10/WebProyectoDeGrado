@@ -1,23 +1,27 @@
-<div class="login-body">
-    <div class="login-panel p-fluid">
-        <div class="login-panel-header" style="border-radius: 8px;">
-            <img src="assets/layout/images/myImg/coff.png" style="border-radius: 8px; object-fit: contain;">
+<div class="login-body" style="background: linear-gradient(135deg, #fff8f1 0%, #e0f2fe 100%);">
+    <div class="login-panel p-fluid" style="border-top: 6px solid #009FE3; border-radius: 18px; box-shadow: 0 16px 36px rgba(0, 119, 216, 0.16);">
+        <div class="login-panel-header" style="background: #fff9f3; padding: 1.25rem; text-align: center; border-radius: 14px 14px 0 0;">
+            <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS - El Segundo Estreno"
+                style="max-height: 140px; width: auto; border-radius: 12px; object-fit: contain;">
         </div>
         <div class="login-panel-content">
             <form autocomplete="off" [formGroup]="form">
 
                 <div class="grid">
-                    <div class="col-12">
-                        <h1>Axia Dx Manager</h1>
-                        <h2>Bienvenido!</h2>
+                    <div class="col-12" style="text-align: center;">
+                        <h1 style="font-family: 'Fredoka', sans-serif; font-size: 1.65rem; margin-bottom: 0.2rem;">
+                            <span style="color: #E30613;">R</span><span style="color: #009FE3;">E</span>&nbsp;<span style="color: #F39200;">K</span><span style="color: #76B82A;">I</span><span style="color: #E30613;">D</span><span style="color: #009FE3;">S</span>
+                            <span style="color: #3C3C3B;"> — Portal Admin</span>
+                        </h1>
+                        <h2 style="color: #64748b; font-size: 0.95rem; margin-top: 0;">{{ config.subtitle }}</h2>
                     </div>
                     <div class="col-12">
                         <span class="p-float-label">
                             <input id="username" type="text" pInputText formControlName="email">
-                            <label for="username">Email</label>
+                            <label for="username">Email Administrador</label>
                             <small id="username-help" class="p-error"
                                 *ngIf="form.get('email').invalid && form.get('email').touched">
-                                Ingrese un correo electrónico válido.
+                                Ingrese un correo electrónico de administrador válido.
                             </small>
                         </span>
                     </div>
@@ -32,8 +36,18 @@
                     </div>
                     <div class="col-12">
                         <p-toast />
-                        <input pButton pRipple type="submit" class="submit" value="Iniciar Sesión"
+                        <input pButton pRipple type="submit" class="submit"
+                            style="background: #0088E8; border-color: #0088E8; font-weight: 700; border-radius: 10px;"
+                            value="Iniciar Sesión (Solo Admin)"
                             (click)="submitForm()" [disabled]="!form.valid">
+                    </div>
+                    <div class="col-12" style="margin-top: 0.4rem;">
+                        <button pButton pRipple type="button"
+                            label="Volver a la Tienda Online RE KIDS (Clientes)"
+                            icon="pi pi-shopping-bag"
+                            style="background: #76B82A; border-color: #76B82A; color: #ffffff; font-weight: 700; border-radius: 10px;"
+                            (click)="goToPublicStore()">
+                        </button>
                     </div>
                 </div>
             </form>

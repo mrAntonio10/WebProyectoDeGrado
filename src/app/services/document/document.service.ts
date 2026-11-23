@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import {Observable} from "rxjs";
+import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
-import { ICreateEnterprise, IUpdateEnterprise } from 'src/app/model/enterprise/enterprise';
 import { ICreateDocument } from 'src/app/model/document/document';
 
 @Injectable({
@@ -12,12 +11,11 @@ import { ICreateDocument } from 'src/app/model/document/document';
 export class DocumentService {
   private apiUrl = environment.apiUrl;
 
-
   constructor(private httpClient: HttpClient) {
   }
 
   getSalesUserDocumentPageable(paramsObj: any): Observable<any> {
-    let params = new HttpParams;
+    let params = new HttpParams();
 
     for (let key in paramsObj) {
       if (paramsObj.hasOwnProperty(key)) {
@@ -25,11 +23,19 @@ export class DocumentService {
       }
     }
 
-    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/documents`,  { params });
+    return this.httpClient.get<any>(`${this.apiUrl}/api/v1/documents`, { params });
   }
 
   createDocument(documentObj: ICreateDocument): Observable<any> {
     return this.httpClient.post(`${this.apiUrl}/api/v1/documents`, documentObj);
+  }
+
+  /**
+   * Rekids Punto de Venta Online (Sin Login):
+   * Registra la venta con Nombre, Número de teléfono, Canal ONLINE y Método de pago QR.
+   */
+  createOnlineSale(documentObj: ICreateDocument): Observable<any> {
+    return this.httpClient.post(`${this.apiUrl}/api/v1/documents/public/online-sale`, documentObj);
   }
 
   getSalesDocumentInfotByIdDocument(idDocument: string): Observable<any> {
@@ -39,5 +45,4 @@ export class DocumentService {
   deleteSalesDocumentByIdDocument(idDocument: string): Observable<any> {
     return this.httpClient.delete<any>(`${this.apiUrl}/api/v1/documents/delete/${idDocument}`);
   }
-
 }

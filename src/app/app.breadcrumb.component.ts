@@ -16,7 +16,7 @@ export class AppBreadcrumbComponent implements OnDestroy {
     redirectUrl: string;
 
     constructor(public breadcrumbService: BreadcrumbService) {
-        this.redirectUrl = localStorage.getItem('redirect');
+        this.redirectUrl = localStorage.getItem('redirect') || '/dashboard/comercial-management/sales-panel';
 
         this.subscription = breadcrumbService.itemsHandler.subscribe(response => {
             this.items = response;

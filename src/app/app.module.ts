@@ -183,6 +183,7 @@ import { AgileAddProductComponent } from './pages/comercial-management/agile-add
 import { SupplierComponent } from './pages/management/supplier/supplier.component';
 import { TransferTicketComponent } from './pages/management/transfer-ticket/transfer-ticket.component';
 import { CreateTransferTicketComponent } from './pages/management/transfer-ticket/create-transfer-ticket/create-transfer-ticket.component';
+import { EventsComponent } from './pages/management/events/events.component';
 
 @NgModule({
     imports: [
@@ -346,7 +347,8 @@ import { CreateTransferTicketComponent } from './pages/management/transfer-ticke
         AgileAddProductComponent,
         SupplierComponent,
         TransferTicketComponent,
-        CreateTransferTicketComponent
+        CreateTransferTicketComponent,
+        EventsComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

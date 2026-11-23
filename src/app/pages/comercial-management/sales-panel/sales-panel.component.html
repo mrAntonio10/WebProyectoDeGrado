@@ -1,54 +1,310 @@
-<div>
-    <div class="grid">
-        <div class="col-12">
-            <div class="card">
-                <p-panel header="Opciones" [toggleable]="true" [collapsed]="false">
-                    <div class="p-fluid p-formgrid grid">
+<div class="rekids-store-wrapper">
 
-                        <div class="field col-12 md:col-6" *ngIf="!!this.clientName">
-                            <label> Nombre cliente </label>
-                            <input pInputText [id]="'name'" [value]="this.clientName" readonly />
-                        </div>
+    <!-- BARRA ARCOÍRIS DE COLORES OFICIALES RE KIDS -->
+    <div class="rekids-rainbow-bar"></div>
 
-                    </div>
-                    <div class="p-fluid p-formgrid grid">
-                        <div class="field col-12 md:col-4">
-                            <button pButton type="button" label="Limpiar detalle (Ctrl + l)" icon="pi pi-trash"
-                                class="p-button-secondary" [tabIndex]="-1"
-                                (click)="deleteAllProductsFromDetail()"></button>
-                        </div>
-                        <div class="field col-12 md:col-3">
-                            <button pButton type="button" label="Información cliente (Ctrl + c)" icon="pi pi-user-plus"
-                                class="p-button-info" [tabIndex]="-1" (click)="routeAddClientInfo()"></button>
-                        </div>
-                        <div class="field col-12 md:col-3">
-                            <button pButton type="button" label="Agregar producto (Ctrl + p)" icon="pi pi-plus-circle"
-                                class="p-button-success" [tabIndex]="-1" (click)="routeAddProductToDetail()"></button>
-                        </div>
-                        <div class="field col-12 md:col-3">
-                            <button pButton type="button" label="Agregar productos -flash" icon="pi pi-bolt"
-                                class="p-button-warning" [tabIndex]="-1"
-                                (click)="routeAddAgileProductToDetail()"></button>
-                        </div>
-                        <div class="field col-12 md:col-12" *ngIf="!!this.pageableData">
-                            <button pButton type="button" label="Aceptar detalle (Ctrl + d)" icon="pi pi-plus-circle"
-                                class="p-button-outlined p-button-info" (click)="routePaymentMethod()" [tabIndex]="-1"
-                                style="width: 100%;">
-                            </button>
-                        </div>
-                    </div>
-                </p-panel>
+    <!-- HERO HEADER DE TIENDA ONLINE RE KIDS (CON LOGO OFICIAL Y COLORES DE MARCA) -->
+    <div class="rekids-hero-banner">
+        <div class="rekids-hero-left">
+            <div class="rekids-logo-card">
+                <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS - El Segundo Estreno" class="rekids-main-logo" />
+            </div>
+            <div class="rekids-hero-copy">
+                <div class="rekids-slogan-pill">
+                    <i class="pi pi-sparkles"></i>
+                    <span>EL SEGUNDO ESTRENO • TIENDA ONLINE</span>
+                </div>
+                <h1 class="rekids-wordmark">
+                    <span class="c-red">R</span><span class="c-blue">E</span>&nbsp;<span class="c-orange">K</span><span class="c-green">I</span><span class="c-red">D</span><span class="c-blue">S</span>
+                </h1>
+                <p class="rekids-hero-subtitle">
+                    Moda infantil con amor y segunda vida. Selecciona tu ciudad, descubre prendas únicas en nuestros eventos y compra al instante con QR.
+                </p>
+            </div>
+        </div>
+
+        <div class="rekids-hero-right">
+            <!-- Resumen flotante del carrito -->
+            <div class="rekids-cart-pill" *ngIf="getTotalCartItemsCount() > 0" (click)="routePaymentMethod()">
+                <div class="rekids-cart-pill-icon">
+                    <i class="pi pi-shopping-cart"></i>
+                    <span class="rekids-cart-count">{{ getTotalCartItemsCount() }}</span>
+                </div>
+                <div class="rekids-cart-pill-info">
+                    <span class="label">Mi Carrito</span>
+                    <span class="amount">{{ totalPrice }} BOB</span>
+                </div>
+                <i class="pi pi-arrow-right" style="margin-left: 6px; color: #76B82A;"></i>
             </div>
         </div>
     </div>
+
+    <!-- PASO 1: SELECCIONA TU CIUDAD / REGIÓN (SANTA CRUZ / LA PAZ) -->
+    <div class="rekids-region-section">
+        <div class="rekids-section-header">
+            <span class="step-pill">PASO 1</span>
+            <h4>¿Desde qué ciudad nos visitas hoy? Selecciona tu tienda RE KIDS</h4>
+        </div>
+
+        <div class="grid">
+            <div class="col-12 md:col-6" *ngFor="let reg of regions; let idx = index">
+                <div class="rekids-region-card"
+                    [ngClass]="{
+                        'active': selectedRegion === reg.code,
+                        'scz-card': reg.code === 'SANTA_CRUZ',
+                        'lpz-card': reg.code === 'LA_PAZ'
+                    }"
+                    (click)="selectRegion(reg.code)">
+                    <div class="region-icon-circle" [ngClass]="reg.code === 'SANTA_CRUZ' ? 'icon-orange' : 'icon-blue'">
+                        <i [class]="reg.icon"></i>
+                    </div>
+                    <div class="region-card-body">
+                        <div class="region-title-row">
+                            <span class="region-name">Tienda {{ reg.name }}</span>
+                            <span class="region-delivery-tag">{{ reg.badge }}</span>
+                        </div>
+                        <p class="region-address">{{ reg.address }}</p>
+                    </div>
+                    <div class="region-check">
+                        <span *ngIf="selectedRegion === reg.code" class="selected-city-chip">
+                            <i class="pi pi-check"></i> Tienda Activa
+                        </span>
+                        <span *ngIf="selectedRegion !== reg.code" class="unselected-city-chip">
+                            Ver Prendas
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENSAJE CUANDO AÚN NO SE HA ELEGIDO REGIÓN -->
+    <div class="rekids-empty-region-prompt" *ngIf="!selectedRegion">
+        <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS" class="prompt-logo" />
+        <h3>¡Bienvenido a RE KIDS — El Segundo Estreno!</h3>
+        <p>Elige arriba <strong>Tienda Santa Cruz</strong> o <strong>Tienda La Paz</strong> para ver el catálogo de prendas infantiles disponibles en tu ciudad.</p>
+    </div>
+
+    <!-- CATÁLOGO + CARRITO DE COMPRA RÁPIDA -->
+    <div class="grid" *ngIf="selectedRegion" style="margin-top: 0.5rem;">
+
+        <!-- COLUMNA IZQUIERDA: FILTROS DE EVENTOS Y TARJETAS DE PRENDAS (E-COMMERCE) -->
+        <div class="col-12 lg:col-8">
+            <div class="rekids-catalog-card">
+
+                <!-- Barra de Eventos (Novedades, Descuentos, Navidad, etc.) + Buscador -->
+                <div class="rekids-filter-bar">
+                    <div class="rekids-event-tabs">
+                        <button type="button" class="event-tab-btn tab-all"
+                            [ngClass]="{ 'active': selectedEventCode === 'TODOS' }"
+                            (click)="applyEventFilter('TODOS')">
+                            <i class="pi pi-th-large"></i>
+                            <span>Todo ({{ regionGarments.length }})</span>
+                        </button>
+
+                        <button *ngFor="let ev of events" type="button" class="event-tab-btn"
+                            [ngClass]="{
+                                'active': selectedEventCode === ev.code,
+                                'discount-tab': ev.code === 'DESCUENTOS',
+                                'new-tab': ev.code === 'NOVEDADES',
+                                'custom-tab': ev.code !== 'NOVEDADES' && ev.code !== 'DESCUENTOS'
+                            }"
+                            (click)="applyEventFilter(ev.code)">
+                            <i [class]="ev.code === 'NOVEDADES' ? 'pi pi-sparkles' : (ev.code === 'DESCUENTOS' ? 'pi pi-percentage' : 'pi pi-gift')"></i>
+                            <span>{{ ev.name }}</span>
+                        </button>
+                    </div>
+
+                    <div class="rekids-search-box">
+                        <span class="p-input-icon-left" style="width: 100%;">
+                            <i class="pi pi-search"></i>
+                            <input type="text" pInputText [(ngModel)]="searchText" (ngModelChange)="applyFilters()"
+                                placeholder="Buscar prenda, talla o marca..." class="rekids-search-input" />
+                        </span>
+                    </div>
+                </div>
+
+                <!-- GRILLA DE PRENDAS CON FOTOS DE INTERNET Y BOTÓN "ADICIONAR AL CARRITO" -->
+                <div class="grid">
+                    <div class="col-12 sm:col-6 md:col-4" *ngFor="let g of filteredGarments">
+                        <div class="rekids-product-card">
+                            <!-- Imagen de la prenda -->
+                            <div class="product-image-container">
+                                <img [src]="getGarmentImage(g)" [alt]="g.name" (error)="onImageError($event)" class="product-img" />
+
+                                <!-- Badges flotantes de Eventos -->
+                                <div class="floating-badges-left">
+                                    <span *ngFor="let evName of g.eventNames" class="event-pill"
+                                        [ngClass]="{
+                                            'pill-new': evName === 'Novedades',
+                                            'pill-discount': evName === 'Descuentos',
+                                            'pill-custom': evName !== 'Novedades' && evName !== 'Descuentos'
+                                        }">
+                                        {{ evName }}
+                                    </span>
+                                </div>
+
+                                <!-- Badge flotante de Descuento -->
+                                <div class="floating-badge-right" *ngIf="g.discountValue && g.discountValue > 0">
+                                    -{{ g.discountValue }}{{ g.discountType === 'PORCENTUAL' ? '%' : ' Bs' }}
+                                </div>
+
+                                <!-- Indicador si ya está en el carrito -->
+                                <div class="in-cart-overlay-badge" *ngIf="getCartQtyForGarment(g) > 0">
+                                    <i class="pi pi-check"></i> {{ getCartQtyForGarment(g) }} en tu carrito
+                                </div>
+                            </div>
+
+                            <!-- Cuerpo de la tarjeta -->
+                            <div class="product-card-content">
+                                <div>
+                                    <div class="product-brand-row">
+                                        <span class="product-brand">{{ g.brand || 'RE KIDS' }}</span>
+                                        <span class="product-stock-pill">Disponibles: {{ g.stock }}</span>
+                                    </div>
+
+                                    <h5 class="product-title">{{ g.name }}</h5>
+
+                                    <div class="product-specs-row">
+                                        <span class="spec-chip size-chip"><i class="pi pi-tag"></i> Talla {{ g.size || 'Única' }}</span>
+                                        <span class="spec-chip" *ngIf="g.color">{{ g.color }}</span>
+                                        <span class="spec-chip" *ngIf="g.gender">{{ g.gender }}</span>
+                                    </div>
+
+                                    <!-- Código como detalle sutil -->
+                                    <div class="product-detail-code">
+                                        Detalle: {{ g.sku }} • {{ g.category }}
+                                    </div>
+                                </div>
+
+                                <!-- Precio y Botón Adicionar al Carrito -->
+                                <div class="product-footer">
+                                    <div class="price-block">
+                                        <span class="old-price" *ngIf="g.discountValue && g.discountValue > 0">
+                                            {{ g.salePrice }} BOB
+                                        </span>
+                                        <span class="final-price">{{ g.finalPrice || g.salePrice }} <small>BOB</small></span>
+                                    </div>
+
+                                    <button pButton pRipple type="button"
+                                        label="Adicionar al Carrito"
+                                        icon="pi pi-shopping-cart"
+                                        class="rekids-add-cart-btn"
+                                        (click)="addToCart(g)">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12" *ngIf="filteredGarments.length === 0">
+                        <div class="rekids-no-results">
+                            <i class="pi pi-inbox"></i>
+                            <h5>No encontramos prendas con ese filtro en {{ getRegionLabel(selectedRegion) }}</h5>
+                            <button pButton type="button" label="Ver Todo el Catálogo"
+                                class="p-button-outlined p-button-sm" (click)="applyEventFilter('TODOS')"></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: MI CARRITO & COMPRA RÁPIDA QR (SIN LOGIN) -->
+        <div class="col-12 lg:col-4">
+            <div class="rekids-checkout-sidebar">
+                <div class="sidebar-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="cart-header-icon">
+                            <i class="pi pi-shopping-bag"></i>
+                        </span>
+                        <div>
+                            <h5 style="margin: 0; font-family: 'Fredoka', sans-serif; font-weight: 700; color: #3C3C3B;">Mi Carrito RE KIDS</h5>
+                            <small style="color: #64748b;">Tienda {{ getRegionLabel(selectedRegion) }}</small>
+                        </div>
+                    </div>
+                    <button *ngIf="pageableData?.content?.length > 0" pButton type="button"
+                        icon="pi pi-trash" label="Vaciar"
+                        class="p-button-text p-button-danger p-button-sm"
+                        (click)="deleteAllProductsFromDetail()"></button>
+                </div>
+
+                <!-- Carrito vacío -->
+                <div class="empty-cart-box" *ngIf="!pageableData?.content || pageableData.content.length === 0">
+                    <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS" style="height: 68px; border-radius: 10px; margin-bottom: 0.75rem; opacity: 0.9;" />
+                    <h6>Tu carrito aún está vacío</h6>
+                    <p>Elige tus prendas favoritas y presiona <strong>"Adicionar al Carrito"</strong> para estrenar con RE KIDS.</p>
+                </div>
+
+                <!-- Lista de prendas en el carrito -->
+                <div class="cart-items-list" *ngIf="pageableData?.content?.length > 0">
+                    <div class="cart-item-row" *ngFor="let item of pageableData.content">
+                        <img [src]="item.photo || config.defaultFallbackImage" (error)="onImageError($event)" class="cart-item-thumb" />
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">{{ item.productName }}</div>
+                            <div class="cart-item-meta">Detalle: {{ item.sku }} • {{ item.unitaryCost }} BOB c/u</div>
+                            <div class="cart-item-controls">
+                                <div class="qty-stepper">
+                                    <button type="button" class="qty-btn" (click)="updateCartItemQuantity(item, -1)">−</button>
+                                    <span class="qty-val">{{ item.quantity }}</span>
+                                    <button type="button" class="qty-btn" (click)="updateCartItemQuantity(item, 1)">+</button>
+                                </div>
+                                <strong class="cart-item-subtotal">{{ item.totalPrice }} BOB</strong>
+                            </div>
+                        </div>
+                        <button type="button" class="cart-item-remove" title="Quitar" (click)="removeCartItemDirect(item)">
+                            <i class="pi pi-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resumen de Totales y Datos Rápidos del Comprador -->
+                <div class="checkout-fast-form" *ngIf="pageableData?.content?.length > 0">
+                    <div class="totals-summary">
+                        <div class="summary-line" *ngIf="totalSavings > 0" style="color: #E30613; font-weight: 700;">
+                            <span>¡Tu Ahorro en RE KIDS!:</span>
+                            <strong>-{{ totalSavings }} BOB</strong>
+                        </div>
+                        <div class="summary-line total-line">
+                            <span>Total a Pagar:</span>
+                            <span class="grand-total">{{ totalPrice }} BOB</span>
+                        </div>
+                    </div>
+
+                    <div class="buyer-quick-box">
+                        <div class="buyer-box-title">
+                            <i class="pi pi-qrcode" style="color: #0088E8; font-size: 1.1rem;"></i>
+                            <span>Compra Rápida Online • Pago por QR</span>
+                        </div>
+
+                        <div class="p-fluid">
+                            <div class="field" style="margin-bottom: 0.65rem;">
+                                <label style="font-size: 0.82rem; font-weight: 700; color: #3C3C3B;">Tu Nombre Completo *</label>
+                                <input pInputText [(ngModel)]="clientName" (ngModelChange)="saveInlineBuyerInfo()"
+                                    placeholder="Ej. María Fernanda Suárez" />
+                            </div>
+                            <div class="field" style="margin-bottom: 0.8rem;">
+                                <label style="font-size: 0.82rem; font-weight: 700; color: #3C3C3B;">Tu Teléfono / WhatsApp *</label>
+                                <input pInputText [(ngModel)]="clientPhone" (ngModelChange)="saveInlineBuyerInfo()"
+                                    placeholder="Ej. 76012345" />
+                            </div>
+                        </div>
+
+                        <button pButton pRipple type="button"
+                            label="Confirmar y Pagar con QR ({{ totalPrice }} BOB)"
+                            icon="pi pi-qrcode"
+                            class="p-button-lg rekids-pay-qr-btn"
+                            (click)="routePaymentMethod()">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<sales-paging-filter (pageChangeTriggered)="onPageChange($event)" *ngIf="this.tableStructure && !!this.pageableData"
-    [title]="'Detalle'" [principalLabel]="'Gestión comercial'" [sucessorLabel]="'Detalle'" [data]="this.pageableData"
-    [globalFilters]="gobalFilters" [dataStructure]="this.tableStructure" [createVisible]="isVisibleCreate"
-    [actions]="actions" [saleTotalPrice]="this.totalPrice" (actionTriggered)="handleActionTriggered($event)">
-</sales-paging-filter>
-<div class="col-6  flex justify-content-center">
+<div class="col-6 flex justify-content-center">
     <p-toast />
 </div>
 <p-confirmDialog></p-confirmDialog>
