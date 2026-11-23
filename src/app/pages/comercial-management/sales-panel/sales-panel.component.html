@@ -6,7 +6,7 @@
     <!-- HERO HEADER DE TIENDA ONLINE RE KIDS (CON LOGO OFICIAL Y COLORES DE MARCA) -->
     <div class="rekids-hero-banner">
         <div class="rekids-hero-left">
-            <div class="rekids-logo-card">
+            <div class="rekids-logo-card" (click)="goToAboutUs()" style="cursor: pointer;" title="Ir a Quiénes Somos — RE KIDS">
                 <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS - El Segundo Estreno" class="rekids-main-logo" />
             </div>
             <div class="rekids-hero-copy">
@@ -80,7 +80,8 @@
 
     <!-- MENSAJE CUANDO AÚN NO SE HA ELEGIDO REGIÓN -->
     <div class="rekids-empty-region-prompt" *ngIf="!selectedRegion">
-        <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS" class="prompt-logo" />
+        <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS" class="prompt-logo"
+            style="cursor: pointer;" title="Ir a Quiénes Somos — RE KIDS" (click)="goToAboutUs()" />
         <h3>¡Bienvenido a RE KIDS — El Segundo Estreno!</h3>
         <p>Elige arriba <strong>Tienda Santa Cruz</strong> o <strong>Tienda La Paz</strong> para ver el catálogo de prendas infantiles disponibles en tu ciudad.</p>
     </div>
@@ -231,7 +232,10 @@
 
                 <!-- Carrito vacío -->
                 <div class="empty-cart-box" *ngIf="!pageableData?.content || pageableData.content.length === 0">
-                    <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS" style="height: 68px; border-radius: 10px; margin-bottom: 0.75rem; opacity: 0.9;" />
+                    <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS"
+                        style="height: 68px; border-radius: 10px; margin-bottom: 0.75rem; opacity: 0.9; cursor: pointer;"
+                        title="Ir a Quiénes Somos — RE KIDS"
+                        (click)="goToAboutUs()" />
                     <h6>Tu carrito aún está vacío</h6>
                     <p>Elige tus prendas favoritas y presiona <strong>"Adicionar al Carrito"</strong> para estrenar con RE KIDS.</p>
                 </div>

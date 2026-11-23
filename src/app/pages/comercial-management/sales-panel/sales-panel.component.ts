@@ -376,6 +376,10 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     this.router.navigate(['/home']);
   }
 
+  goToAboutUs() {
+    this.router.navigate(['/dashboard/comercial-management/about-us']);
+  }
+
   goToAdminEvents() {
     this.router.navigate(['/dashboard/management/events']);
   }

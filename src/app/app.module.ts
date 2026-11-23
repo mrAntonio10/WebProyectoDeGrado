@@ -184,6 +184,7 @@ import { SupplierComponent } from './pages/management/supplier/supplier.componen
 import { TransferTicketComponent } from './pages/management/transfer-ticket/transfer-ticket.component';
 import { CreateTransferTicketComponent } from './pages/management/transfer-ticket/create-transfer-ticket/create-transfer-ticket.component';
 import { EventsComponent } from './pages/management/events/events.component';
+import { AboutUsComponent } from './pages/comercial-management/about-us/about-us.component';
 
 @NgModule({
     imports: [
@@ -348,7 +349,8 @@ import { EventsComponent } from './pages/management/events/events.component';
         SupplierComponent,
         TransferTicketComponent,
         CreateTransferTicketComponent,
-        EventsComponent
+        EventsComponent,
+        AboutUsComponent
     ],
     providers: [ConfirmationService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},

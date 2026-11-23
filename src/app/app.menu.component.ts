@@ -21,7 +21,7 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         const token = localStorage.getItem('token');
         if (!token) {
-            // Modo comprador público Rekids (Sin Login)
+            // Modo comprador público Rekids (Solo rutas de cliente, sin acceso/link a login admin)
             this.buildPublicBuyerMenu();
             return;
         }
@@ -31,14 +31,14 @@ export class AppMenuComponent implements OnInit {
     private buildPublicBuyerMenu() {
         this.model = [
             {
-                label: 'Tienda Online Rekids (Punto de Venta)',
-                icon: 'pi pi-shopping-cart',
-                routerLink: ['/dashboard/comercial-management/sales-panel']
+                label: 'Quiénes Somos',
+                icon: 'pi pi-fw pi-heart',
+                routerLink: ['/dashboard/comercial-management/about-us']
             },
             {
-                label: 'Acceso Administrador',
-                icon: 'pi pi-lock',
-                routerLink: ['/home']
+                label: 'Tienda Online RE KIDS',
+                icon: 'pi pi-fw pi-shopping-cart',
+                routerLink: ['/dashboard/comercial-management/sales-panel']
             }
         ];
     }
@@ -62,19 +62,23 @@ export class AppMenuComponent implements OnInit {
     private buildDefaultAdminMenu() {
         this.model = [
             {
-                label: 'Portal Admin Rekids',
-                icon: 'pi pi-fw pi-calendar-plus',
-                routerLink: ['/dashboard/management/events'],
+                label: 'Navegación RE KIDS',
+                icon: 'pi pi-fw pi-compass',
                 items: [
+                    {
+                        label: 'Quiénes Somos',
+                        icon: 'pi pi-fw pi-heart',
+                        routerLink: ['/dashboard/comercial-management/about-us']
+                    },
+                    {
+                        label: 'Tienda Online RE KIDS',
+                        icon: 'pi pi-fw pi-shopping-cart',
+                        routerLink: ['/dashboard/comercial-management/sales-panel']
+                    },
                     {
                         label: 'Eventos, Descuentos y Sincronización',
                         icon: 'pi pi-fw pi-calendar-plus',
                         routerLink: ['/dashboard/management/events']
-                    },
-                    {
-                        label: 'Punto de Venta Online (Vista Comprador)',
-                        icon: 'pi pi-fw pi-shopping-cart',
-                        routerLink: ['/dashboard/comercial-management/sales-panel']
                     }
                 ]
             }
@@ -84,14 +88,19 @@ export class AppMenuComponent implements OnInit {
     private buildResourceMenu() {
         this.model = [
             {
-                label: 'Eventos Rekids (Admin)',
-                icon: 'pi pi-calendar-plus',
-                routerLink: ['/dashboard/management/events']
+                label: 'Quiénes Somos',
+                icon: 'pi pi-fw pi-heart',
+                routerLink: ['/dashboard/comercial-management/about-us']
             },
             {
-                label: 'Tienda Online Rekids',
-                icon: 'pi pi-shopping-cart',
+                label: 'Tienda Online RE KIDS',
+                icon: 'pi pi-fw pi-shopping-cart',
                 routerLink: ['/dashboard/comercial-management/sales-panel']
+            },
+            {
+                label: 'Eventos Rekids',
+                icon: 'pi pi-fw pi-calendar-plus',
+                routerLink: ['/dashboard/management/events']
             }
         ];
 
@@ -122,6 +131,8 @@ export class AppMenuComponent implements OnInit {
     onMenuItemClick(item: any) {
         if (item.routerLink) {
             localStorage.setItem('openResource', item.routerLink);
+            this.appMain.menuActive = false;
+            this.appMain.unblockBodyScroll();
         }
     }
 }

@@ -31,3 +31,199 @@
   overflow: hidden;
 }
 
+/* ==========================================================================
+   FIX FLEXBOX PARA TOPBAR Y MENÚ HAMBURGUESA (SIN SOBREPONERSE AL LOGO EN CELULAR)
+   ========================================================================== */
+.layout-topbar.rekids-flex-topbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.75rem;
+  padding: 0.55rem 1.25rem !important;
+  min-height: 68px;
+  position: relative;
+}
+
+.layout-topbar.rekids-flex-topbar::before,
+.layout-topbar.rekids-flex-topbar::after {
+  display: none !important;
+}
+
+.rekids-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.layout-topbar .layout-menubutton.rekids-flex-menubutton {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  flex: 0 0 44px;
+  width: 44px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.layout-topbar .layout-menubutton.rekids-flex-menubutton .layout-menubutton-icon {
+  top: 20px !important;
+  left: 8px !important;
+}
+
+.rekids-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.rekids-topbar-logo-img {
+  height: 44px;
+  width: auto;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 2px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.rekids-brand-link:hover .rekids-topbar-logo-img {
+  transform: scale(1.04);
+}
+
+.rekids-brand-titles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.rekids-brand-slogan {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.12rem;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.rekids-topbar-admin-badge {
+  background: #F39200;
+  color: #ffffff;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.rekids-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.rekids-topbar-login-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  padding: 0.42rem 0.9rem;
+  border-radius: 999px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.rekids-topbar-login-pill:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+.rekids-profile-btn {
+  margin-left: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+/* Ajustes responsivos en celular para que nunca se encimen el menú hamburguesa y el logo */
+@media screen and (max-width: 640px) {
+  .layout-topbar.rekids-flex-topbar {
+    padding: 0.45rem 0.75rem !important;
+    gap: 0.5rem;
+  }
+
+  .rekids-topbar-left {
+    gap: 0.55rem;
+  }
+
+  .rekids-topbar-logo-img {
+    height: 38px;
+    padding: 2px 6px;
+  }
+
+  .rekids-brand-slogan {
+    font-size: 0.88rem;
+    white-space: normal;
+    line-height: 1.15;
+  }
+
+  .rekids-topbar-admin-badge {
+    font-size: 0.68rem;
+    padding: 1px 7px;
+  }
+
+  .rekids-topbar-login-pill span {
+    display: none;
+  }
+
+  .rekids-topbar-login-pill {
+    padding: 0.45rem 0.65rem;
+  }
+}
+
+/* ==========================================================================
+   ESTILOS DE BOTONES DE REDES SOCIALES EN EL FOOTER PERSISTENTE
+   ========================================================================== */
+.rekids-footer-social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.42rem 0.82rem;
+  border-radius: 999px;
+  color: #ffffff !important;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rekids-footer-social-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+  color: #ffffff !important;
+}

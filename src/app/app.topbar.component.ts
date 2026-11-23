@@ -16,14 +16,20 @@ export class AppTopBarComponent {
     ) {}
 
     /**
-     * En el portal de comprador (sales-panel / tienda online) o cuando no hay sesión de Admin,
-     * ocultamos el menú hamburguesa para que el cliente tenga una experiencia limpia de tienda web.
+     * El menú hamburguesa se muestra siempre gracias al layout Flexbox
+     * que evita que el ícono se sobreponga a la foto de la marca en dispositivos móviles.
      */
     get showHamburgerMenu(): boolean {
-        const hasAdminToken = !!localStorage.getItem('token');
-        const currentUrl = this.router.url || '';
-        const isBuyerPortal = currentUrl.includes('/comercial-management/sales-panel') || currentUrl === '/tienda' || currentUrl === '/';
-        return hasAdminToken && !isBuyerPortal;
+        return true;
+    }
+
+    get isAdmin(): boolean {
+        return !!localStorage.getItem('token');
+    }
+
+    goToAboutUs(event: Event): void {
+        event.preventDefault();
+        this.router.navigate(['/dashboard/comercial-management/about-us']);
     }
 
     logOut() {

@@ -1,37 +1,42 @@
-<div class="layout-topbar" style="background: linear-gradient(90deg, #0077D8 0%, #009FE3 100%); border-bottom: 4px solid #F39200;">
+<div class="layout-topbar rekids-flex-topbar" style="background: linear-gradient(90deg, #0077D8 0%, #009FE3 100%); border-bottom: 4px solid #F39200;">
 
-    <!-- Menú hamburguesa oculto en el Portal de Comprador -->
-    <a *ngIf="showHamburgerMenu" href="#" class="layout-menubutton"
-        [ngClass]="{'layout-menubutton-active': app.menuActive}" (click)="app.onMenuButtonClick($event)">
-        <div class="layout-menubutton-icon"></div>
-    </a>
+    <!-- GRUPO IZQUIERDO EN FLEX: Botón Hamburguesa (relative, sin superponerse) + Foto de Marca RE KIDS -->
+    <div class="rekids-topbar-left">
+        <a *ngIf="showHamburgerMenu" href="#" class="layout-menubutton rekids-flex-menubutton"
+            [ngClass]="{'layout-menubutton-active': app.menuActive}" (click)="app.onMenuButtonClick($event)"
+            title="Menú de Navegación">
+            <div class="layout-menubutton-icon"></div>
+        </a>
 
-    <div class="layout-topbar-grid" style="align-items: center;">
-        <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed"
-            [ngStyle]="{'padding-left': showHamburgerMenu ? '0.5rem' : '1.5rem'}"
-            style="display: flex; align-items: center; gap: 10px;">
-            <a href="/#/dashboard/comercial-management/sales-panel" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS"
-                    style="height: 44px; border-radius: 10px; background: #ffffff; padding: 2px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.18);" />
-                <span style="font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.15rem; color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); white-space: nowrap;">
+        <a href="#" (click)="goToAboutUs($event)" class="rekids-brand-link" title="Quiénes Somos — RE KIDS">
+            <img src="assets/layout/images/myImg/rekids-logo.jpg" alt="RE KIDS" class="rekids-topbar-logo-img" />
+            <div class="rekids-brand-titles">
+                <span class="rekids-brand-slogan">
                     EL SEGUNDO ESTRENO
                 </span>
-            </a>
-        </div>
+                <span *ngIf="isAdmin" class="rekids-topbar-admin-badge">
+                    Vista Admin
+                </span>
+            </div>
+        </a>
+    </div>
 
-        <div class="layout-topbar-grid-column">
-            <app-menu *ngIf="showHamburgerMenu"></app-menu>
-        </div>
+    <!-- MENÚ LATERAL / DESPLEGABLE HAMBURGUESA -->
+    <div class="rekids-topbar-center">
+        <app-menu *ngIf="showHamburgerMenu"></app-menu>
+    </div>
 
-        <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed background-color-white" *ngIf="showHamburgerMenu">
-            <a href="#" class="profile-menu-button" (click)="app.onTopbarUserMenuButtonClick($event)">
-                <i class="pi pi-user" style="font-size: 2.2rem; color: whitesmoke;"></i>
+    <!-- GRUPO DERECHO EN FLEX: Solo visible cuando hay sesión Admin activa -->
+    <div class="rekids-topbar-right" *ngIf="isAdmin">
+        <div class="rekids-profile-wrapper">
+            <a href="#" class="profile-menu-button rekids-profile-btn" (click)="app.onTopbarUserMenuButtonClick($event)" title="Cuenta Admin">
+                <i class="pi pi-user" style="font-size: 1.6rem; color: whitesmoke;"></i>
             </a>
             <ul class="layout-profile-menu fadeInDown" [ngClass]="{'layout-profile-menu-active': app.topbarUserMenuActive}" (click)="app.onTopbarUserMenuClick($event)">
                 <li role="menuitem">
                     <a href="#" pRipple (click)="logOut()">
                         <i class="pi pi-sign-out"></i>
-                        <span>Cerrar Sesión Admin</span>
+                        <span>Cerrar Sesión</span>
                     </a>
                 </li>
             </ul>

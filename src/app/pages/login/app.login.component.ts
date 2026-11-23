@@ -55,6 +55,10 @@ export class AppLoginComponent implements OnInit {
     this.router.navigate([this.config.publicStoreUrl]);
   }
 
+  goToAboutUs() {
+    this.router.navigate([this.config.aboutUsUrl || '/dashboard/comercial-management/about-us']);
+  }
+
   submitForm() {
     const emailInput = (this.form.value.email || '').trim().toLowerCase();
     const passwordInput = this.form.value.password || '';

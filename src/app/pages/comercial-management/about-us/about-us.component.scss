@@ -1,0 +1,746 @@
+/* ESTILOS DE LA LANDING PAGE RE KIDS — QUIÉNES SOMOS */
+
+.rekids-landing-wrapper {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding-bottom: 2rem;
+  color: #3C3C3B;
+}
+
+.rekids-rainbow-bar {
+  height: 7px;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+  background: linear-gradient(
+    90deg,
+    #E30613 0%,
+    #E30613 18%,
+    #009FE3 18%,
+    #009FE3 38%,
+    #F39200 38%,
+    #F39200 58%,
+    #76B82A 58%,
+    #76B82A 78%,
+    #E30613 78%,
+    #009FE3 100%
+  );
+}
+
+/* BANNER DE CABECERA VISTA ADMIN */
+.rekids-admin-header-banner {
+  background: linear-gradient(90deg, #0f172a 0%, #1e3a8a 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 0.85rem 1.35rem;
+  margin-bottom: 1.15rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  border-left: 6px solid #F39200;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.16);
+}
+
+.admin-banner-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F39200;
+  color: #ffffff;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.admin-user-text {
+  font-size: 0.88rem;
+  color: #e2e8f0;
+}
+
+.admin-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-action-btn {
+  background: #009FE3 !important;
+  border-color: #009FE3 !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+}
+
+.admin-store-btn {
+  color: #ffffff !important;
+  border-color: #93c5fd !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+}
+
+/* HERO PRINCIPAL */
+.rekids-landing-hero {
+  background: linear-gradient(135deg, #FFF8F1 0%, #FFF0E0 50%, #E0F4FF 100%);
+  border: 2px solid #BAE6FD;
+  border-radius: 24px;
+  padding: 1.85rem 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 14px 32px -10px rgba(0, 119, 216, 0.14);
+}
+
+.hero-brand-col {
+  display: flex;
+  justify-content: center;
+}
+
+.rekids-logo-frame {
+  background: #ffffff;
+  padding: 0.85rem 1.15rem;
+  border-radius: 22px;
+  border: 3px solid #E0F2FE;
+  box-shadow: 0 10px 24px rgba(0, 119, 216, 0.14);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rekids-logo-frame:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 28px rgba(0, 119, 216, 0.22);
+}
+
+.rekids-hero-logo {
+  height: 125px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.hero-content-col {
+  flex: 1;
+  min-width: 260px;
+}
+
+.hero-top-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.rekids-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0088E8;
+  color: #ffffff;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.rekids-admin-inline-pill {
+  display: inline-flex;
+  align-items: center;
+  background: #E30613;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.rekids-hero-title {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+  line-height: 1.18;
+}
+
+.wordmark-inline .c-red {
+  color: #E30613;
+}
+.wordmark-inline .c-blue {
+  color: #009FE3;
+}
+.wordmark-inline .c-orange {
+  color: #F39200;
+}
+.wordmark-inline .c-green {
+  color: #76B82A;
+}
+
+.admin-header-label {
+  font-size: 1.05rem;
+  color: #0077D8;
+  font-weight: 700;
+  margin-left: 0.45rem;
+}
+
+.rekids-hero-lead {
+  font-size: 1.05rem;
+  color: #334155;
+  font-weight: 600;
+  margin: 0 0 1.15rem 0;
+  max-width: 680px;
+  line-height: 1.5;
+}
+
+.hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.rekids-primary-cta {
+  background: #76B82A !important;
+  border-color: #76B82A !important;
+  border-radius: 12px !important;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  padding: 0.7rem 1.35rem !important;
+  box-shadow: 0 6px 16px rgba(118, 184, 42, 0.28);
+}
+
+.rekids-primary-cta:hover {
+  background: #649f21 !important;
+  border-color: #649f21 !important;
+}
+
+.rekids-secondary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.68rem 1.25rem;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #0077D8;
+  border: 2px solid #009FE3;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.96rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.rekids-secondary-cta:hover {
+  background: #F0F9FF;
+  transform: translateY(-1px);
+}
+
+/* SECCIÓN HISTORIA */
+.rekids-story-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 1.85rem 2rem;
+  border: 1px solid #F1E4D8;
+  box-shadow: 0 6px 20px rgba(60, 60, 59, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.section-badge-row {
+  margin-bottom: 0.75rem;
+}
+
+.section-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 13px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+.pill-orange {
+  background: #F39200;
+}
+.pill-blue {
+  background: #0088E8;
+}
+.pill-green {
+  background: #76B82A;
+}
+.pill-red {
+  background: #E30613;
+}
+
+.section-heading {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+}
+
+.highlight-blue {
+  color: #0088E8;
+}
+
+.story-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.story-p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.68;
+  color: #334155;
+  text-align: justify;
+}
+
+.founder-highlight-box {
+  background: linear-gradient(135deg, #FFF8F1 0%, #F0F9FF 100%);
+  border: 2px solid #BAE6FD;
+  border-radius: 20px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.founder-logo-wrap {
+  display: inline-block;
+  background: #ffffff;
+  padding: 0.5rem 0.85rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0.9rem;
+  cursor: pointer;
+}
+
+.founder-logo {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.founder-quote {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #334155;
+  line-height: 1.55;
+  margin-bottom: 0.85rem;
+}
+
+.founder-meta {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.1rem;
+}
+
+.founder-name {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0077D8;
+}
+
+.founder-role {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.stats-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.55rem;
+}
+
+.stat-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0.6rem 0.4rem;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.stat-scz .stat-num {
+  color: #F39200;
+}
+.stat-lpz .stat-num {
+  color: #009FE3;
+}
+.stat-latam .stat-num {
+  color: #76B82A;
+}
+
+.stat-lbl {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1.2;
+}
+
+/* MISIÓN Y VISIÓN */
+.rekids-mv-grid {
+  margin-bottom: 1.25rem;
+}
+
+.mv-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 1.65rem 1.75rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 22px rgba(0, 119, 216, 0.07);
+}
+
+.mission-card {
+  border: 2px solid #BAE6FD;
+  border-top: 6px solid #009FE3;
+}
+
+.vision-card {
+  border: 2px solid #D9F99D;
+  border-top: 6px solid #76B82A;
+}
+
+.mv-icon-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mv-icon-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.icon-mission {
+  background: #E0F2FE;
+  color: #0077D8;
+}
+
+.icon-vision {
+  background: #ECFCCB;
+  color: #568B1C;
+}
+
+.mv-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #64748b;
+}
+
+.mv-title {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.mv-text {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #334155;
+  margin: 0 0 1.2rem 0;
+}
+
+.mv-pillars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pillar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFF8F1;
+  border: 1px solid #F1E4D8;
+  color: #3C3C3B;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* CATEGORÍAS */
+.rekids-categories-section,
+.rekids-branches-section,
+.rekids-social-hub-section {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 1.85rem 1.75rem;
+  border: 1px solid #F1E4D8;
+  box-shadow: 0 6px 20px rgba(60, 60, 59, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.section-header-center {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.section-header-center h2 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0.55rem 0 0.35rem 0;
+}
+
+.section-header-center p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.96rem;
+}
+
+.category-feature-card {
+  background: #FFFDFB;
+  border: 2px solid #F1E4D8;
+  border-radius: 18px;
+  padding: 1.35rem 1.15rem;
+  text-align: center;
+  height: 100%;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.category-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: #009FE3;
+}
+
+.cat-icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.category-feature-card h4 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.45rem 0;
+  color: #1e293b;
+}
+
+.category-feature-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* SUCURSALES */
+.branch-card {
+  background: #FFFDFB;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 1.4rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.branch-count-badge {
+  display: inline-block;
+  color: #ffffff;
+  font-size: 0.73rem;
+  font-weight: 800;
+  padding: 3px 11px;
+  border-radius: 999px;
+  margin-bottom: 0.65rem;
+}
+
+.branch-top h4 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem 0;
+  color: #1e293b;
+}
+
+.branch-top p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.branch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.branch-store-btn {
+  background: #0088E8 !important;
+  border-color: #0088E8 !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+.branch-wa-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #128C7E;
+  text-decoration: none;
+  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  background: #DCFCE7;
+  transition: background 0.15s ease;
+}
+
+.branch-wa-link:hover {
+  background: #BBF7D0;
+}
+
+/* REDES SOCIALES Y APPS DE CONTACTO */
+.social-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.95rem;
+}
+
+.social-contact-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.95rem 1.15rem;
+  border-radius: 16px;
+  background: #FFFDFB;
+  border: 2px solid #F1E4D8;
+  text-decoration: none;
+  color: #1e293b;
+  transition: all 0.2s ease;
+}
+
+.social-contact-card:hover {
+  transform: translateY(-3px);
+  border-color: #009FE3;
+  box-shadow: 0 10px 22px rgba(0, 159, 227, 0.14);
+}
+
+.social-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.social-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.social-card-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.social-platform-name {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: #1e293b;
+}
+
+.social-city-chip {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #E0F2FE;
+  color: #0077D8;
+}
+
+.social-handle {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.social-ext-icon {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+@media screen and (max-width: 768px) {
+  .rekids-landing-hero {
+    padding: 1.35rem 1.15rem;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .hero-top-pills,
+  .hero-cta-row {
+    justify-content: center;
+  }
+
+  .rekids-hero-title {
+    font-size: 1.75rem;
+  }
+
+  .rekids-story-card,
+  .rekids-categories-section,
+  .rekids-branches-section,
+  .rekids-social-hub-section {
+    padding: 1.25rem 1.1rem;
+  }
+}

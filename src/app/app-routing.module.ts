@@ -53,6 +53,7 @@ import { SupplierComponent } from './pages/management/supplier/supplier.componen
 import { TransferTicketComponent } from './pages/management/transfer-ticket/transfer-ticket.component';
 import { CreateTransferTicketComponent } from './pages/management/transfer-ticket/create-transfer-ticket/create-transfer-ticket.component';
 import { EventsComponent } from './pages/management/events/events.component';
+import { AboutUsComponent } from './pages/comercial-management/about-us/about-us.component';
 
 @NgModule({
     imports: [
@@ -87,7 +88,9 @@ import { EventsComponent } from './pages/management/events/events.component';
                     { path: 'configuration/permission', component: PermissionsComponent, canActivate: [AuthClassGuard], },
                     { path: 'configuration/domain', loadChildren: () => import('./pages/configuration/domain-admin/domain-admin.module').then(m => m.DomainAdminModule), canActivate: [AuthClassGuard] },
 
-                    //Comercial management - Rekids Tienda Online / Punto de Venta Público (SIN NECESIDAD DE LOGUEARSE)
+                    //Comercial management - Rekids Online Store & About Us Landing Page (NO LOGIN REQUIRED)
+                    { path: 'comercial-management/about-us', component: AboutUsComponent },
+                    { path: 'about-us', component: AboutUsComponent },
                     { path: 'comercial-management/sales-panel', component: SalesPanelComponent },
                     { path: 'comercial-management/sales-panel/add-product', component: DetailSelectProductComponent },
                     { path: 'comercial-management/sales-panel/add-client-info', component: ClientInfoComponent },
@@ -130,7 +133,8 @@ import { EventsComponent } from './pages/management/events/events.component';
                 ]
             },
             { path: '', redirectTo: 'dashboard/comercial-management/sales-panel', pathMatch: 'full' },
-            { path: 'tienda', redirectTo: 'dashboard/comercial-management/sales-panel', pathMatch: 'full' },
+            { path: 'store', redirectTo: 'dashboard/comercial-management/sales-panel', pathMatch: 'full' },
+            { path: 'about-us', redirectTo: 'dashboard/comercial-management/about-us', pathMatch: 'full' },
             { path: 'error', component: AppErrorComponent },
             { path: 'access', component: AppAccessdeniedComponent },
             { path: 'notfound', component: AppNotfoundComponent },
