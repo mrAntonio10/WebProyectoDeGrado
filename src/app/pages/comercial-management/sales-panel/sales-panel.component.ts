@@ -143,6 +143,10 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       { label: 'Catálogo Infantil' }
     ]);
 
+    // Limpiar cualquier caché antiguo de productos mockeados en el navegador
+    localStorage.removeItem('rekids_garments_state');
+    localStorage.removeItem('rekids_events_state');
+
     this.isLoggedInAdmin = !!localStorage.getItem('token');
     this.productName = sessionStorage.getItem('pName');
     this.clientName = sessionStorage.getItem('clientName') || '';
@@ -153,6 +157,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 
     this.buildPageStructure();
     this.getProductsFromOrderPageableData();
+    this.loadAuthorizedBranches();
 
     if (this.selectedRegion) {
       this.loadRegionEventsAndGarments(this.selectedRegion);
@@ -202,6 +207,32 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     return found ? found.name : regionCode;
   }
 
+  private loadAuthorizedBranches() {
+    this.productService.getRekidsBranches().subscribe({
+      next: (res) => {
+        const items: any[] = res?.data || res?.items || [];
+        if (items.length > 0) {
+          this.regions = items.map(b => {
+            const isLaPaz =
+              b.region === 'LA_PAZ' ||
+              b.id === REKIDS_BRANCH_UUIDS.LA_PAZ ||
+              (b.name || '').toUpperCase().includes('PAZ');
+            const code: 'LA_PAZ' | 'SANTA_CRUZ' = isLaPaz ? 'LA_PAZ' : 'SANTA_CRUZ';
+            return {
+              code,
+              branchId: b.id,
+              name: isLaPaz ? 'La Paz' : 'Santa Cruz',
+              city: isLaPaz ? 'La Paz' : 'Santa Cruz de la Sierra',
+              address: isLaPaz ? 'La Paz, Bolivia' : 'Santa Cruz de la Sierra, Bolivia',
+              icon: isLaPaz ? 'pi pi-compass' : 'pi pi-sun',
+              badge: 'Tienda Online'
+            };
+          });
+        }
+      }
+    });
+  }
+
   getActiveBranchUuid(regionCode: string = this.selectedRegion): string {
     return regionCode === 'LA_PAZ' ? REKIDS_BRANCH_UUIDS.LA_PAZ : REKIDS_BRANCH_UUIDS.SANTA_CRUZ;
   }
@@ -238,9 +269,25 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Cargar lote base de la región para contadores y fallback local
-    this.regionGarments = this.getMockGarmentsForRegion(regionCode);
+    // Consultar prendas reales paginadas desde el backend
+    this.regionGarments = [];
     this.loadPaginatedCatalogForRegion(0);
+    this.loadRegionSummaryCounts(regionCode);
+  }
+
+  /**
+   * Obtiene los contadores reales de disponibles / no disponibles de la sucursal activa
+   */
+  private loadRegionSummaryCounts(regionCode: string) {
+    this.productService.getProductsByRegion(regionCode, { page: 0, size: 100 }).subscribe({
+      next: (res) => {
+        const allRegionItems: any[] = res?.data?.content || (Array.isArray(res?.data) ? res.data : []);
+        this.regionGarments = allRegionItems.map((g: any) => this.enrichGarmentImage(g));
+      },
+      error: () => {
+        this.regionGarments = [];
+      }
+    });
   }
 
   /**
@@ -274,24 +321,19 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
         const apiGarments: any[] = pagedData?.content || (Array.isArray(pagedData) ? pagedData : []);
         const pageMeta = pagedData?.page;
 
-        if (apiGarments.length > 0 || (pageMeta && pageMeta.totalElements === 0)) {
-          this.filteredGarments = apiGarments.map((g: any) => this.enrichGarmentImage(g));
-          this.catalogTotalElements =
-            pageMeta?.totalElements !== undefined ? Number(pageMeta.totalElements) : this.filteredGarments.length;
-          this.catalogTotalPages =
-            pageMeta?.totalPages !== undefined
-              ? Math.max(1, Number(pageMeta.totalPages))
-              : Math.max(1, Math.ceil(this.catalogTotalElements / this.catalogPageSize));
-          if (this.catalogPage === 0 && !this.hasActiveCatalogFilters()) {
-            this.regionGarments = [...this.filteredGarments];
-          }
-        } else {
-          this.applyClientFallbackPagination();
-        }
+        this.filteredGarments = apiGarments.map((g: any) => this.enrichGarmentImage(g));
+        this.catalogTotalElements =
+          pageMeta?.totalElements !== undefined ? Number(pageMeta.totalElements) : this.filteredGarments.length;
+        this.catalogTotalPages =
+          pageMeta?.totalPages !== undefined
+            ? Math.max(1, Number(pageMeta.totalPages))
+            : Math.max(1, Math.ceil(Math.max(1, this.catalogTotalElements) / this.catalogPageSize));
       },
       error: () => {
         this.isLoadingCatalog = false;
-        this.applyClientFallbackPagination();
+        this.filteredGarments = [];
+        this.catalogTotalElements = 0;
+        this.catalogTotalPages = 1;
       }
     });
   }

@@ -145,6 +145,8 @@ export class EventsComponent implements OnInit {
   ngOnInit(): void {
     const email = localStorage.getItem('email') || this.config.defaultAdminEmail;
     this.currentAdminLabel = `ADMIN (${email})`;
+    localStorage.removeItem('rekids_garments_state');
+    localStorage.removeItem('rekids_events_state');
     this.rekidsCatalogVM.loadCatalogSeparatedByBranches().subscribe(catalogs => {
       this.branchCatalogs = catalogs;
       for (const cat of catalogs) {
@@ -271,34 +273,18 @@ export class EventsComponent implements OnInit {
   }
 
   /**
-   * Carga las prendas sincronizadas (desde API o estado sincronizado en localStorage / config.ts)
+   * Carga las prendas sincronizadas desde el backend para ambas regiones
    */
   loadSynchronizedGarments() {
-    const stored = localStorage.getItem('rekids_garments_state');
-    if (stored) {
-      try {
-        this.allGarments = JSON.parse(stored);
-      } catch (e) {
-        this.allGarments = [...REKIDS_MOCK_GARMENTS];
-      }
-    } else {
-      this.allGarments = [...REKIDS_MOCK_GARMENTS];
-    }
+    this.allGarments = [];
 
-    // Intentar traer desde backend para ambas regiones
-    this.productService.getProductsByRegion('SANTA_CRUZ', { page: 0, size: 100 }).subscribe({
-      next: (sczRes) => {
-        const sczList = sczRes?.data?.content || sczRes?.data || [];
-        this.productService.getProductsByRegion('LA_PAZ', { page: 0, size: 100 }).subscribe({
-          next: (lpzRes) => {
-            const lpzList = lpzRes?.data?.content || lpzRes?.data || [];
-            const combined = [...sczList, ...lpzList];
-            if (combined.length > 0) {
-              this.allGarments = combined;
-              localStorage.setItem('rekids_garments_state', JSON.stringify(this.allGarments));
-            }
-          }
-        });
+    this.productService.getProductsByRegion('TODOS', { page: 0, size: 100 }).subscribe({
+      next: (res) => {
+        const list = res?.data?.content || (Array.isArray(res?.data) ? res.data : []);
+        this.allGarments = list;
+      },
+      error: () => {
+        this.allGarments = [];
       }
     });
   }

@@ -64,10 +64,6 @@
                             <span class="region-delivery-tag">{{ reg.badge }}</span>
                         </div>
                         <p class="region-address">{{ reg.address }}</p>
-                        <small style="color: #64748b; font-size: 0.75rem; display: block; margin-top: 2px;">
-                            <i class="pi pi-sitemap" style="font-size: 0.72rem;"></i>
-                            Sucursal ID: <code>{{ reg.branchId }}</code>
-                        </small>
                     </div>
                     <div class="region-check">
                         <span *ngIf="selectedRegion === reg.code" class="selected-city-chip">
@@ -97,16 +93,16 @@
         <div class="col-12 lg:col-8">
             <div class="rekids-catalog-card">
 
-                <!-- Banner MVVM de Sucursal Activa (ReKids API Sandbox) -->
+                <!-- Banner de Tienda Activa -->
                 <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 0.85rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
                     <div style="display: flex; align-items: center; gap: 0.65rem;">
                         <i class="pi pi-building" style="color: #0284c7; font-size: 1.2rem;"></i>
                         <div>
                             <div style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">
-                                {{ getActiveBranchCatalog()?.branch?.name || ('Sucursal ReKids ' + getRegionLabel(selectedRegion)) }}
+                                Tienda ReKids {{ getRegionLabel(selectedRegion) }}
                             </div>
                             <small style="color: #64748b; font-size: 0.78rem;">
-                                Catálogo sincronizado por sucursal •
+                                Catálogo disponible en tu ciudad •
                                 <strong style="color: #16a34a;">{{ getAvailableRegionGarmentsCount() }} disponibles</strong> •
                                 <strong style="color: #dc2626;">{{ getUnavailableRegionGarmentsCount() }} vendidas/reservadas</strong>
                             </small>
@@ -147,7 +143,7 @@
                         <span class="p-input-icon-left" style="width: 100%;">
                             <i class="pi pi-search"></i>
                             <input type="text" pInputText [(ngModel)]="searchText" (ngModelChange)="applyFilters()"
-                                placeholder="Buscar por nombre, código (SKU / ant.), talla o marca..." class="rekids-search-input" />
+                                placeholder="Buscar prenda por nombre, categoría, talla o marca..." class="rekids-search-input" />
                         </span>
                     </div>
                 </div>
@@ -240,11 +236,9 @@
                                         <span class="spec-chip" *ngIf="g.gender">{{ g.gender }}</span>
                                     </div>
 
-                                    <!-- Código actual y legacy_code (si existe en ReKids Sandbox) -->
+                                    <!-- Categoría comercial -->
                                     <div class="product-detail-code">
-                                        Código: <strong>{{ g.sku }}</strong>
-                                        <span *ngIf="g.legacyCode"> • Cód. ant: {{ g.legacyCode }}</span>
-                                        • {{ g.category }}
+                                        Categoría: <strong>{{ g.category }}</strong>
                                     </div>
                                 </div>
 
@@ -261,7 +255,7 @@
                                         <button pButton pRipple type="button"
                                             icon="pi pi-eye"
                                             class="p-button-outlined p-button-info p-button-sm"
-                                            pTooltip="Ver ficha comercial ReKids (/integrations/v1/products/{id})"
+                                            pTooltip="Ver detalle de la prenda"
                                             (click)="openOfficialProductSheet(g)">
                                         </button>
 
@@ -340,7 +334,7 @@
                         <img [src]="item.photo || config.defaultFallbackImage" (error)="onImageError($event)" class="cart-item-thumb" />
                         <div class="cart-item-details">
                             <div class="cart-item-title">{{ item.productName }}</div>
-                            <div class="cart-item-meta">Detalle: {{ item.sku }} • {{ item.unitaryCost }} BOB c/u</div>
+                            <div class="cart-item-meta">Precio unitario: {{ item.unitaryCost }} BOB c/u</div>
                             <div class="cart-item-controls">
                                 <div class="qty-stepper">
                                     <button type="button" class="qty-btn" (click)="updateCartItemQuantity(item, -1)">−</button>
@@ -402,10 +396,10 @@
     </div>
 </div>
 
-<!-- MODAL FICHA COMERCIAL OFICIAL REKIDS (/integrations/v1/products/{product_id}) -->
+<!-- MODAL DETALLE DE LA PRENDA (SIN IDs INTERNOS NI CREDENCIALES) -->
 <p-dialog [(visible)]="displayProductDetailDialog"
-    header="Ficha Comercial Publicada — ReKids API (/integrations/v1/products/{id})"
-    [modal]="true" [style]="{width: '520px', maxWidth: '95vw'}">
+    header="Detalle de la Prenda — RE KIDS"
+    [modal]="true" [style]="{width: '480px', maxWidth: '95vw'}">
     <ng-template pTemplate="content">
         <div *ngIf="selectedProductDetail" style="display: flex; flex-direction: column; gap: 0.75rem;">
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -413,7 +407,7 @@
                     style="width: 96px; height: 96px; border-radius: 12px; object-fit: cover; border: 1px solid #e2e8f0;" />
                 <div>
                     <span class="p-tag" [ngClass]="selectedProductDetail.isAvailable ? 'p-tag-success' : 'p-tag-danger'">
-                        {{ selectedProductDetail.availability }}
+                        {{ selectedProductDetail.isAvailable ? 'Disponible' : 'No disponible' }}
                     </span>
                     <h4 style="margin: 0.35rem 0 0.2rem 0; color: #0f172a;">{{ selectedProductDetail.name }}</h4>
                     <div style="font-size: 1.15rem; font-weight: 700; color: #16a34a;">
@@ -422,14 +416,12 @@
                 </div>
             </div>
 
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem; font-size: 0.85rem; line-height: 1.65;">
-                <div><strong>ID Producto (UUID):</strong> <code>{{ selectedProductDetail.id }}</code></div>
-                <div><strong>Código actual (code):</strong> <span class="p-tag p-tag-warning">{{ selectedProductDetail.code }}</span></div>
-                <div><strong>Código anterior (legacy_code):</strong> <code>{{ selectedProductDetail.legacyCode || 'N/A' }}</code></div>
-                <div><strong>Sucursal (branch_id):</strong> <code>{{ selectedProductDetail.branchId }}</code></div>
-                <div><strong>Categoría / Talla:</strong> {{ selectedProductDetail.category }} • Talla {{ selectedProductDetail.size || 'Única' }}</div>
-                <div><strong>Marca / Estado (condition):</strong> {{ selectedProductDetail.brand || 'ReKids' }} • {{ selectedProductDetail.condition }}</div>
-                <div><strong>Versión / Actualizado:</strong> v{{ selectedProductDetail.version }} • {{ selectedProductDetail.updatedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem; font-size: 0.88rem; line-height: 1.7;">
+                <div><strong>Tienda:</strong> Tienda {{ getRegionLabel(selectedRegion) }}</div>
+                <div><strong>Categoría:</strong> {{ selectedProductDetail.category }}</div>
+                <div><strong>Talla:</strong> {{ selectedProductDetail.size || 'Única' }}</div>
+                <div><strong>Marca:</strong> {{ selectedProductDetail.brand || 'ReKids' }}</div>
+                <div><strong>Estado:</strong> {{ selectedProductDetail.condition }}</div>
             </div>
         </div>
     </ng-template>

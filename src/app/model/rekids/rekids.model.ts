@@ -169,7 +169,7 @@ export class RekidsProductModel {
       isNew: true,
       updatedAt: this.updatedAt,
       version: this.version,
-      eventNames: ['Novedades', 'Sandbox ReKids']
+      eventNames: ['Novedades']
     };
   }
 }

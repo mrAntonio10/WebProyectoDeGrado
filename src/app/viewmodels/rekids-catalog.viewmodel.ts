@@ -240,92 +240,11 @@ export class RekidsCatalogViewModel {
   }
 
   private getFallbackBranchDtos(): IRekidsSandboxBranchDto[] {
-    return [
-      {
-        id: REKIDS_BRANCH_UUIDS.LA_PAZ,
-        name: 'DEMO La Paz — datos ficticios',
-        region: 'LA_PAZ'
-      },
-      {
-        id: REKIDS_BRANCH_UUIDS.SANTA_CRUZ,
-        name: 'DEMO Santa Cruz — datos ficticios',
-        region: 'SANTA_CRUZ'
-      }
-    ];
+    return [];
   }
 
   private getFallbackSandboxProducts(): IRekidsSandboxProductDto[] {
-    const nowIso = new Date().toISOString();
-    return [
-      {
-        id: '20000000-0000-4000-8000-000000000001',
-        code: 'DEMO-LP-001',
-        legacy_code: 'DEMO-ANT-01',
-        branch_id: REKIDS_BRANCH_UUIDS.LA_PAZ,
-        name: 'DEMO Vestido azul',
-        category: 'Vestidos',
-        size: '6',
-        brand: 'Marca ficticia',
-        condition: 'Excelente',
-        price: '55.00',
-        currency: 'BOB',
-        availability: 'available',
-        photos: [],
-        updated_at: nowIso,
-        version: 1
-      },
-      {
-        id: '20000000-0000-4000-8000-000000000002',
-        code: 'DEMO-LP-002',
-        legacy_code: 'DEMO-ANT-01',
-        branch_id: REKIDS_BRANCH_UUIDS.LA_PAZ,
-        name: 'DEMO Polera vendida',
-        category: 'Poleras',
-        size: '4',
-        brand: 'Marca ficticia',
-        condition: 'Bueno',
-        price: '35.00',
-        currency: 'BOB',
-        availability: 'unavailable',
-        photos: [],
-        updated_at: nowIso,
-        version: 1
-      },
-      {
-        id: '20000000-0000-4000-8000-000000000003',
-        code: 'DEMO-SC-001',
-        legacy_code: null,
-        branch_id: REKIDS_BRANCH_UUIDS.SANTA_CRUZ,
-        name: 'DEMO Zapatos',
-        category: 'Zapatos',
-        size: '28',
-        brand: null,
-        condition: 'Excelente',
-        price: '40.00',
-        currency: 'BOB',
-        availability: 'available',
-        photos: [],
-        updated_at: nowIso,
-        version: 1
-      },
-      {
-        id: '20000000-0000-4000-8000-000000000004',
-        code: 'DEMO-SC-002',
-        legacy_code: null,
-        branch_id: REKIDS_BRANCH_UUIDS.SANTA_CRUZ,
-        name: 'DEMO Abrigo reservado',
-        category: 'Abrigos',
-        size: '8',
-        brand: null,
-        condition: 'Bueno',
-        price: '65.00',
-        currency: 'BOB',
-        availability: 'unavailable',
-        photos: [],
-        updated_at: nowIso,
-        version: 1
-      }
-    ];
+    return [];
   }
 
   private buildFallbackPaginatedBranchResponse(

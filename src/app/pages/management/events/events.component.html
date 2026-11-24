@@ -52,20 +52,20 @@
         </div>
     </div>
 
-    <!-- CATÁLOGO REKIDS API SANDBOX SEPARADO POR SUCURSALES (MVVM + FEIGN CLIENT) -->
+    <!-- CATÁLOGO REKIDS SEPARADO POR SUCURSALES -->
     <div class="col-12" *ngIf="branchCatalogs && branchCatalogs.length > 0">
         <div class="card">
             <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                 <div>
                     <h5 style="margin: 0; color: #0f172a;">
                         <i class="pi pi-sitemap" style="color: #0284c7; margin-right: 8px;"></i>
-                        Catálogo ReKids API Sandbox v1 — Productos Separados por Sucursal (FeignClient + MVVM)
+                        Catálogo ReKids — Prendas por Sucursal
                     </h5>
                     <small style="color: #64748b;">
-                        Datos en vivo desde <code>/integrations/v1/branches</code> y <code>/integrations/v1/products?branch_id=UUID</code> conectados a Render PostgreSQL.
+                        Consulta paginada por sucursal en tiempo real.
                     </small>
                 </div>
-                <span class="p-tag p-tag-info">Solo Lectura Comercial • 2 Sucursales Autorizadas</span>
+                <span class="p-tag p-tag-info">Catálogo Oficial • Sucursales Activas</span>
             </div>
 
             <div class="grid">
@@ -77,10 +77,10 @@
                                 <div>
                                     <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a;">
                                         <i class="pi pi-building" style="color: #0284c7; margin-right: 6px;"></i>
-                                        {{ catalog.branch.name }}
+                                        Tienda ReKids {{ catalog.branch.cityLabel }}
                                     </div>
                                     <small style="color: #64748b;">
-                                        Branch UUID: <code>{{ catalog.branch.id }}</code> • Región: <strong>{{ catalog.branch.cityLabel }}</strong>
+                                        Región: <strong>{{ catalog.branch.cityLabel }}</strong>
                                     </small>
                                 </div>
                                 <div style="display: flex; gap: 0.4rem;">
@@ -89,14 +89,14 @@
                                 </div>
                             </div>
 
-                            <!-- FILTROS Y LÍMITE DE PÁGINA POR SUCURSAL (/integrations/v1/products?branch_id=UUID&limit=...&cursor=...) -->
+                            <!-- FILTROS Y LÍMITE DE PÁGINA POR SUCURSAL -->
                             <div class="grid p-fluid" style="margin: 0 0 0.65rem 0; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.45rem;">
                                 <div class="col-12 sm:col-5" style="padding: 0.25rem;">
                                     <span class="p-input-icon-left">
                                         <i class="pi pi-search"></i>
                                         <input type="text" pInputText [(ngModel)]="bState.filter"
                                             (ngModelChange)="onBranchFilterChange(catalog.branch.id)"
-                                            placeholder="Código, cód. ant., prenda o talla..." />
+                                            placeholder="Código, prenda o talla..." />
                                     </span>
                                 </div>
                                 <div class="col-6 sm:col-4" style="padding: 0.25rem;">
@@ -115,43 +115,38 @@
                                 <ng-template pTemplate="header">
                                     <tr>
                                         <th>Código</th>
-                                        <th>Cód. Ant.</th>
                                         <th>Prenda</th>
                                         <th>Talla / Estado</th>
                                         <th>Disponibilidad</th>
                                         <th>Precio</th>
-                                        <th style="width: 3.5rem;">Ficha</th>
+                                        <th style="width: 3.5rem;">Detalle</th>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="body" let-prod>
                                     <tr>
                                         <td><span class="p-tag p-tag-warning">{{ prod.code }}</span></td>
                                         <td>
-                                            <code *ngIf="prod.legacyCode" style="font-size: 0.78rem;">{{ prod.legacyCode }}</code>
-                                            <span *ngIf="!prod.legacyCode" style="color: #94a3b8;">-</span>
-                                        </td>
-                                        <td>
                                             <strong>{{ prod.name }}</strong>
-                                            <div style="font-size: 0.75rem; color: #64748b;">{{ prod.category }} • {{ prod.brand || 'Sin marca' }}</div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">{{ prod.category }} • {{ prod.brand || 'ReKids' }}</div>
                                         </td>
                                         <td>Talla {{ prod.size || 'Única' }} • {{ prod.condition }}</td>
                                         <td>
                                             <span class="p-tag" [ngClass]="prod.isAvailable ? 'p-tag-success' : 'p-tag-danger'">
-                                                {{ prod.isAvailable ? 'available (Stock: 1)' : 'unavailable (Stock: 0)' }}
+                                                {{ prod.isAvailable ? 'Disponible' : 'No disponible' }}
                                             </span>
                                         </td>
                                         <td><strong>{{ prod.formattedPrice }}</strong></td>
                                         <td>
                                             <button pButton type="button" icon="pi pi-eye"
                                                 class="p-button-rounded p-button-text p-button-info p-button-sm"
-                                                pTooltip="Consultar GET /integrations/v1/products/{product_id}"
+                                                pTooltip="Ver detalle de la prenda"
                                                 (click)="openSandboxProductSheet(prod)"></button>
                                         </td>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="empty">
                                     <tr>
-                                        <td colspan="7" style="text-align: center; padding: 1rem; color: #64748b;">
+                                        <td colspan="6" style="text-align: center; padding: 1rem; color: #64748b;">
                                             No hay prendas en esta página con el filtro actual.
                                         </td>
                                     </tr>
@@ -159,22 +154,18 @@
                             </p-table>
                         </div>
 
-                        <!-- BARRA DE PAGINACIÓN POR CURSOR (next_cursor) DEL API DEL TERCERO -->
+                        <!-- BARRA DE PAGINACIÓN DE LA SUCURSAL -->
                         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.65rem; border-top: 1px solid #e2e8f0; font-size: 0.8rem;">
                             <div style="color: #475569;">
                                 Pág. <strong>{{ bState.page + 1 }}</strong> de <strong>{{ bState.totalPages }}</strong>
-                                ({{ bState.products.length }} de {{ bState.totalElements }} ítems • limit={{ bState.limit }})
-                                <span *ngIf="bState.nextCursor" class="p-tag p-tag-secondary" style="margin-left: 6px; font-size: 0.7rem;"
-                                    [pTooltip]="'next_cursor: ' + bState.nextCursor">
-                                    next_cursor activo
-                                </span>
+                                ({{ bState.products.length }} de {{ bState.totalElements }} prendas)
                             </div>
                             <div style="display: flex; gap: 0.4rem;">
                                 <button pButton type="button" label="Anterior" icon="pi pi-chevron-left"
                                     class="p-button-outlined p-button-secondary p-button-sm"
                                     [disabled]="bState.page <= 0 || bState.loading"
                                     (click)="prevBranchCursorPage(catalog.branch.id)"></button>
-                                <button pButton type="button" label="Siguiente (cursor)" icon="pi pi-chevron-right" iconPos="right"
+                                <button pButton type="button" label="Siguiente" icon="pi pi-chevron-right" iconPos="right"
                                     class="p-button-outlined p-button-info p-button-sm"
                                     [disabled]="(!bState.nextCursor && bState.page + 1 >= bState.totalPages) || bState.loading"
                                     (click)="nextBranchCursorPage(catalog.branch.id)"></button>
@@ -564,10 +555,10 @@
     </ng-template>
 </p-dialog>
 
-<!-- MODAL 3: FICHA COMERCIAL INDIVIDUAL REKIDS (/integrations/v1/products/{product_id}) -->
+<!-- MODAL 3: DETALLE DE PRENDA (SIN IDs INTERNOS NI CREDENCIALES) -->
 <p-dialog [(visible)]="displaySandboxProductDialog"
-    header="Ficha Comercial Publicada — GET /integrations/v1/products/{product_id}"
-    [modal]="true" [style]="{width: '520px', maxWidth: '95vw'}">
+    header="Detalle de la Prenda — RE KIDS"
+    [modal]="true" [style]="{width: '480px', maxWidth: '95vw'}">
     <ng-template pTemplate="content">
         <div *ngIf="selectedSandboxProduct" style="display: flex; flex-direction: column; gap: 0.75rem;">
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -575,7 +566,7 @@
                     style="width: 92px; height: 92px; border-radius: 10px; object-fit: cover; border: 1px solid #e2e8f0;" />
                 <div>
                     <span class="p-tag" [ngClass]="selectedSandboxProduct.isAvailable ? 'p-tag-success' : 'p-tag-danger'">
-                        {{ selectedSandboxProduct.availability }}
+                        {{ selectedSandboxProduct.isAvailable ? 'Disponible' : 'No disponible' }}
                     </span>
                     <h4 style="margin: 0.35rem 0 0.2rem 0; color: #0f172a;">{{ selectedSandboxProduct.name }}</h4>
                     <div style="font-size: 1.15rem; font-weight: 700; color: #16a34a;">
@@ -584,14 +575,12 @@
                 </div>
             </div>
 
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem; font-size: 0.85rem; line-height: 1.65;">
-                <div><strong>UUID Producto (id):</strong> <code>{{ selectedSandboxProduct.id }}</code></div>
-                <div><strong>Código actual (code):</strong> <span class="p-tag p-tag-warning">{{ selectedSandboxProduct.code }}</span></div>
-                <div><strong>Código anterior (legacy_code):</strong> <code>{{ selectedSandboxProduct.legacyCode || 'null' }}</code></div>
-                <div><strong>Sucursal UUID (branch_id):</strong> <code>{{ selectedSandboxProduct.branchId }}</code></div>
-                <div><strong>Categoría / Talla:</strong> {{ selectedSandboxProduct.category }} • Talla {{ selectedSandboxProduct.size || 'Única' }}</div>
-                <div><strong>Marca / Estado (condition):</strong> {{ selectedSandboxProduct.brand || 'null' }} • {{ selectedSandboxProduct.condition }}</div>
-                <div><strong>Versión / Actualizado:</strong> v{{ selectedSandboxProduct.version }} • {{ selectedSandboxProduct.updatedAt | date:'dd/MM/yyyy HH:mm:ss' }}</div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem; font-size: 0.88rem; line-height: 1.7;">
+                <div><strong>Código de prenda:</strong> <span class="p-tag p-tag-warning">{{ selectedSandboxProduct.code }}</span></div>
+                <div><strong>Categoría:</strong> {{ selectedSandboxProduct.category }}</div>
+                <div><strong>Talla:</strong> {{ selectedSandboxProduct.size || 'Única' }}</div>
+                <div><strong>Marca:</strong> {{ selectedSandboxProduct.brand || 'ReKids' }}</div>
+                <div><strong>Estado:</strong> {{ selectedSandboxProduct.condition }}</div>
             </div>
         </div>
     </ng-template>
