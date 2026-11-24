@@ -4,6 +4,7 @@ import { IRekidsGarment } from 'src/app/model/product/product';
 
 export interface IRegionOption {
   code: 'SANTA_CRUZ' | 'LA_PAZ';
+  branchId: string;
   name: string;
   city: string;
   address: string;
@@ -20,24 +21,148 @@ export const REKIDS_SALES_CONFIG = {
   regions: [
     {
       code: 'SANTA_CRUZ',
+      branchId: '10000000-0000-4000-8000-000000000002',
       name: 'Santa Cruz',
-      city: 'Santa Cruz de la Sierra',
+      city: 'Santa Cruz de la Sierra (DEMO Sucursal SCZ)',
       address: 'Envíos rápidos en todo Santa Cruz • Equipetrol Norte',
       icon: 'pi pi-sun',
-      badge: 'Envío Hoy'
+      badge: 'Sucursal Autorizada'
     },
     {
       code: 'LA_PAZ',
+      branchId: '10000000-0000-4000-8000-000000000001',
       name: 'La Paz',
-      city: 'Nuestra Señora de La Paz',
+      city: 'Nuestra Señora de La Paz (DEMO Sucursal LPZ)',
       address: 'Envíos rápidos en La Paz y Zona Sur • Calacoto',
       icon: 'pi pi-compass',
-      badge: 'Envío Hoy'
+      badge: 'Sucursal Autorizada'
     }
   ] as IRegionOption[]
 };
 
 export const REKIDS_MOCK_GARMENTS: IRekidsGarment[] = [
+  // ================= PRENDAS SANDBOX REKIDS v0.3.0 (SANTA CRUZ - Branch 10000000-0000-4000-8000-000000000002) =================
+  {
+    id: '20000000-0000-4000-8000-000000000003',
+    externalId: '20000000-0000-4000-8000-000000000003',
+    sku: 'DEMO-SC-001',
+    legacyCode: null,
+    branchId: '10000000-0000-4000-8000-000000000002',
+    branchName: 'DEMO Santa Cruz — datos ficticios',
+    name: 'DEMO Zapatos',
+    productName: 'DEMO Zapatos',
+    category: 'Zapatos',
+    size: '28',
+    color: 'Estado: Excelente',
+    gender: 'Unisex',
+    brand: 'ReKids Sandbox',
+    condition: 'Excelente',
+    currency: 'BOB',
+    availability: 'available',
+    purchasePrice: 40,
+    salePrice: 40,
+    unitaryCost: 40,
+    discountType: 'NONE',
+    discountValue: 0,
+    finalPrice: 40,
+    region: 'SANTA_CRUZ',
+    stock: 1,
+    photo: 'https://images.unsplash.com/photo-1514989940723-e8e51635b782?auto=format&fit=crop&w=600&q=80',
+    isNew: true,
+    version: 1,
+    eventNames: ['Novedades', 'Sandbox ReKids']
+  },
+  {
+    id: '20000000-0000-4000-8000-000000000004',
+    externalId: '20000000-0000-4000-8000-000000000004',
+    sku: 'DEMO-SC-002',
+    legacyCode: null,
+    branchId: '10000000-0000-4000-8000-000000000002',
+    branchName: 'DEMO Santa Cruz — datos ficticios',
+    name: 'DEMO Abrigo reservado',
+    productName: 'DEMO Abrigo reservado',
+    category: 'Abrigos',
+    size: '8',
+    color: 'Estado: Bueno (Reservado)',
+    gender: 'Unisex',
+    brand: 'ReKids Sandbox',
+    condition: 'Bueno',
+    currency: 'BOB',
+    availability: 'unavailable',
+    purchasePrice: 65,
+    salePrice: 65,
+    unitaryCost: 65,
+    discountType: 'NONE',
+    discountValue: 0,
+    finalPrice: 65,
+    region: 'SANTA_CRUZ',
+    stock: 0,
+    photo: 'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=600&q=80',
+    isNew: true,
+    version: 1,
+    eventNames: ['Novedades', 'Sandbox ReKids']
+  },
+  // ================= PRENDAS SANDBOX REKIDS v0.3.0 (LA PAZ - Branch 10000000-0000-4000-8000-000000000001) =================
+  {
+    id: '20000000-0000-4000-8000-000000000001',
+    externalId: '20000000-0000-4000-8000-000000000001',
+    sku: 'DEMO-LP-001',
+    legacyCode: 'DEMO-ANT-01',
+    branchId: '10000000-0000-4000-8000-000000000001',
+    branchName: 'DEMO La Paz — datos ficticios',
+    name: 'DEMO Vestido azul',
+    productName: 'DEMO Vestido azul',
+    category: 'Vestidos',
+    size: '6',
+    color: 'Estado: Excelente',
+    gender: 'Niña',
+    brand: 'Marca ficticia',
+    condition: 'Excelente',
+    currency: 'BOB',
+    availability: 'available',
+    purchasePrice: 55,
+    salePrice: 55,
+    unitaryCost: 55,
+    discountType: 'NONE',
+    discountValue: 0,
+    finalPrice: 55,
+    region: 'LA_PAZ',
+    stock: 1,
+    photo: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=600&q=80',
+    isNew: true,
+    version: 1,
+    eventNames: ['Novedades', 'Sandbox ReKids']
+  },
+  {
+    id: '20000000-0000-4000-8000-000000000002',
+    externalId: '20000000-0000-4000-8000-000000000002',
+    sku: 'DEMO-LP-002',
+    legacyCode: 'DEMO-ANT-01',
+    branchId: '10000000-0000-4000-8000-000000000001',
+    branchName: 'DEMO La Paz — datos ficticios',
+    name: 'DEMO Polera vendida',
+    productName: 'DEMO Polera vendida',
+    category: 'Poleras',
+    size: '4',
+    color: 'Estado: Bueno (Vendida)',
+    gender: 'Unisex',
+    brand: 'Marca ficticia',
+    condition: 'Bueno',
+    currency: 'BOB',
+    availability: 'unavailable',
+    purchasePrice: 35,
+    salePrice: 35,
+    unitaryCost: 35,
+    discountType: 'NONE',
+    discountValue: 0,
+    finalPrice: 35,
+    region: 'LA_PAZ',
+    stock: 0,
+    photo: 'https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?auto=format&fit=crop&w=600&q=80',
+    isNew: true,
+    version: 1,
+    eventNames: ['Novedades', 'Sandbox ReKids']
+  },
   // ================= SANTA CRUZ =================
   {
     id: 'garment-scz-001',

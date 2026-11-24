@@ -5,6 +5,9 @@ import { IEventProduct, IStoreEvent } from 'src/app/model/event/event';
 import { IRekidsGarment } from 'src/app/model/product/product';
 import { StoreEventService } from 'src/app/services/event/store-event.service';
 import { ProductService } from 'src/app/services/product/product.service';
+import { RekidsBranchCatalogModel, RekidsProductModel } from 'src/app/model/rekids/rekids.model';
+import { REKIDS_BRANCH_UUIDS } from 'src/app/model/rekids/rekids.dto';
+import { RekidsCatalogViewModel } from 'src/app/viewmodels/rekids-catalog.viewmodel';
 import { REKIDS_MOCK_GARMENTS } from '../../comercial-management/sales-panel/config';
 import {
   ADMIN_EVENTS_CONFIG,
@@ -24,11 +27,79 @@ export class EventsComponent implements OnInit {
   events: IStoreEvent[] = [];
   selectedEvent: IStoreEvent | null = null;
   allGarments: IRekidsGarment[] = [];
+  branchCatalogs: RekidsBranchCatalogModel[] = [];
 
   selectedRegionFilter: string = '';
   isSyncing: boolean = false;
   lastSyncSummary: string = '';
   currentAdminLabel: string = '';
+
+  // Estado de paginación (cursor / next_cursor + limit + filtros) por cada sucursal ReKids Sandbox
+  branchPaginationState: Record<
+    string,
+    {
+      products: RekidsProductModel[];
+      limit: number;
+      page: number;
+      totalElements: number;
+      totalPages: number;
+      availableCount: number;
+      unavailableCount: number;
+      currentCursor: string | null;
+      nextCursor: string | null;
+      cursorHistory: (string | null)[];
+      filter: string;
+      availability: string;
+      category: string;
+      loading: boolean;
+    }
+  > = {};
+
+  branchLimitOptions = [
+    { label: '1 por pág. (Probar Cursor)', value: 1 },
+    { label: '2 por pág.', value: 2 },
+    { label: '5 por pág.', value: 5 },
+    { label: '10 por pág.', value: 10 },
+    { label: '25 por pág.', value: 25 },
+    { label: '50 por pág. (Default API)', value: 50 }
+  ];
+
+  availabilityFilterOptions = [
+    { label: 'Todas', value: '' },
+    { label: 'Disponibles (available)', value: 'available' },
+    { label: 'No disponibles (unavailable)', value: 'unavailable' }
+  ];
+
+  categoryFilterOptions = [
+    { label: 'Todas las Categorías', value: '' },
+    { label: 'Vestidos', value: 'Vestidos' },
+    { label: 'Poleras', value: 'Poleras' },
+    { label: 'Conjuntos', value: 'Conjuntos' },
+    { label: 'Pantalones y Shorts', value: 'Pantalones' },
+    { label: 'Abrigos y Chamarras', value: 'Abrigos' },
+    { label: 'Chompas y Polerones', value: 'Chompas' },
+    { label: 'Zapatos / Calzado', value: 'Zapatos' }
+  ];
+
+  // Filtros de la tabla de prendas del evento activo
+  eventTableSearch: string = '';
+  eventTableCategory: string = '';
+
+  // Paginación y filtros de servidor para el selector de prendas en Modales (Eventos y Descuentos)
+  modalGarmentsPage: IRekidsGarment[] = [];
+  modalPage: number = 0;
+  modalPageSize: number = 6;
+  modalTotalElements: number = 0;
+  modalTotalPages: number = 1;
+  modalSearchFilter: string = '';
+  modalRegionFilter: string = '';
+  modalCategoryFilter: string = '';
+  modalAvailabilityFilter: string = '';
+  isLoadingModalGarments: boolean = false;
+
+  // Modal de Ficha Oficial de Producto (/integrations/v1/products/{product_id})
+  displaySandboxProductDialog: boolean = false;
+  selectedSandboxProduct: RekidsProductModel | null = null;
 
   // ABM de Eventos (Crear / Editar Evento como NAVIDAD y seleccionar 1 o varios productos)
   displayEventDialog: boolean = false;
@@ -60,6 +131,7 @@ export class EventsComponent implements OnInit {
   constructor(
     private storeEventService: StoreEventService,
     private productService: ProductService,
+    public rekidsCatalogVM: RekidsCatalogViewModel,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService
@@ -73,8 +145,129 @@ export class EventsComponent implements OnInit {
   ngOnInit(): void {
     const email = localStorage.getItem('email') || this.config.defaultAdminEmail;
     this.currentAdminLabel = `ADMIN (${email})`;
+    this.rekidsCatalogVM.loadCatalogSeparatedByBranches().subscribe(catalogs => {
+      this.branchCatalogs = catalogs;
+      for (const cat of catalogs) {
+        this.initBranchPaginationState(cat);
+        this.loadBranchPage(cat.branch.id, 0, null, true);
+      }
+    });
     this.loadSynchronizedGarments();
     this.loadEvents();
+  }
+
+  private initBranchPaginationState(cat: RekidsBranchCatalogModel) {
+    const branchId = cat.branch.id;
+    if (!this.branchPaginationState[branchId]) {
+      this.branchPaginationState[branchId] = {
+        products: cat.products || [],
+        limit: 5,
+        page: 0,
+        totalElements: cat.totalProducts || (cat.products ? cat.products.length : 0),
+        totalPages: Math.max(1, Math.ceil((cat.totalProducts || 1) / 5)),
+        availableCount: cat.availableCount || 0,
+        unavailableCount: cat.unavailableCount || 0,
+        currentCursor: null,
+        nextCursor: cat.nextCursor ?? null,
+        cursorHistory: [],
+        filter: '',
+        availability: '',
+        category: '',
+        loading: false
+      };
+    }
+  }
+
+  getBranchState(branchId: string) {
+    return this.branchPaginationState[branchId];
+  }
+
+  /**
+   * Consulta paginada por sucursal hacia GET /integrations/v1/products?branch_id=UUID&cursor=...&limit=...
+   */
+  loadBranchPage(
+    branchId: string,
+    targetPage: number = 0,
+    cursor: string | null = null,
+    resetHistory: boolean = false
+  ) {
+    const state = this.branchPaginationState[branchId];
+    if (!state) return;
+
+    if (resetHistory) {
+      state.cursorHistory = [];
+      state.currentCursor = null;
+      targetPage = 0;
+      cursor = null;
+    }
+
+    state.loading = true;
+    this.rekidsCatalogVM
+      .loadBranchProductsPaginated(branchId, {
+        cursor,
+        limit: state.limit,
+        page: targetPage,
+        filter: state.filter,
+        availability: state.availability,
+        category: state.category
+      })
+      .subscribe({
+        next: (res) => {
+          state.loading = false;
+          const items = res?.items || [];
+          state.products = items.map(dto => new RekidsProductModel(dto));
+          state.page = res?.page ?? targetPage;
+          state.currentCursor = cursor;
+          state.nextCursor = res?.next_cursor ?? res?.nextCursor ?? null;
+          state.totalElements = res?.totalElements ?? items.length;
+          state.totalPages =
+            res?.totalPages ?? Math.max(1, Math.ceil(state.totalElements / Math.max(1, state.limit)));
+          if (res?.availableCount !== undefined) {
+            state.availableCount = res.availableCount;
+          }
+          if (res?.unavailableCount !== undefined) {
+            state.unavailableCount = res.unavailableCount;
+          }
+        },
+        error: () => {
+          state.loading = false;
+        }
+      });
+  }
+
+  onBranchFilterChange(branchId: string) {
+    this.loadBranchPage(branchId, 0, null, true);
+  }
+
+  nextBranchCursorPage(branchId: string) {
+    const state = this.branchPaginationState[branchId];
+    if (!state) return;
+    if (state.nextCursor) {
+      state.cursorHistory.push(state.currentCursor);
+      this.loadBranchPage(branchId, state.page + 1, state.nextCursor, false);
+    } else if (state.page + 1 < state.totalPages) {
+      state.cursorHistory.push(state.currentCursor);
+      this.loadBranchPage(branchId, state.page + 1, null, false);
+    }
+  }
+
+  prevBranchCursorPage(branchId: string) {
+    const state = this.branchPaginationState[branchId];
+    if (!state || state.page <= 0) return;
+    const prevCursor = state.cursorHistory.length > 0 ? state.cursorHistory.pop() ?? null : null;
+    this.loadBranchPage(branchId, Math.max(0, state.page - 1), prevCursor, false);
+  }
+
+  /**
+   * Consulta la ficha comercial individual desde GET /integrations/v1/products/{product_id}
+   */
+  openSandboxProductSheet(prod: RekidsProductModel) {
+    this.rekidsCatalogVM.fetchProductById(prod.id).subscribe({
+      next: (detail) => {
+        this.selectedSandboxProduct = detail || prod;
+        this.displaySandboxProductDialog = true;
+      }
+    });
   }
 
   /**
@@ -172,8 +365,125 @@ export class EventsComponent implements OnInit {
 
   getFilteredEventProducts(ev: IStoreEvent): IEventProduct[] {
     if (!ev || !ev.products) return [];
-    if (!this.selectedRegionFilter) return ev.products;
-    return ev.products.filter(p => p.region === this.selectedRegionFilter);
+    let list = [...ev.products];
+    if (this.selectedRegionFilter) {
+      list = list.filter(p => p.region === this.selectedRegionFilter);
+    }
+    if (this.eventTableCategory) {
+      const cat = this.eventTableCategory.toLowerCase();
+      list = list.filter(p => (p.category || '').toLowerCase().includes(cat));
+    }
+    if (this.eventTableSearch && this.eventTableSearch.trim()) {
+      const q = this.eventTableSearch.trim().toLowerCase();
+      list = list.filter(
+        p =>
+          (p.productName || '').toLowerCase().includes(q) ||
+          (p.sku || '').toLowerCase().includes(q) ||
+          (p.category || '').toLowerCase().includes(q) ||
+          (p.size || '').toLowerCase().includes(q) ||
+          (p.brand || '').toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }
+
+  /**
+   * Carga paginada y filtrada desde el backend para los modales de selección de prendas
+   */
+  loadModalGarmentsPage(pageIndex: number = 0) {
+    this.modalPage = Math.max(0, pageIndex);
+    this.isLoadingModalGarments = true;
+    const targetRegion = this.modalRegionFilter || 'TODOS';
+
+    this.productService
+      .getProductsByRegion(targetRegion, {
+        page: this.modalPage,
+        size: this.modalPageSize,
+        category: this.modalCategoryFilter || '',
+        availability: this.modalAvailabilityFilter || '',
+        filter: (this.modalSearchFilter || '').trim()
+      })
+      .subscribe({
+        next: (res) => {
+          this.isLoadingModalGarments = false;
+          const pagedData = res?.data;
+          const items: any[] = pagedData?.content || (Array.isArray(pagedData) ? pagedData : []);
+          const pageMeta = pagedData?.page;
+
+          if (items.length > 0 || (pageMeta && pageMeta.totalElements === 0)) {
+            this.modalGarmentsPage = items;
+            this.modalTotalElements =
+              pageMeta?.totalElements !== undefined ? Number(pageMeta.totalElements) : items.length;
+            this.modalTotalPages =
+              pageMeta?.totalPages !== undefined
+                ? Math.max(1, Number(pageMeta.totalPages))
+                : Math.max(1, Math.ceil(this.modalTotalElements / this.modalPageSize));
+          } else {
+            this.applyModalFallbackPagination();
+          }
+        },
+        error: () => {
+          this.isLoadingModalGarments = false;
+          this.applyModalFallbackPagination();
+        }
+      });
+  }
+
+  private applyModalFallbackPagination() {
+    let list = [...this.allGarments];
+    if (this.modalRegionFilter && this.modalRegionFilter !== 'TODOS') {
+      list = list.filter(g => g.region === this.modalRegionFilter);
+    }
+    if (this.modalCategoryFilter) {
+      const cat = this.modalCategoryFilter.toLowerCase();
+      list = list.filter(g => (g.category || '').toLowerCase().includes(cat));
+    }
+    if (this.modalAvailabilityFilter) {
+      list = list.filter(g => {
+        const avail = g.availability || (g.stock && Number(g.stock) > 0 ? 'available' : 'unavailable');
+        return avail === this.modalAvailabilityFilter;
+      });
+    }
+    if (this.modalSearchFilter && this.modalSearchFilter.trim()) {
+      const q = this.modalSearchFilter.trim().toLowerCase();
+      list = list.filter(
+        g =>
+          (g.name || '').toLowerCase().includes(q) ||
+          (g.sku || '').toLowerCase().includes(q) ||
+          (g.legacyCode || '').toLowerCase().includes(q) ||
+          (g.category || '').toLowerCase().includes(q) ||
+          (g.size || '').toLowerCase().includes(q) ||
+          (g.brand || '').toLowerCase().includes(q)
+      );
+    }
+    this.modalTotalElements = list.length;
+    this.modalTotalPages = Math.max(1, Math.ceil(list.length / this.modalPageSize));
+    if (this.modalPage >= this.modalTotalPages) {
+      this.modalPage = 0;
+    }
+    const start = this.modalPage * this.modalPageSize;
+    this.modalGarmentsPage = list.slice(start, start + this.modalPageSize);
+  }
+
+  onModalPageChange(event: any) {
+    const newPage =
+      event.page !== undefined
+        ? Number(event.page)
+        : Math.floor(Number(event.first || 0) / Number(event.rows || this.modalPageSize));
+    this.modalPageSize = Number(event.rows || this.modalPageSize);
+    this.loadModalGarmentsPage(newPage);
+  }
+
+  onModalFilterChange() {
+    this.loadModalGarmentsPage(0);
+  }
+
+  resetModalFilters() {
+    this.modalSearchFilter = '';
+    this.modalRegionFilter = this.selectedRegionFilter || '';
+    this.modalCategoryFilter = '';
+    this.modalAvailabilityFilter = '';
+    this.loadModalGarmentsPage(0);
   }
 
   /**
@@ -248,6 +558,7 @@ export class EventsComponent implements OnInit {
       description: '',
       selectedGarments: []
     };
+    this.resetModalFilters();
     this.displayEventDialog = true;
   }
 
@@ -267,6 +578,7 @@ export class EventsComponent implements OnInit {
         g => currentProductIds.has(g.id) || currentProductSkus.has(g.sku)
       )
     };
+    this.resetModalFilters();
     this.displayEventDialog = true;
   }
 
@@ -431,6 +743,7 @@ export class EventsComponent implements OnInit {
       discountType: 'PORCENTUAL',
       discountValue: 15
     };
+    this.resetModalFilters();
     this.displayDiscountDialog = true;
   }
 

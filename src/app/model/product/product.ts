@@ -1,3 +1,5 @@
+import { IRekidsSandboxPhotoDto } from '../rekids/rekids.dto';
+
 export interface ICreateProduct {
   name: string;
   category: string;
@@ -37,12 +39,24 @@ export interface IProduct {
   stock?: number;
   unitaryCost?: number;
   eventNames?: string[];
+  legacyCode?: string | null;
+  branchId?: string;
+  branchName?: string;
+  condition?: string;
+  currency?: string;
+  availability?: 'available' | 'unavailable' | string;
+  photos?: IRekidsSandboxPhotoDto[];
+  updatedAt?: string;
+  version?: number;
 }
 
 export interface IRekidsGarment {
   id: string;
   externalId?: string;
   sku: string;
+  legacyCode?: string | null;
+  branchId?: string;
+  branchName?: string;
   name: string;
   productName?: string;
   category: string;
@@ -50,6 +64,9 @@ export interface IRekidsGarment {
   color: string;
   gender: string;
   brand: string;
+  condition?: string;
+  currency?: string;
+  availability?: 'available' | 'unavailable' | string;
   purchasePrice?: number;
   salePrice: number;
   unitaryCost: number;
@@ -61,7 +78,10 @@ export interface IRekidsGarment {
   region: 'SANTA_CRUZ' | 'LA_PAZ' | string;
   stock: number;
   photo?: string;
+  photos?: IRekidsSandboxPhotoDto[];
   isNew?: boolean;
+  updatedAt?: string;
+  version?: number;
   eventNames?: string[];
 }
 

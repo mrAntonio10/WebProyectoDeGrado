@@ -15,6 +15,9 @@ import { EnterpriseService } from 'src/app/services/enterprise/enterprise.servic
 import { StoreEventService } from 'src/app/services/event/store-event.service';
 import { PermissionService } from 'src/app/services/permission/permission.service';
 import { ProductService } from 'src/app/services/product/product.service';
+import { RekidsBranchCatalogModel, RekidsProductModel } from 'src/app/model/rekids/rekids.model';
+import { REKIDS_BRANCH_UUIDS } from 'src/app/model/rekids/rekids.dto';
+import { RekidsCatalogViewModel } from 'src/app/viewmodels/rekids-catalog.viewmodel';
 import {
   IRegionOption,
   REKIDS_MOCK_EVENTS,
@@ -58,9 +61,65 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 
   regionGarments: IRekidsGarment[] = [];
   filteredGarments: IRekidsGarment[] = [];
+  branchCatalogs: RekidsBranchCatalogModel[] = [];
+  onlyAvailableFilter: boolean = false;
   events: IStoreEvent[] = [];
   selectedEventCode: string = 'TODOS';
   isLoggedInAdmin: boolean = false;
+
+  // Paginación y filtros adaptados a ReKids API Sandbox v1
+  catalogPage: number = 0;
+  catalogPageSize: number = 6;
+  catalogTotalElements: number = 0;
+  catalogTotalPages: number = 1;
+  isLoadingCatalog: boolean = false;
+  branchNextCursor: string | null = null;
+  branchCursorHistory: (string | null)[] = [];
+
+  selectedCategoryFilter: string = '';
+  selectedSizeFilter: string = '';
+  selectedBrandFilter: string = '';
+  selectedConditionFilter: string = '';
+  selectedAvailabilityFilter: string = '';
+
+  categoryOptions: { label: string; value: string }[] = [
+    { label: 'Todas las Categorías', value: '' },
+    { label: 'Vestidos', value: 'Vestidos' },
+    { label: 'Poleras', value: 'Poleras' },
+    { label: 'Conjuntos', value: 'Conjuntos' },
+    { label: 'Pantalones y Shorts', value: 'Pantalones' },
+    { label: 'Abrigos y Chamarras', value: 'Abrigos' },
+    { label: 'Chompas y Polerones', value: 'Chompas' },
+    { label: 'Zapatos / Calzado', value: 'Zapatos' }
+  ];
+
+  sizeOptions: { label: string; value: string }[] = [
+    { label: 'Todas las Tallas', value: '' },
+    { label: 'Talla 2T', value: '2T' },
+    { label: 'Talla 3T', value: '3T' },
+    { label: 'Talla 4 / 4T', value: '4' },
+    { label: 'Talla 5T', value: '5T' },
+    { label: 'Talla 6', value: '6' },
+    { label: 'Talla 8', value: '8' },
+    { label: 'Calzado 28', value: '28' }
+  ];
+
+  conditionOptions: { label: string; value: string }[] = [
+    { label: 'Todos los Estados', value: '' },
+    { label: 'Excelente', value: 'Excelente' },
+    { label: 'Bueno', value: 'Bueno' }
+  ];
+
+  availabilityOptions: { label: string; value: string }[] = [
+    { label: 'Todas (Disponibles y Vendidas)', value: '' },
+    { label: 'Solo Disponibles (available)', value: 'available' },
+    { label: 'Vendidas / Reservadas (unavailable)', value: 'unavailable' }
+  ];
+
+  // Modal de ficha oficial individual (/integrations/v1/products/{product_id})
+  displayProductDetailDialog: boolean = false;
+  selectedProductDetail: RekidsProductModel | null = null;
+  selectedGarmentForDetail: IRekidsGarment | null = null;
 
   constructor(
     private router: Router,
@@ -73,6 +132,7 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     private documentService: DocumentService,
     private productService: ProductService,
     private storeEventService: StoreEventService,
+    public rekidsCatalogVM: RekidsCatalogViewModel,
     private breadcrumbService: BreadcrumbService,
     private fb: FormBuilder
   ) {}
@@ -120,6 +180,15 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     sessionStorage.setItem('selectedRegion', regionCode);
     this.selectedEventCode = 'TODOS';
     this.searchText = '';
+    this.selectedCategoryFilter = '';
+    this.selectedSizeFilter = '';
+    this.selectedBrandFilter = '';
+    this.selectedConditionFilter = '';
+    this.selectedAvailabilityFilter = '';
+    this.onlyAvailableFilter = false;
+    this.catalogPage = 0;
+    this.branchNextCursor = null;
+    this.branchCursorHistory = [];
     this.loadRegionEventsAndGarments(regionCode);
     this.messageService.add({
       severity: 'info',
@@ -133,7 +202,32 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     return found ? found.name : regionCode;
   }
 
+  getActiveBranchUuid(regionCode: string = this.selectedRegion): string {
+    return regionCode === 'LA_PAZ' ? REKIDS_BRANCH_UUIDS.LA_PAZ : REKIDS_BRANCH_UUIDS.SANTA_CRUZ;
+  }
+
   loadRegionEventsAndGarments(regionCode: string) {
+    this.rekidsCatalogVM.selectBranch(regionCode);
+    const branchId = this.getActiveBranchUuid(regionCode);
+
+    // Cargar página de sucursal desde endpoint ReKids Sandbox con límite paginado
+    this.rekidsCatalogVM
+      .loadBranchProductsPaginated(branchId, {
+        limit: this.catalogPageSize,
+        page: 0
+      })
+      .subscribe({
+        next: (pageDto) => {
+          this.branchNextCursor = pageDto?.next_cursor ?? null;
+        }
+      });
+
+    this.rekidsCatalogVM.loadCatalogSeparatedByBranches(regionCode).subscribe({
+      next: (catalogs) => {
+        this.branchCatalogs = catalogs;
+      }
+    });
+
     this.storeEventService.getPublicEvents(regionCode).subscribe({
       next: (res) => {
         const apiEvents = res?.data || [];
@@ -144,19 +238,130 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.productService.getProductsByRegion(regionCode, { page: 0, size: 50 }).subscribe({
+    // Cargar lote base de la región para contadores y fallback local
+    this.regionGarments = this.getMockGarmentsForRegion(regionCode);
+    this.loadPaginatedCatalogForRegion(0);
+  }
+
+  /**
+   * Consulta paginada real contra el backend enviando page, size y todos los filtros activos
+   */
+  loadPaginatedCatalogForRegion(pageIndex: number = this.catalogPage) {
+    if (!this.selectedRegion) return;
+    this.catalogPage = Math.max(0, pageIndex);
+    this.isLoadingCatalog = true;
+
+    const availabilityParam = this.onlyAvailableFilter
+      ? 'available'
+      : this.selectedAvailabilityFilter || '';
+
+    const queryParams: any = {
+      page: this.catalogPage,
+      size: this.catalogPageSize,
+      eventId: this.selectedEventCode !== 'TODOS' ? this.selectedEventCode : '',
+      category: this.selectedCategoryFilter || '',
+      clothingSize: this.selectedSizeFilter || '',
+      brand: this.selectedBrandFilter || '',
+      condition: this.selectedConditionFilter || '',
+      availability: availabilityParam,
+      filter: (this.searchText || '').trim()
+    };
+
+    this.productService.getProductsByRegion(this.selectedRegion, queryParams).subscribe({
       next: (res) => {
-        const apiGarments = res?.data?.content || res?.data || [];
-        if (apiGarments.length > 0) {
-          this.regionGarments = apiGarments.map((g: any) => this.enrichGarmentImage(g));
+        this.isLoadingCatalog = false;
+        const pagedData = res?.data;
+        const apiGarments: any[] = pagedData?.content || (Array.isArray(pagedData) ? pagedData : []);
+        const pageMeta = pagedData?.page;
+
+        if (apiGarments.length > 0 || (pageMeta && pageMeta.totalElements === 0)) {
+          this.filteredGarments = apiGarments.map((g: any) => this.enrichGarmentImage(g));
+          this.catalogTotalElements =
+            pageMeta?.totalElements !== undefined ? Number(pageMeta.totalElements) : this.filteredGarments.length;
+          this.catalogTotalPages =
+            pageMeta?.totalPages !== undefined
+              ? Math.max(1, Number(pageMeta.totalPages))
+              : Math.max(1, Math.ceil(this.catalogTotalElements / this.catalogPageSize));
+          if (this.catalogPage === 0 && !this.hasActiveCatalogFilters()) {
+            this.regionGarments = [...this.filteredGarments];
+          }
         } else {
-          this.regionGarments = this.getMockGarmentsForRegion(regionCode);
+          this.applyClientFallbackPagination();
         }
-        this.applyFilters();
       },
       error: () => {
-        this.regionGarments = this.getMockGarmentsForRegion(regionCode);
-        this.applyFilters();
+        this.isLoadingCatalog = false;
+        this.applyClientFallbackPagination();
+      }
+    });
+  }
+
+  hasActiveCatalogFilters(): boolean {
+    return (
+      (this.selectedEventCode && this.selectedEventCode !== 'TODOS') ||
+      !!this.selectedCategoryFilter ||
+      !!this.selectedSizeFilter ||
+      !!this.selectedBrandFilter ||
+      !!this.selectedConditionFilter ||
+      !!this.selectedAvailabilityFilter ||
+      this.onlyAvailableFilter ||
+      !!(this.searchText && this.searchText.trim())
+    );
+  }
+
+  clearAllCatalogFilters() {
+    this.selectedEventCode = 'TODOS';
+    this.selectedCategoryFilter = '';
+    this.selectedSizeFilter = '';
+    this.selectedBrandFilter = '';
+    this.selectedConditionFilter = '';
+    this.selectedAvailabilityFilter = '';
+    this.onlyAvailableFilter = false;
+    this.searchText = '';
+    this.loadPaginatedCatalogForRegion(0);
+  }
+
+  onCatalogPageChange(event: any) {
+    const newPage = event.page !== undefined ? Number(event.page) : Math.floor(Number(event.first || 0) / Number(event.rows || this.catalogPageSize));
+    const newSize = Number(event.rows || this.catalogPageSize);
+    this.catalogPageSize = newSize;
+    this.loadPaginatedCatalogForRegion(newPage);
+  }
+
+  /**
+   * Consulta la ficha comercial individual desde GET /integrations/v1/products/{product_id}
+   */
+  openOfficialProductSheet(garment: IRekidsGarment) {
+    this.selectedGarmentForDetail = garment;
+    const targetId = garment.externalId || garment.id;
+    this.rekidsCatalogVM.fetchProductById(targetId).subscribe({
+      next: (model) => {
+        if (model) {
+          this.selectedProductDetail = model;
+        } else {
+          this.selectedProductDetail = new RekidsProductModel(
+            {
+              id: garment.externalId || garment.id,
+              code: garment.sku,
+              legacy_code: garment.legacyCode ?? null,
+              branch_id: garment.branchId || this.getActiveBranchUuid(),
+              name: garment.name,
+              category: garment.category,
+              size: garment.size || null,
+              brand: garment.brand || null,
+              condition: garment.condition || 'Excelente',
+              price: Number(garment.finalPrice || garment.salePrice || 0).toFixed(2),
+              currency: 'BOB',
+              availability: this.isGarmentAvailable(garment) ? 'available' : 'unavailable',
+              photos: garment.photos || [],
+              updated_at: garment.updatedAt || new Date().toISOString(),
+              version: garment.version || 1
+            },
+            garment.branchName,
+            garment.region
+          );
+        }
+        this.displayProductDetailDialog = true;
       }
     });
   }
@@ -211,12 +416,23 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
 
   applyEventFilter(eventCode: string) {
     this.selectedEventCode = eventCode;
-    this.applyFilters();
+    this.loadPaginatedCatalogForRegion(0);
   }
 
   applyFilters() {
+    this.loadPaginatedCatalogForRegion(0);
+  }
+
+  onAvailabilityFilterChange() {
+    this.onlyAvailableFilter = this.selectedAvailabilityFilter === 'available';
+    this.loadPaginatedCatalogForRegion(0);
+  }
+
+  private applyClientFallbackPagination() {
     const eventCode = this.selectedEventCode;
-    let list = [...this.regionGarments];
+    const baseList = this.getMockGarmentsForRegion(this.selectedRegion);
+    this.regionGarments = [...baseList];
+    let list = [...baseList];
 
     if (eventCode && eventCode !== 'TODOS') {
       const selectedEv = this.events.find(
@@ -234,11 +450,45 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       });
     }
 
+    if (this.selectedCategoryFilter) {
+      const cat = this.selectedCategoryFilter.toLowerCase();
+      list = list.filter(g => (g.category || '').toLowerCase().includes(cat));
+    }
+
+    if (this.selectedSizeFilter) {
+      const sz = this.selectedSizeFilter.toLowerCase();
+      list = list.filter(g => (g.size || '').toLowerCase().includes(sz));
+    }
+
+    if (this.selectedBrandFilter) {
+      const br = this.selectedBrandFilter.toLowerCase();
+      list = list.filter(g => (g.brand || '').toLowerCase().includes(br));
+    }
+
+    if (this.selectedConditionFilter) {
+      const cond = this.selectedConditionFilter.toLowerCase();
+      list = list.filter(
+        g =>
+          (g.condition || '').toLowerCase().includes(cond) ||
+          (g.color || '').toLowerCase().includes(cond)
+      );
+    }
+
+    const effectiveAvail = this.onlyAvailableFilter ? 'available' : this.selectedAvailabilityFilter;
+    if (effectiveAvail === 'available') {
+      list = list.filter(g => this.isGarmentAvailable(g));
+    } else if (effectiveAvail === 'unavailable') {
+      list = list.filter(g => !this.isGarmentAvailable(g));
+    }
+
     if (this.searchText && this.searchText.trim()) {
       const q = this.searchText.trim().toLowerCase();
       list = list.filter(
         g =>
           (g.name || '').toLowerCase().includes(q) ||
+          (g.sku || '').toLowerCase().includes(q) ||
+          (g.legacyCode || '').toLowerCase().includes(q) ||
+          (g.condition || '').toLowerCase().includes(q) ||
           (g.brand || '').toLowerCase().includes(q) ||
           (g.size || '').toLowerCase().includes(q) ||
           (g.color || '').toLowerCase().includes(q) ||
@@ -246,7 +496,39 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
       );
     }
 
-    this.filteredGarments = list;
+    this.catalogTotalElements = list.length;
+    this.catalogTotalPages = Math.max(1, Math.ceil(list.length / this.catalogPageSize));
+    if (this.catalogPage >= this.catalogTotalPages) {
+      this.catalogPage = 0;
+    }
+    const start = this.catalogPage * this.catalogPageSize;
+    this.filteredGarments = list.slice(start, start + this.catalogPageSize);
+  }
+
+  isGarmentAvailable(garment: IRekidsGarment): boolean {
+    if (!garment) return false;
+    if (garment.availability === 'unavailable') return false;
+    if (garment.stock !== undefined && garment.stock !== null && Number(garment.stock) <= 0) return false;
+    return true;
+  }
+
+  toggleOnlyAvailableFilter() {
+    this.onlyAvailableFilter = !this.onlyAvailableFilter;
+    this.selectedAvailabilityFilter = this.onlyAvailableFilter ? 'available' : '';
+    this.loadPaginatedCatalogForRegion(0);
+  }
+
+  getActiveBranchCatalog(): RekidsBranchCatalogModel | null {
+    if (!this.selectedRegion || !this.branchCatalogs) return null;
+    return this.branchCatalogs.find(c => c.branch.region === this.selectedRegion) || null;
+  }
+
+  getAvailableRegionGarmentsCount(): number {
+    return this.regionGarments.filter(g => this.isGarmentAvailable(g)).length;
+  }
+
+  getUnavailableRegionGarmentsCount(): number {
+    return this.regionGarments.filter(g => !this.isGarmentAvailable(g)).length;
   }
 
   /**
@@ -258,6 +540,15 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
         severity: 'warn',
         summary: 'Selecciona tu Ciudad',
         detail: 'Selecciona primero Santa Cruz o La Paz.'
+      });
+      return;
+    }
+
+    if (!this.isGarmentAvailable(garment)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Prenda No Disponible',
+        detail: `La prenda "${garment.name}" (${garment.sku}) figura como no disponible (vendida o reservada).`
       });
       return;
     }
@@ -316,7 +607,10 @@ export class SalesPanelComponent implements OnInit, OnDestroy {
     const originalPrice = Number(garment.salePrice || garment.unitaryCost || 0);
     const finalPrice = Number(garment.finalPrice || garment.unitaryCost || originalPrice);
     const unitDiscount = Math.max(0, originalPrice - finalPrice);
-    const maxStock = Number(garment.stock || 1);
+    const maxStock = garment.stock !== undefined && garment.stock !== null ? Number(garment.stock) : 1;
+    if (maxStock <= 0 || garment.availability === 'unavailable') {
+      return;
+    }
 
     const existingIndex = detailObj.content.findIndex(
       (p: any) => p.idProduct === idProduct || (p.sku && p.sku.toUpperCase() === sku)

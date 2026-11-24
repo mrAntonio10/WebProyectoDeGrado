@@ -64,6 +64,10 @@
                             <span class="region-delivery-tag">{{ reg.badge }}</span>
                         </div>
                         <p class="region-address">{{ reg.address }}</p>
+                        <small style="color: #64748b; font-size: 0.75rem; display: block; margin-top: 2px;">
+                            <i class="pi pi-sitemap" style="font-size: 0.72rem;"></i>
+                            Sucursal ID: <code>{{ reg.branchId }}</code>
+                        </small>
                     </div>
                     <div class="region-check">
                         <span *ngIf="selectedRegion === reg.code" class="selected-city-chip">
@@ -93,6 +97,29 @@
         <div class="col-12 lg:col-8">
             <div class="rekids-catalog-card">
 
+                <!-- Banner MVVM de Sucursal Activa (ReKids API Sandbox) -->
+                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 0.85rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    <div style="display: flex; align-items: center; gap: 0.65rem;">
+                        <i class="pi pi-building" style="color: #0284c7; font-size: 1.2rem;"></i>
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">
+                                {{ getActiveBranchCatalog()?.branch?.name || ('Sucursal ReKids ' + getRegionLabel(selectedRegion)) }}
+                            </div>
+                            <small style="color: #64748b; font-size: 0.78rem;">
+                                Catálogo sincronizado por sucursal •
+                                <strong style="color: #16a34a;">{{ getAvailableRegionGarmentsCount() }} disponibles</strong> •
+                                <strong style="color: #dc2626;">{{ getUnavailableRegionGarmentsCount() }} vendidas/reservadas</strong>
+                            </small>
+                        </div>
+                    </div>
+                    <button pButton type="button"
+                        [label]="onlyAvailableFilter ? 'Mostrando: Solo Disponibles' : 'Mostrar Solo Disponibles'"
+                        [icon]="onlyAvailableFilter ? 'pi pi-check-circle' : 'pi pi-filter'"
+                        [ngClass]="onlyAvailableFilter ? 'p-button-success p-button-sm' : 'p-button-outlined p-button-secondary p-button-sm'"
+                        (click)="toggleOnlyAvailableFilter()">
+                    </button>
+                </div>
+
                 <!-- Barra de Eventos (Novedades, Descuentos, Navidad, etc.) + Buscador -->
                 <div class="rekids-filter-bar">
                     <div class="rekids-event-tabs">
@@ -100,7 +127,7 @@
                             [ngClass]="{ 'active': selectedEventCode === 'TODOS' }"
                             (click)="applyEventFilter('TODOS')">
                             <i class="pi pi-th-large"></i>
-                            <span>Todo ({{ regionGarments.length }})</span>
+                            <span>Todo ({{ catalogTotalElements }})</span>
                         </button>
 
                         <button *ngFor="let ev of events" type="button" class="event-tab-btn"
@@ -120,8 +147,43 @@
                         <span class="p-input-icon-left" style="width: 100%;">
                             <i class="pi pi-search"></i>
                             <input type="text" pInputText [(ngModel)]="searchText" (ngModelChange)="applyFilters()"
-                                placeholder="Buscar prenda, talla o marca..." class="rekids-search-input" />
+                                placeholder="Buscar por nombre, código (SKU / ant.), talla o marca..." class="rekids-search-input" />
                         </span>
+                    </div>
+                </div>
+
+                <!-- FILTROS AVANZADOS ADAPTADOS AL MODELO DEL TERCERO (CATEGORÍA, TALLA, ESTADO/CONDICIÓN, DISPONIBILIDAD) -->
+                <div class="grid p-fluid" style="margin: 0 0 0.9rem 0; padding: 0.75rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; align-items: center;">
+                    <div class="col-12 sm:col-6 md:col-3" style="padding: 0.35rem;">
+                        <p-dropdown [options]="categoryOptions" [(ngModel)]="selectedCategoryFilter"
+                            optionLabel="label" optionValue="value"
+                            placeholder="Categoría" (onChange)="applyFilters()"></p-dropdown>
+                    </div>
+                    <div class="col-12 sm:col-6 md:col-3" style="padding: 0.35rem;">
+                        <p-dropdown [options]="sizeOptions" [(ngModel)]="selectedSizeFilter"
+                            optionLabel="label" optionValue="value"
+                            placeholder="Talla" (onChange)="applyFilters()"></p-dropdown>
+                    </div>
+                    <div class="col-12 sm:col-6 md:col-3" style="padding: 0.35rem;">
+                        <p-dropdown [options]="conditionOptions" [(ngModel)]="selectedConditionFilter"
+                            optionLabel="label" optionValue="value"
+                            placeholder="Estado / Condición" (onChange)="applyFilters()"></p-dropdown>
+                    </div>
+                    <div class="col-12 sm:col-6 md:col-3" style="padding: 0.35rem;">
+                        <p-dropdown [options]="availabilityOptions" [(ngModel)]="selectedAvailabilityFilter"
+                            optionLabel="label" optionValue="value"
+                            placeholder="Disponibilidad" (onChange)="onAvailabilityFilterChange()"></p-dropdown>
+                    </div>
+                    <div class="col-12" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 0.35rem 0.5rem 0 0.5rem; font-size: 0.82rem; color: #475569;">
+                        <div>
+                            <i class="pi pi-list" style="margin-right: 5px; color: #0284c7;"></i>
+                            Mostrando página <strong>{{ catalogPage + 1 }}</strong> de <strong>{{ catalogTotalPages }}</strong>
+                            • <strong>{{ filteredGarments.length }}</strong> de <strong>{{ catalogTotalElements }}</strong> prendas filtradas
+                        </div>
+                        <button *ngIf="hasActiveCatalogFilters()" pButton type="button"
+                            label="Limpiar Filtros" icon="pi pi-filter-slash"
+                            class="p-button-text p-button-sm p-button-secondary"
+                            (click)="clearAllCatalogFilters()"></button>
                     </div>
                 </div>
 
@@ -161,38 +223,57 @@
                                 <div>
                                     <div class="product-brand-row">
                                         <span class="product-brand">{{ g.brand || 'RE KIDS' }}</span>
-                                        <span class="product-stock-pill">Disponibles: {{ g.stock }}</span>
+                                        <span class="product-stock-pill"
+                                            [ngStyle]="isGarmentAvailable(g)
+                                                ? {'background': '#dcfce7', 'color': '#166534'}
+                                                : {'background': '#fee2e2', 'color': '#991b1b'}">
+                                            {{ isGarmentAvailable(g) ? ('Disponible (' + g.stock + ')') : 'No disponible' }}
+                                        </span>
                                     </div>
 
                                     <h5 class="product-title">{{ g.name }}</h5>
 
                                     <div class="product-specs-row">
                                         <span class="spec-chip size-chip"><i class="pi pi-tag"></i> Talla {{ g.size || 'Única' }}</span>
-                                        <span class="spec-chip" *ngIf="g.color">{{ g.color }}</span>
+                                        <span class="spec-chip" *ngIf="g.condition">Estado: {{ g.condition }}</span>
+                                        <span class="spec-chip" *ngIf="g.color && !g.condition">{{ g.color }}</span>
                                         <span class="spec-chip" *ngIf="g.gender">{{ g.gender }}</span>
                                     </div>
 
-                                    <!-- Código como detalle sutil -->
+                                    <!-- Código actual y legacy_code (si existe en ReKids Sandbox) -->
                                     <div class="product-detail-code">
-                                        Detalle: {{ g.sku }} • {{ g.category }}
+                                        Código: <strong>{{ g.sku }}</strong>
+                                        <span *ngIf="g.legacyCode"> • Cód. ant: {{ g.legacyCode }}</span>
+                                        • {{ g.category }}
                                     </div>
                                 </div>
 
-                                <!-- Precio y Botón Adicionar al Carrito -->
+                                <!-- Precio y Botones Ficha Oficial + Adicionar al Carrito -->
                                 <div class="product-footer">
                                     <div class="price-block">
                                         <span class="old-price" *ngIf="g.discountValue && g.discountValue > 0">
                                             {{ g.salePrice }} BOB
                                         </span>
-                                        <span class="final-price">{{ g.finalPrice || g.salePrice }} <small>BOB</small></span>
+                                        <span class="final-price">{{ g.finalPrice || g.salePrice }} <small>{{ g.currency || 'BOB' }}</small></span>
                                     </div>
 
-                                    <button pButton pRipple type="button"
-                                        label="Adicionar al Carrito"
-                                        icon="pi pi-shopping-cart"
-                                        class="rekids-add-cart-btn"
-                                        (click)="addToCart(g)">
-                                    </button>
+                                    <div style="display: flex; gap: 0.35rem; align-items: center;">
+                                        <button pButton pRipple type="button"
+                                            icon="pi pi-eye"
+                                            class="p-button-outlined p-button-info p-button-sm"
+                                            pTooltip="Ver ficha comercial ReKids (/integrations/v1/products/{id})"
+                                            (click)="openOfficialProductSheet(g)">
+                                        </button>
+
+                                        <button pButton pRipple type="button"
+                                            [label]="isGarmentAvailable(g) ? 'Adicionar al Carrito' : 'Vendida / Reservada'"
+                                            [icon]="isGarmentAvailable(g) ? 'pi pi-shopping-cart' : 'pi pi-lock'"
+                                            class="rekids-add-cart-btn"
+                                            [disabled]="!isGarmentAvailable(g)"
+                                            [ngStyle]="!isGarmentAvailable(g) ? {'background': '#94a3b8', 'border-color': '#94a3b8', 'cursor': 'not-allowed'} : {}"
+                                            (click)="addToCart(g)">
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -202,10 +283,23 @@
                         <div class="rekids-no-results">
                             <i class="pi pi-inbox"></i>
                             <h5>No encontramos prendas con ese filtro en {{ getRegionLabel(selectedRegion) }}</h5>
-                            <button pButton type="button" label="Ver Todo el Catálogo"
-                                class="p-button-outlined p-button-sm" (click)="applyEventFilter('TODOS')"></button>
+                            <button pButton type="button" label="Limpiar Filtros y Ver Todo"
+                                class="p-button-outlined p-button-sm" (click)="clearAllCatalogFilters()"></button>
                         </div>
                     </div>
+                </div>
+
+                <!-- PAGINADOR SERVIDOR DEL CATÁLOGO DE PRENDAS -->
+                <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.5rem;" *ngIf="catalogTotalElements > 0">
+                    <p-paginator
+                        [first]="catalogPage * catalogPageSize"
+                        [rows]="catalogPageSize"
+                        [totalRecords]="catalogTotalElements"
+                        [rowsPerPageOptions]="[4, 6, 9, 12, 24]"
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} prendas"
+                        (onPageChange)="onCatalogPageChange($event)">
+                    </p-paginator>
                 </div>
 
             </div>
@@ -307,6 +401,47 @@
 
     </div>
 </div>
+
+<!-- MODAL FICHA COMERCIAL OFICIAL REKIDS (/integrations/v1/products/{product_id}) -->
+<p-dialog [(visible)]="displayProductDetailDialog"
+    header="Ficha Comercial Publicada — ReKids API (/integrations/v1/products/{id})"
+    [modal]="true" [style]="{width: '520px', maxWidth: '95vw'}">
+    <ng-template pTemplate="content">
+        <div *ngIf="selectedProductDetail" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <img [src]="selectedProductDetail.primaryPhotoUrl" (error)="onImageError($event)"
+                    style="width: 96px; height: 96px; border-radius: 12px; object-fit: cover; border: 1px solid #e2e8f0;" />
+                <div>
+                    <span class="p-tag" [ngClass]="selectedProductDetail.isAvailable ? 'p-tag-success' : 'p-tag-danger'">
+                        {{ selectedProductDetail.availability }}
+                    </span>
+                    <h4 style="margin: 0.35rem 0 0.2rem 0; color: #0f172a;">{{ selectedProductDetail.name }}</h4>
+                    <div style="font-size: 1.15rem; font-weight: 700; color: #16a34a;">
+                        {{ selectedProductDetail.formattedPrice }}
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem; font-size: 0.85rem; line-height: 1.65;">
+                <div><strong>ID Producto (UUID):</strong> <code>{{ selectedProductDetail.id }}</code></div>
+                <div><strong>Código actual (code):</strong> <span class="p-tag p-tag-warning">{{ selectedProductDetail.code }}</span></div>
+                <div><strong>Código anterior (legacy_code):</strong> <code>{{ selectedProductDetail.legacyCode || 'N/A' }}</code></div>
+                <div><strong>Sucursal (branch_id):</strong> <code>{{ selectedProductDetail.branchId }}</code></div>
+                <div><strong>Categoría / Talla:</strong> {{ selectedProductDetail.category }} • Talla {{ selectedProductDetail.size || 'Única' }}</div>
+                <div><strong>Marca / Estado (condition):</strong> {{ selectedProductDetail.brand || 'ReKids' }} • {{ selectedProductDetail.condition }}</div>
+                <div><strong>Versión / Actualizado:</strong> v{{ selectedProductDetail.version }} • {{ selectedProductDetail.updatedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton type="button" label="Cerrar" icon="pi pi-times" class="p-button-text"
+            (click)="displayProductDetailDialog = false"></button>
+        <button *ngIf="selectedGarmentForDetail && isGarmentAvailable(selectedGarmentForDetail)"
+            pButton type="button" label="Adicionar al Carrito" icon="pi pi-shopping-cart"
+            class="p-button-success"
+            (click)="addToCart(selectedGarmentForDetail); displayProductDetailDialog = false"></button>
+    </ng-template>
+</p-dialog>
 
 <div class="col-6 flex justify-content-center">
     <p-toast />
