@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://81.25.127.120:8084'
+  apiUrl: 'https://rekids.onrender.com'
 };
